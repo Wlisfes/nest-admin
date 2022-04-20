@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
+import { Menu } from '@/layout/common'
 import { useRoute } from 'vue-router'
 import { useUStore } from '@/store/modules/u-store'
 
@@ -14,10 +15,19 @@ export default defineComponent({
 		const dataSource = computed(() => store.router)
 
 		return () => {
-			return (
-				<el-aside v-show={device.value} class="app-aside" width={collapse.value ? '64px' : '220px'}></el-aside>
-			)
+			return route.meta?.aside ?? true ? (
+				<el-aside v-show={device.value} class="app-aside" width={collapse.value ? '64px' : '220px'}>
+					<Menu current={current.value} collapse={collapse.value} dataSource={dataSource.value}></Menu>
+				</el-aside>
+			) : null
 		}
 	}
 })
 </script>
+
+<style lang="scss" scoped>
+.app-aside {
+	overflow: hidden;
+	transition: all 0.15s;
+}
+</style>

@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Transition } from 'vue'
+import { defineComponent, Transition, createVNode, VNode } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { Aside } from '@/layout/common'
 
@@ -15,11 +15,17 @@ export default defineComponent({
 					<el-container direction="vertical">
 						<el-main class="app-main">
 							<el-scrollbar ref="wrapper" class="app-main-wrapper">
-								{false && (
-									<Transition name="side-bottom" mode="out-in" appear>
-										<RouterView key={route.path}></RouterView>
-									</Transition>
-								)}
+								<RouterView key={route.path}>
+									{{
+										default: ({ Component }: { Component: VNode }) => {
+											return (
+												<Transition name="side-bottom" mode="out-in" appear>
+													{createVNode(Component)}
+												</Transition>
+											)
+										}
+									}}
+								</RouterView>
 							</el-scrollbar>
 						</el-main>
 					</el-container>

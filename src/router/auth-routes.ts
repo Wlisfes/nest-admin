@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
-import { Layout } from '@/layout'
+import { Layout, Parent, Refresh } from '@/layout'
 
 /**
  * @param String meta.title     标题
@@ -11,6 +11,114 @@ export const authRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
 		meta: { title: '控制台', icon: 'el-icon-odometer' },
-		component: Layout
+		component: Layout,
+		redirect: '/home',
+		children: [
+			{
+				path: '/home',
+				name: 'Home',
+				meta: { title: '主控台' },
+				component: () => import('@/views/home/Home.vue')
+			},
+			{
+				path: '/monitor',
+				name: 'Monitor',
+				meta: { title: '监控页' },
+				component: () => import('@/views/home/Template.vue')
+			},
+			{
+				path: '/work/bench',
+				name: 'WorkBench',
+				meta: { title: '工作台' },
+				component: () => import('@/views/home/Template.vue')
+			}
+		]
+	},
+	{
+		path: '/system',
+		meta: { title: '系统管理', icon: 'el-icon-s-operation' },
+		component: Layout,
+		redirect: '/system/user',
+		children: [
+			{
+				path: '/system/user',
+				name: 'SystemUser',
+				meta: { title: '用户管理' },
+				component: () => import('@/views/home/Template.vue')
+			},
+			{
+				path: '/system/menu',
+				name: 'SystemMenu',
+				meta: { title: '菜单管理' },
+				component: Parent,
+				redirect: '/system/menu/1',
+				children: [
+					{
+						path: '/system/menu/1',
+						name: 'SystemMenu1',
+						meta: { title: '菜单1' },
+						component: () => import('@/views/home/Template.vue')
+					},
+					{
+						path: '/system/menu/2',
+						name: 'SystemMenu2',
+						meta: { title: '菜单2' },
+						component: () => import('@/views/home/Template.vue')
+					}
+				]
+			},
+			{
+				path: '/system/role',
+				name: 'SystemRole',
+				meta: { title: '角色管理' },
+				component: () => import('@/views/home/Template.vue')
+			}
+		]
+	},
+	{
+		path: '/exception',
+		meta: { title: '异常页面', icon: 'el-icon-warning-outline' },
+		component: Layout,
+		redirect: '/exception/401',
+		children: [
+			{
+				path: '/exception/401',
+				name: 'Exception401',
+				meta: { title: '401' },
+				component: () => import('@/views/home/Template.vue')
+			},
+			{
+				path: '/exception/403',
+				name: 'Exception403',
+				meta: { title: '403' },
+				component: () => import('@/views/home/Template.vue')
+			},
+			{
+				path: '/exception/404',
+				name: 'Exception404',
+				meta: { title: '404' },
+				component: () => import('@/views/home/Template.vue')
+			}
+		]
+	},
+	{
+		path: '/about',
+		meta: { root: true },
+		component: Layout,
+		redirect: '/about/root',
+		children: [
+			{
+				path: '/about/root',
+				name: 'AboutRoot',
+				meta: { title: '关于', icon: 'el-icon-reading' },
+				component: () => import('@/views/home/Template.vue')
+			}
+		]
+	},
+	{
+		path: '/refresh/',
+		name: 'Refresh',
+		meta: { hidden: true },
+		component: Refresh
 	}
 ]
