@@ -3,13 +3,13 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
+import Vue from '@vitejs/plugin-vue'
+import VueJSX from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
 	plugins: [
-		vue(),
-		vueJsx(),
+		Vue(),
+		VueJSX(),
 		AutoImport({
 			resolvers: [ElementPlusResolver()]
 		}),
@@ -23,7 +23,7 @@ export default defineConfig({
 		}
 	},
 	server: {
-		port: 3080,
+		port: 3100,
 		open: true,
 		proxy: {
 			['/api']: {

@@ -1,2 +1,8 @@
 @import 'normalize.css';
 @import 'nprogress/nprogress.css';
+
+html,
+body,
+#app {
+	height: 100%;
+}
