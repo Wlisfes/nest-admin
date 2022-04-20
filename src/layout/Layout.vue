@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Transition, createVNode, VNode } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import { Aside } from '@/layout/common'
+import { Aside, Header } from '@/layout/common'
 
 export default defineComponent({
 	name: 'Layout',
@@ -13,6 +13,7 @@ export default defineComponent({
 				<el-container id="app-container" direction="horizontal">
 					<Aside></Aside>
 					<el-container direction="vertical">
+						<Header></Header>
 						<el-main class="app-main">
 							<el-scrollbar ref="wrapper" class="app-main-wrapper">
 								<RouterView key={route.path}>
