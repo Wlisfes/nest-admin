@@ -1,10 +1,11 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { RouteRecordRaw, useRouter } from 'vue-router'
+import { RouteRecordRaw } from 'vue-router'
+import { onEnter } from '@/router'
 
 const useColumn = (props: RouteRecordRaw) => (
 	<Fragment>
-		{props.meta?.icon && <u-icon name="antd-home"></u-icon>}
+		{props.meta?.icon && <u-icon name={props.meta?.icon}></u-icon>}
 		<span>{props.meta?.title}</span>
 	</Fragment>
 )
@@ -85,15 +86,12 @@ export default defineComponent({
 		}
 	},
 	setup(props) {
-		const router = useRouter()
 		const logo = computed(() => {
 			if (props.collapse) return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
 			return new URL('/src/assets/resource/large-logo.png', import.meta.url).href
 		})
 
-		const onSelecter = (path: string) => {
-			props.current !== path && router.push(path)
-		}
+		const onSelecter = (path: string) => onEnter(path)
 
 		return () => (
 			<div class="app-menu">

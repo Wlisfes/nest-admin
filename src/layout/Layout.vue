@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Transition, createVNode, VNode } from 'vue'
+import { defineComponent, Transition, VNode, createVNode } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { Aside, Header } from '@/layout/common'
 
@@ -20,7 +20,12 @@ export default defineComponent({
 									{{
 										default: ({ Component }: { Component: VNode }) => {
 											return (
-												<Transition name="side-bottom" mode="out-in" appear>
+												<Transition
+													name="side-bottom"
+													enter-from-class="side-bottom-enter"
+													mode="out-in"
+													appear
+												>
 													{createVNode(Component)}
 												</Transition>
 											)

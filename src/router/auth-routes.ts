@@ -10,7 +10,7 @@ import { Layout, Parent, Refresh } from '@/layout'
 export const authRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		meta: { title: '控制台', icon: 'el-icon-odometer' },
+		meta: { title: '控制台', icon: 'antd-home' },
 		component: Layout,
 		redirect: '/home',
 		children: [
@@ -36,7 +36,7 @@ export const authRoutes: RouteRecordRaw[] = [
 	},
 	{
 		path: '/system',
-		meta: { title: '系统管理', icon: 'el-icon-s-operation' },
+		meta: { title: '系统管理', icon: 'antd-home' },
 		component: Layout,
 		redirect: '/system/user',
 		children: [
@@ -77,7 +77,7 @@ export const authRoutes: RouteRecordRaw[] = [
 	},
 	{
 		path: '/exception',
-		meta: { title: '异常页面', icon: 'el-icon-warning-outline' },
+		meta: { title: '异常页面', icon: 'antd-home' },
 		component: Layout,
 		redirect: '/exception/401',
 		children: [
@@ -110,7 +110,7 @@ export const authRoutes: RouteRecordRaw[] = [
 			{
 				path: '/about/root',
 				name: 'AboutRoot',
-				meta: { title: '关于', icon: 'el-icon-reading' },
+				meta: { title: '关于', icon: 'antd-home' },
 				component: () => import('@/views/home/Template.vue')
 			}
 		]
