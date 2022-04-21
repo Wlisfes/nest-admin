@@ -1,13 +1,91 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useUStore } from '@/store/modules/u-store'
+import { useWatcher } from '@/utils/utils-watcher'
 
 export default defineComponent({
 	name: 'Header',
 	setup() {
+		const store = useUStore()
+		const client = useWatcher()
+		const avatar = computed(() => {
+			return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
+		})
+
+		const onTrigger = () => {
+			if (store.device === 'MOBILE') {
+			} else {
+				store.setCollapse(!store.collapse)
+			}
+		}
+
 		return () => (
 			<el-header class="app-header">
-				<div class="app-header-trigger">
-					<i class="antd-indent"></i>
+				<div class="app-header-trigger" onClick={onTrigger}>
+					<u-icon name={store.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
+				</div>
+				<div class="app-header-trigger" style={{ paddingLeft: '5px' }}>
+					<u-icon name="antd-reload" size={20}></u-icon>
+				</div>
+				<div style={{ marginLeft: 'auto' }}></div>
+				<el-popover teleported={false} hide-after={0} width={200} placement="bottom" trigger="click">
+					{{
+						reference: () => (
+							<div class="app-bell">
+								<el-badge is-dot>
+									<u-icon name="antd-bell" size={24}></u-icon>
+								</el-badge>
+							</div>
+						),
+						default: () => (
+							<div>
+								{[1, 2, 3].map(key => (
+									<div key={key} style={{ lineHeight: 1.7, fontSize: '16px', cursor: 'pointer' }}>
+										<u-icon name="antd-sound"></u-icon>
+										<span style={{ marginLeft: '10px' }}>这是一条新消息！</span>
+									</div>
+								))}
+							</div>
+						)
+					}}
+				</el-popover>
+				<el-dropdown trigger="click" placement="bottom">
+					{{
+						default: () => (
+							<div class="app-user">
+								<el-avatar size={40} src={avatar.value}></el-avatar>
+								<span style={{ marginLeft: '5px' }}>妖雨纯</span>
+							</div>
+						),
+						dropdown: () => (
+							<el-dropdown-menu style={{ width: '120px' }}>
+								<el-dropdown-item
+									command="home"
+									icon={<u-icon name="antd-bank" />}
+									style={{ color: '#13c2c2' }}
+								>
+									返回首页
+								</el-dropdown-item>
+								<el-dropdown-item
+									command="user"
+									icon={<u-icon name="antd-user" />}
+									style={{ color: '#1890ff' }}
+								>
+									个人中心
+								</el-dropdown-item>
+								<el-dropdown-item
+									command="logout"
+									icon={<u-icon name="antd-logout" />}
+									style={{ color: '#f5222d' }}
+								>
+									退出登录
+								</el-dropdown-item>
+							</el-dropdown-menu>
+						)
+					}}
+				</el-dropdown>
+				<div class="app-setting">
+					<u-icon name="antd-setting" size={24}></u-icon>
 				</div>
 			</el-header>
 		)
@@ -23,6 +101,19 @@ export default defineComponent({
 		padding: 0 12px;
 		line-height: 60px;
 		cursor: pointer;
+	}
+	.app-bell {
+		height: 60px;
+		padding: 0 5px;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+	.app-user {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		padding: 8px 15px 8px 15px;
 	}
 }
 </style>

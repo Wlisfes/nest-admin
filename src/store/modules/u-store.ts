@@ -11,6 +11,7 @@ export const useUStore = defineStore({
 		},
 		setWidth(width: number) {
 			this.width = width
+			return width
 		},
 		setCurrent(current: string) {
 			this.current = current

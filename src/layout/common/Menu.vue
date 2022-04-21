@@ -1,12 +1,12 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, Fragment, PropType } from 'vue'
 import { RouteRecordRaw, useRouter } from 'vue-router'
 
 const useColumn = (props: RouteRecordRaw) => (
-	<>
-		{props.meta?.icon && <i class={props.meta.icon}></i>}
+	<Fragment>
+		{props.meta?.icon && <u-icon name="antd-home"></u-icon>}
 		<span>{props.meta?.title}</span>
-	</>
+	</Fragment>
 )
 
 const SubItemColumn = defineComponent({
@@ -21,19 +21,15 @@ const SubItemColumn = defineComponent({
 		return () => {
 			if (props.route.children?.length) {
 				return (
-					<el-sub-menu index={props.route.path} v-slots={{ title: () => useColumn(props.route) }}>
-						{(props.route.children || []).map(item => (
-							<SubItemColumn route={item}></SubItemColumn>
-						))}
+					<el-sub-menu index={props.route.path}>
+						{{
+							title: () => useColumn(props.route),
+							default: () => (props.route.children || []).map(item => <SubItemColumn route={item} />)
+						}}
 					</el-sub-menu>
 				)
 			}
-			return (
-				<el-menu-item
-					index={props.route.path}
-					v-slots={{ default: () => useColumn(props.route) }}
-				></el-menu-item>
-			)
+			return <el-menu-item index={props.route.path}>{{ title: () => useColumn(props.route) }}</el-menu-item>
 		}
 	}
 })
@@ -53,14 +49,15 @@ const SubColumn = defineComponent({
 			}
 			if (props.route.meta?.root) {
 				return (props.route.children || []).map(item => {
-					return <el-menu-item index={item.path} v-slots={{ default: () => useColumn(item) }}></el-menu-item>
+					return <el-menu-item index={item.path}>{{ title: () => useColumn(item) }}</el-menu-item>
 				})
 			}
 			return (
-				<el-sub-menu index={props.route.path} v-slots={{ title: () => useColumn(props.route) }}>
-					{(props.route.children || []).map(item => (
-						<SubItemColumn route={item}></SubItemColumn>
-					))}
+				<el-sub-menu index={props.route.path}>
+					{{
+						title: () => useColumn(props.route),
+						default: () => (props.route.children || []).map(item => <SubItemColumn route={item} />)
+					}}
 				</el-sub-menu>
 			)
 		}
@@ -117,9 +114,7 @@ export default defineComponent({
 						unique-opened={true}
 						onSelect={onSelecter}
 					>
-						{props.dataSource.map(item => (
-							<SubColumn route={item}></SubColumn>
-						))}
+						{{ default: () => props.dataSource.map(item => <SubColumn route={item} />) }}
 					</el-menu>
 				</el-scrollbar>
 			</div>
@@ -140,18 +135,18 @@ export default defineComponent({
 	&-wrapper {
 		flex: 1;
 		overflow-x: hidden;
-		:deep(.el-scrollbar__view) {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-		}
-		:deep(.el-scrollbar__wrap) {
-			.el-scrollbar__wrap {
-				overflow-x: hidden;
-				margin-bottom: 0 !important;
-			}
-		}
+		// :deep(.el-scrollbar__view) {
+		// 	flex: 1;
+		// 	display: flex;
+		// 	flex-direction: column;
+		// 	overflow: hidden;
+		// }
+		// :deep(.el-scrollbar__wrap) {
+		// 	.el-scrollbar__wrap {
+		// 		overflow-x: hidden;
+		// 		margin-bottom: 0 !important;
+		// 	}
+		// }
 	}
 	&-logo {
 		position: relative;
