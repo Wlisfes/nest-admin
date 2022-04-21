@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router'
 import { useUStore } from '@/store/modules/u-store'
 import { routes } from '@/router'
 import { useWatcher } from '@/utils/utils-watcher'
+import { useToRoute } from '@/utils/utils-route'
 
 export default defineComponent({
 	name: 'App',
@@ -11,7 +12,7 @@ export default defineComponent({
 		onMounted(() => useWatcher())
 
 		const store = useUStore()
-		store.setRouter(routes)
+		store.setRouter(useToRoute(routes))
 
 		return () => (
 			<n-config-provider abstract>

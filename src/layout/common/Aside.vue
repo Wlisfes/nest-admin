@@ -10,15 +10,23 @@ export default defineComponent({
 		const route = useRoute()
 		const store = useUStore()
 
-		return () => <n-layout-sider bordered></n-layout-sider>
-
-		// return () => {
-		// 	return route.meta?.aside ?? true ? (
-		// 		<el-aside class="app-aside" width={store.collapse ? '64px' : '220px'}>
-		// 			<Menu current={store.current} collapse={store.collapse} dataSource={store.router}></Menu>
-		// 		</el-aside>
-		// 	) : null
-		// }
+		return () => {
+			return route.meta?.aside ?? true ? (
+				<n-layout-sider
+					bordered
+					collapsed={store.collapse}
+					width={220}
+					collapsed-width={64}
+					native-scrollbar={false}
+					show-trigger="bar"
+					collapse-mode="width"
+					expanded-keys={[]}
+					onUpdateCollapsed={() => store.setCollapse(!store.collapse)}
+				>
+					<Menu></Menu>
+				</n-layout-sider>
+			) : null
+		}
 	}
 })
 </script>

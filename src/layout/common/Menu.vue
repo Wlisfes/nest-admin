@@ -1,121 +1,30 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { RouteRecordRaw } from 'vue-router'
+import { defineComponent, computed } from 'vue'
 import { onEnter } from '@/router'
-
-const useColumn = (props: RouteRecordRaw) => (
-	<Fragment>
-		{props.meta?.icon && <u-icon name={props.meta?.icon}></u-icon>}
-		<span>{props.meta?.title}</span>
-	</Fragment>
-)
-
-const SubItemColumn = defineComponent({
-	name: 'SubItemColumn',
-	props: {
-		route: {
-			type: Object as PropType<RouteRecordRaw>,
-			required: true
-		}
-	},
-	setup(props) {
-		return () => {
-			if (props.route.children?.length) {
-				return (
-					<el-sub-menu index={props.route.path}>
-						{{
-							title: () => useColumn(props.route),
-							default: () => (props.route.children || []).map(item => <SubItemColumn route={item} />)
-						}}
-					</el-sub-menu>
-				)
-			}
-			return <el-menu-item index={props.route.path}>{{ title: () => useColumn(props.route) }}</el-menu-item>
-		}
-	}
-})
-
-const SubColumn = defineComponent({
-	name: 'SubColumn',
-	props: {
-		route: {
-			type: Object as PropType<RouteRecordRaw>,
-			required: true
-		}
-	},
-	setup(props) {
-		return () => {
-			if (props.route.meta?.hidden) {
-				return null
-			}
-			if (props.route.meta?.root) {
-				return (props.route.children || []).map(item => {
-					return <el-menu-item index={item.path}>{{ title: () => useColumn(item) }}</el-menu-item>
-				})
-			}
-			return (
-				<el-sub-menu index={props.route.path}>
-					{{
-						title: () => useColumn(props.route),
-						default: () => (props.route.children || []).map(item => <SubItemColumn route={item} />)
-					}}
-				</el-sub-menu>
-			)
-		}
-	}
-})
+import { useUStore } from '@/store/modules/u-store'
 
 export default defineComponent({
 	name: 'Menu',
-	props: {
-		current: {
-			type: String,
-			default: ''
-		},
-		dataSource: {
-			type: Array as PropType<RouteRecordRaw[]>,
-			default: () => []
-		},
-		collapse: {
-			type: Boolean,
-			default: false
-		},
-		transition: {
-			type: Boolean,
-			default: false
-		}
-	},
-	setup(props) {
+	setup() {
+		const store = useUStore()
 		const logo = computed(() => {
-			if (props.collapse) return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
+			if (store.collapse) return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
 			return new URL('/src/assets/resource/large-logo.png', import.meta.url).href
 		})
-
-		const onSelecter = (path: string) => onEnter(path)
+		const onSelecter = (path: string, u: any) => onEnter(path)
 
 		return () => (
-			<div class="app-menu">
-				<div class="app-menu-logo" onClick={e => onSelecter('/home')}>
-					{props.collapse ? (
-						<img style={{ width: '50px', display: 'block' }} src={logo.value} />
-					) : (
-						<img style={{ width: '218px', display: 'block' }} src={logo.value} />
-					)}
-				</div>
-				<el-scrollbar class="app-menu-wrapper">
-					<el-menu
-						text-color="#373840"
-						active-text-color="#1B73FA"
-						default-active={props.current}
-						collapse={props.collapse}
-						collapse-transition={props.transition}
-						unique-opened={true}
-						onSelect={onSelecter}
-					>
-						{{ default: () => props.dataSource.map(item => <SubColumn route={item} />) }}
-					</el-menu>
-				</el-scrollbar>
-			</div>
+			<n-menu
+				accordion
+				root-indent={18}
+				value={store.current}
+				expanded-keys={store.expanded}
+				collapsed={store.collapse}
+				collapsed-width={64}
+				options={store.router}
+				onUpdateValue={onSelecter}
+				onUpdateExpanded-keys={(keys: string[]) => store.setExpanded(keys)}
+			/>
 		)
 	}
 })
