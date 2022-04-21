@@ -24,7 +24,7 @@ export function onEnter(path: string, query?: Record<string, any>) {
 	}
 }
 
-export function onReload(path: string, query?: Record<string, any>) {
+export function onReload(path?: string, query?: Record<string, any>) {
 	const store = useUStore()
 	router.replace({
 		path: '/refresh',

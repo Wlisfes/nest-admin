@@ -10,32 +10,30 @@ export default defineComponent({
 
 		return () => {
 			return (
-				<el-container id="app-container" direction="horizontal">
+				<n-layout style={{ height: '100%' }} has-sider>
 					<Aside></Aside>
-					<el-container direction="vertical">
+					<n-layout>
 						<Header></Header>
-						<el-main class="app-main">
-							<el-scrollbar ref="wrapper" class="app-main-wrapper">
-								<RouterView key={route.path}>
-									{{
-										default: ({ Component }: { Component: VNode }) => {
-											return (
-												<Transition
-													name="side-bottom"
-													enter-from-class="side-bottom-enter"
-													mode="out-in"
-													appear
-												>
-													{createVNode(Component)}
-												</Transition>
-											)
-										}
-									}}
-								</RouterView>
-							</el-scrollbar>
-						</el-main>
-					</el-container>
-				</el-container>
+						<n-layout position="absolute" style={{ top: '64px' }} native-scrollbar={false}>
+							<RouterView key={route.path}>
+								{{
+									default: ({ Component }: { Component: VNode }) => {
+										return (
+											<Transition
+												name="side-bottom"
+												enter-from-class="side-bottom-enter"
+												mode="out-in"
+												appear
+											>
+												{createVNode(Component)}
+											</Transition>
+										)
+									}
+								}}
+							</RouterView>
+						</n-layout>
+					</n-layout>
+				</n-layout>
 			)
 		}
 	}
@@ -47,29 +45,6 @@ export default defineComponent({
 	height: 100%;
 	overflow: hidden;
 	position: relative;
-	.app-main {
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		background-color: #f5f7f9;
-		overflow: hidden;
-		&-wrapper {
-			overflow-x: hidden;
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			:deep(.el-scrollbar__view) {
-				min-height: 100%;
-				display: flex;
-				flex-direction: column;
-				overflow: hidden;
-			}
-			:deep(.el-scrollbar__wrap) {
-				overflow-x: hidden;
-				margin-bottom: 0 !important;
-			}
-		}
-	}
 }
 
 .side-bottom-enter-active,

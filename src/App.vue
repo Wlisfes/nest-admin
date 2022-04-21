@@ -13,13 +13,11 @@ export default defineComponent({
 		const store = useUStore()
 		store.setRouter(routes)
 
-		return () => {
-			return (
-				<el-config-provider size="default" z-index={3000}>
-					<RouterView></RouterView>
-				</el-config-provider>
-			)
-		}
+		return () => (
+			<n-config-provider abstract>
+				<RouterView></RouterView>
+			</n-config-provider>
+		)
 	}
 })
 </script>
