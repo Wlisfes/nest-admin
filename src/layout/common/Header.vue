@@ -34,17 +34,17 @@ export default defineComponent({
 				<div class="vnode-trigger" onClick={onTrigger}>
 					<u-icon name={store.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
 				</div>
-				<div class="vnode-trigger" style={{ padding: '0 12px 0 5px' }} onClick={e => onReload()}>
+				<div class="vnode-trigger" onClick={e => onReload()}>
 					<u-icon name="antd-reload" size={20}></u-icon>
 				</div>
 				<div style={{ marginLeft: 'auto' }}></div>
 				<n-popover trigger="click" style={{ maxWidth: '200px' }} placement="bottom">
 					{{
 						trigger: () => (
-							<div class="vnode-bell">
-								<el-badge is-dot>
-									<u-icon name="antd-bell" size={22}></u-icon>
-								</el-badge>
+							<div class="vnode-trigger">
+								<n-badge value={10} dot>
+									<u-icon name="antd-bell" color="#333639" size={24}></u-icon>
+								</n-badge>
 							</div>
 						),
 						default: () => (
@@ -76,8 +76,8 @@ export default defineComponent({
 						<span style={{ marginLeft: '5px' }}>Admin</span>
 					</div>
 				</n-dropdown>
-				<div class="vnode-setting">
-					<u-icon name="antd-setting" size={22}></u-icon>
+				<div class="vnode-trigger">
+					<u-icon name="antd-setting" size={24}></u-icon>
 				</div>
 			</n-layout-header>
 		)
@@ -90,15 +90,10 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	.vnode-trigger {
-		padding: 0 12px;
-		line-height: 60px;
-		cursor: pointer;
-	}
-	.vnode-bell {
 		height: 60px;
-		padding: 0 5px;
 		display: flex;
 		align-items: center;
+		padding: 0 10px;
 		cursor: pointer;
 	}
 	.vnode-user {
@@ -106,13 +101,6 @@ export default defineComponent({
 		align-items: center;
 		cursor: pointer;
 		padding: 8px 15px 8px 15px;
-	}
-	.vnode-setting {
-		height: 60px;
-		padding: 0 10px;
-		display: flex;
-		align-items: center;
-		cursor: pointer;
 	}
 }
 </style>
