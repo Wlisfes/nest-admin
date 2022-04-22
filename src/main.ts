@@ -1,3 +1,5 @@
+import 'vfonts/Lato.css'
+import 'vfonts/FiraCode.css'
 import '@/style/index.scss'
 import App from '@/App.vue'
 import { createApp } from 'vue'

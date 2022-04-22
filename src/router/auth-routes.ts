@@ -10,7 +10,7 @@ import { Layout, Parent, Refresh } from '@/layout'
 export const authRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		meta: { title: '控制台', icon: 'antd-home' },
+		meta: { title: '控制台', icon: 'antd-dashboard' },
 		component: Layout,
 		redirect: '/home',
 		children: [
@@ -36,7 +36,7 @@ export const authRoutes: RouteRecordRaw[] = [
 	},
 	{
 		path: '/system',
-		meta: { title: '系统管理', icon: 'antd-home' },
+		meta: { title: '系统管理', icon: 'antd-setting' },
 		component: Layout,
 		redirect: '/system/user',
 		children: [
@@ -77,7 +77,7 @@ export const authRoutes: RouteRecordRaw[] = [
 	},
 	{
 		path: '/exception',
-		meta: { title: '异常页面', icon: 'antd-home' },
+		meta: { title: '异常页面', icon: 'antd-error' },
 		component: Layout,
 		redirect: '/exception/401',
 		children: [
@@ -103,7 +103,7 @@ export const authRoutes: RouteRecordRaw[] = [
 	},
 	{
 		path: '/http',
-		meta: { title: '异常页面', icon: 'antd-home' },
+		meta: { title: '异常页面', icon: 'antd-bug' },
 		component: Layout,
 		redirect: '/http/401',
 		children: [
@@ -238,7 +238,7 @@ export const authRoutes: RouteRecordRaw[] = [
 			{
 				path: '/about/root',
 				name: 'AboutRoot',
-				meta: { title: '关于', icon: 'antd-home' },
+				meta: { title: '关于', icon: 'antd-desktop' },
 				component: () => import('@/views/home/Template.vue')
 			}
 		]

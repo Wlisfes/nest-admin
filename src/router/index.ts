@@ -1,8 +1,7 @@
-import type { App } from 'vue'
+import { App } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router'
 import { authRoutes } from '@/router/auth-routes'
 import { useUStore } from '@/store/modules/u-store'
-import NProgress from 'nprogress'
 
 /**
  * @param String meta.title     标题
@@ -38,19 +37,18 @@ export function onReload(path?: string, query?: Record<string, any>) {
 //路由守卫
 export function setupGuardRouter(router: Router) {
 	const store = useUStore()
-
 	router.beforeEach(async (to, form, next) => {
-		NProgress.start()
+		window.$loading?.start()
 		next()
 	})
 
 	router.afterEach((to, form) => {
 		document.title = (to.meta?.title as string) || document.title
-
 		if (to.path !== '/refresh') {
 			store.setCurrent(to.path)
 		}
-		NProgress.done()
+
+		window.$loading?.finish()
 	})
 }
 
