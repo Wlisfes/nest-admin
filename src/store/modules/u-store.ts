@@ -1,9 +1,20 @@
 import { defineStore } from 'pinia'
 import { bfs } from '@/utils/utils-route'
+import { MenuOption } from 'naive-ui'
+
+export interface UStore {
+	device: string
+	width: number
+	current: string
+	expanded: Array<string>
+	collapse: boolean
+	router: Array<MenuOption>
+	multiple: Array<{ key: string; meta: { icon: string; title: string } }>
+}
 
 export const useUStore = defineStore({
 	id: 'u-store',
-	state: () => {
+	state: (): UStore => {
 		return {
 			device: 'PC',
 			width: 0,
@@ -23,7 +34,7 @@ export const useUStore = defineStore({
 			return width
 		},
 		setCurrent(current: string) {
-			const node = bfs(this.router, current)
+			const node = bfs(this.router as Array<MenuOption>, current)
 			if (node) {
 				const current = (node.current as string) || ''
 				const keys = current.split('*')
@@ -41,6 +52,25 @@ export const useUStore = defineStore({
 		setRouter(router: any) {
 			this.router = router
 		},
-		setMultiple({ type = 1, props }: { type: number; props: any }) {}
+		setMultiple({ type = 1, props }: { type: number; props: any }) {
+			if (type === 1) {
+				//插入一条历史路径、需要判断重复路径
+				if (!this.multiple.some((item: any) => item.key === props.key)) {
+					this.multiple.push(props)
+				}
+			} else if (type === 2) {
+				//删除一条历史路径
+				const index = this.multiple.findIndex(item => item.key === props.path)
+				this.multiple.splice(index >>> 0, 1)
+			} else if (type === 3) {
+				//关闭一组历史路径
+				this.multiple = this.multiple.filter(item => {
+					return !props.group.some((k: any) => k.key === item.key)
+				})
+			} else if (type === 4) {
+				//清空历史路径
+				this.multiple = []
+			}
+		}
 	}
 })

@@ -46,6 +46,10 @@ export function setupGuardRouter(router: Router) {
 		document.title = (to.meta?.title as string) || document.title
 		if (to.path !== '/refresh') {
 			store.setCurrent(to.path)
+			store.setMultiple({
+				type: 1,
+				props: { key: to.path, meta: to.meta ?? null }
+			})
 		}
 
 		window.$loading?.finish()
