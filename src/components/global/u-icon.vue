@@ -40,6 +40,7 @@ i[class*='antd-'] {
 	font-family: 'iconfont' !important;
 	font-size: 16px;
 	font-style: normal;
+	line-height: 1;
 	cursor: pointer;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
