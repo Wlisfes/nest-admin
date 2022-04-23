@@ -10,7 +10,8 @@ export default defineComponent({
 		const store = useUStore()
 		const client = useWatcher()
 		const avatar = computed(() => {
-			return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
+			return 'https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg'
+			// return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
 		})
 
 		const onTrigger = () => {
@@ -30,21 +31,25 @@ export default defineComponent({
 		}
 
 		return () => (
-			<n-layout-header class="app-header" style={{ height: '60px' }} bordered>
+			<n-layout-header class="app-header" bordered>
 				<div class="vnode-trigger" onClick={onTrigger}>
 					<u-icon name={store.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
 				</div>
 				<div class="vnode-trigger" onClick={e => onReload()}>
 					<u-icon name="antd-reload" size={20}></u-icon>
 				</div>
-				<div style={{ marginLeft: 'auto' }}></div>
+				<div style={{ flex: 1 }}></div>
+				<div class="vnode-trigger">
+					<u-icon name="antd-search" size={20}></u-icon>
+				</div>
+				<div class="vnode-trigger">
+					<u-icon name="antd-github-fill" size={20}></u-icon>
+				</div>
 				<n-popover trigger="click" style={{ maxWidth: '200px' }} placement="bottom">
 					{{
 						trigger: () => (
 							<div class="vnode-trigger">
-								<n-badge value={10} dot>
-									<u-icon name="antd-bell" color="#333639" size={24}></u-icon>
-								</n-badge>
+								<u-icon name="antd-bell" color="#333639" size={22}></u-icon>
 							</div>
 						),
 						default: () => (
@@ -71,13 +76,16 @@ export default defineComponent({
 					trigger="click"
 					onSelect={onSelecter}
 				>
-					<div class="vnode-user">
-						<n-avatar round size={40} src={avatar.value} />
-						<span style={{ marginLeft: '5px' }}>Admin</span>
-					</div>
+					{{
+						default: () => (
+							<div class="vnode-trigger">
+								<n-avatar round size={36} src={avatar.value} />
+							</div>
+						)
+					}}
 				</n-dropdown>
 				<div class="vnode-trigger">
-					<u-icon name="antd-setting" size={24}></u-icon>
+					<u-icon name="antd-setting" size={20}></u-icon>
 				</div>
 			</n-layout-header>
 		)
@@ -86,21 +94,16 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .app-header {
-	padding: 0 20px 0 0;
+	height: 60px;
+	padding: 0 20px 0 10px;
 	display: flex;
-	align-items: center;
 	.vnode-trigger {
-		height: 60px;
 		display: flex;
 		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		position: relative;
 		padding: 0 10px;
-		cursor: pointer;
-	}
-	.vnode-user {
-		display: flex;
-		align-items: center;
-		cursor: pointer;
-		padding: 8px 15px 8px 15px;
 	}
 }
 </style>
