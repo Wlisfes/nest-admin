@@ -20,7 +20,7 @@ export default defineComponent({
 					type="card"
 					size="small"
 					closable
-					tabs-padding={15}
+					tabs-padding={10}
 					value={store.current}
 					tab-style={tabStyle.value}
 					onUpdateValue={(path: string) => onEnter(path)}
