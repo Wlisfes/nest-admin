@@ -2,7 +2,8 @@
 import { defineComponent, computed } from 'vue'
 import { useUStore } from '@/store/modules/u-store'
 import { useWatcher } from '@/utils/utils-watcher'
-import { onReload } from '@/router'
+import { delToken } from '@/utils/utils-cookie'
+import { onReload, onEnter } from '@/router'
 
 export default defineComponent({
 	name: 'Header',
@@ -22,12 +23,11 @@ export default defineComponent({
 		}
 
 		const onSelecter = (key: string) => {
-			console.log(key)
-			// if (key === 'logout') {
-			// 	delToken().finally(() => {
-			// 		router.push('/main/login')
-			// 	})
-			// }
+			if (key === 'logout') {
+				delToken().finally(() => {
+					onEnter('/pipe/login')
+				})
+			}
 		}
 
 		return () => (

@@ -37,6 +37,7 @@ export class Watcher {
 			this.observer.emit('resize', { width, device: 'IPAD', collapse: true })
 		} else {
 			this.store.setDevice('MOBILE')
+			this.store.setCollapse(true)
 			this.observer.emit('resize', { width, device: 'MOBILE', collapse: false })
 		}
 		return this.store.setWidth(width)

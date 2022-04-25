@@ -7,7 +7,7 @@ export function useToRoute(source: RouteRecordRaw[]): MenuOption[] {
 	const response: MenuOption[] = []
 	for (const node of source) {
 		if (node.meta?.hidden) {
-			break
+			continue
 		}
 
 		if (node.meta?.root) {
