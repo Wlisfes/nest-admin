@@ -4,6 +4,7 @@ import { useUStore } from '@/store/modules/u-store'
 import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, onEnter } from '@/router'
+import { init } from '@/core/common/init-aside'
 
 export default defineComponent({
 	name: 'Header',
@@ -17,6 +18,7 @@ export default defineComponent({
 
 		const onTrigger = () => {
 			if (store.device === 'MOBILE') {
+				init()
 			} else {
 				store.setCollapse(!store.collapse)
 			}
