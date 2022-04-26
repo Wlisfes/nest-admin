@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver, NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { resolve } from 'path'
 import Vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
@@ -11,12 +11,12 @@ export default defineConfig({
 		Vue(),
 		VueJSX(),
 		AutoImport({
-			resolvers: [NaiveUiResolver(), ElementPlusResolver()]
+			resolvers: [NaiveUiResolver()]
 		}),
 		Components({
 			dts: true,
 			dirs: ['src/components'],
-			resolvers: [NaiveUiResolver(), ElementPlusResolver()]
+			resolvers: [NaiveUiResolver()]
 		})
 	],
 	resolve: {
