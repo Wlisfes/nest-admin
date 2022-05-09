@@ -15,6 +15,7 @@ export default defineComponent({
 				<n-layout-sider
 					bordered
 					collapsed={store.collapse}
+					width={220}
 					collapsed-width={store.device === 'MOBILE' ? 0 : 64}
 					native-scrollbar={false}
 					show-trigger="bar"
