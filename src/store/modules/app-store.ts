@@ -14,7 +14,7 @@ export interface AppStore {
 }
 
 export const useAppStore = defineStore({
-	id: 'u-store',
+	id: 'app-store',
 	state: (): AppStore => {
 		return {
 			device: 'PC',
