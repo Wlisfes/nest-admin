@@ -24,7 +24,7 @@ export default defineComponent({
 
 		onMounted(() => {
 			initBScroll()
-			console.log(useThemeVars())
+			// console.log(useThemeVars())
 		})
 
 		return () => (

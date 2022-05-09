@@ -24,6 +24,12 @@ export default defineConfig({
 			'@': resolve(__dirname, 'src')
 		}
 	},
+	css: {
+		modules: {
+			generateScopedName: '[local]___[hash:5]',
+			localsConvention: 'camelCase'
+		}
+	},
 	server: {
 		port: 3100,
 		open: true,

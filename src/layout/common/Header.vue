@@ -5,6 +5,7 @@ import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, onEnter } from '@/router'
 import { init } from '@/core/common/init-aside'
+import { initSetup } from '@/core/common/init-setup'
 
 export default defineComponent({
 	name: 'Header',
@@ -30,6 +31,11 @@ export default defineComponent({
 					onEnter('/pipe/login')
 				})
 			}
+		}
+
+		//设置组件
+		const onSetting = () => {
+			initSetup()
 		}
 
 		return () => (
@@ -86,7 +92,7 @@ export default defineComponent({
 						)
 					}}
 				</n-dropdown>
-				<div class="vnode-trigger">
+				<div class="vnode-trigger" onClick={onSetting}>
 					<u-icon name="antd-setting" size={20}></u-icon>
 				</div>
 			</n-layout-header>

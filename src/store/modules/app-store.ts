@@ -10,7 +10,6 @@ export interface AppStore {
 	collapse: boolean
 	router: Array<MenuOption>
 	multiple: Array<{ key: string; meta: { icon: string; title: string } }>
-	theme: 'dark' | 'light'
 }
 
 export const useAppStore = defineStore({
@@ -23,8 +22,7 @@ export const useAppStore = defineStore({
 			expanded: ['/'],
 			collapse: false,
 			router: [],
-			multiple: [],
-			theme: 'light'
+			multiple: []
 		}
 	},
 	actions: {
@@ -73,9 +71,6 @@ export const useAppStore = defineStore({
 				//清空历史路径
 				this.multiple = []
 			}
-		},
-		setTheme(theme: 'dark' | 'light') {
-			this.theme = theme
 		}
 	}
 })

@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import { darkTheme, lightTheme, GlobalThemeOverrides } from 'naive-ui'
 import { useSetStore } from '@/store/modules/set-store'
 
-export function useTheme() {
+export function useProvider() {
 	const store = useSetStore()
 
 	const lightThemeOverrides = computed<GlobalThemeOverrides>(() => ({
@@ -19,11 +19,6 @@ export function useTheme() {
 			primaryColor: store.primaryColor
 		}
 	}))
-
-	setTimeout(() => {
-		store.setTheme('dark')
-		console.log(store.theme)
-	}, 3000)
 
 	const theme = computed(() => {
 		switch (store.theme) {

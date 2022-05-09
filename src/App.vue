@@ -6,13 +6,13 @@ import { routes } from '@/router'
 import { useWatcher } from '@/utils/utils-watcher'
 import { useToRoute } from '@/utils/utils-route'
 import { AppProvider } from '@/components/global'
-import { useTheme } from '@/hooks/hook-provider'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'App',
 	setup() {
 		const store = useAppStore()
-		const { theme, themeOverrides } = useTheme()
+		const { theme, themeOverrides } = useProvider()
 		store.setRouter(useToRoute(routes))
 
 		onMounted(() => useWatcher())

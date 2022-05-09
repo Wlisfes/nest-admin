@@ -1,0 +1,18 @@
+.app-setup {
+	position: relative;
+	&-theme {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 12px 0;
+		:global(.n-switch__rail) {
+			background-color: #000e1c !important;
+		}
+	}
+
+	:global {
+		.n-divider {
+			margin: 10px 0;
+		}
+	}
+}
