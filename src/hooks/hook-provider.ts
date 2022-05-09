@@ -8,14 +8,14 @@ export function useProvider() {
 	const lightThemeOverrides = computed<GlobalThemeOverrides>(() => ({
 		common: {
 			fontWeightStrong: '500',
-			primaryBackColor: 'rgb(244, 246, 248)',
+			primaryGreyColor: 'rgb(244, 246, 248)',
 			primaryColor: store.primaryColor
 		}
 	}))
 	const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
 		common: {
 			fontWeightStrong: '500',
-			primaryBackColor: 'rgb(24, 24, 28)',
+			primaryGreyColor: 'rgb(16,16,20)',
 			primaryColor: store.primaryColor
 		}
 	}))

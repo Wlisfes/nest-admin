@@ -15,8 +15,7 @@ export default defineComponent({
 					<n-layout>
 						<Header></Header>
 						<NavBetter></NavBetter>
-						<NavTabs></NavTabs>
-						<n-layout position="absolute" style={{ top: '144px' }} native-scrollbar={false}>
+						<n-layout position="absolute" style={{ top: '102px' }} native-scrollbar={false}>
 							<RouterView key={route.path}>
 								{{
 									default: ({ Component }: { Component: VNode }) => {

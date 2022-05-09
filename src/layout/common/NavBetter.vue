@@ -24,7 +24,7 @@ export default defineComponent({
 
 		onMounted(() => {
 			initBScroll()
-			// console.log(useThemeVars())
+			console.log(useThemeVars())
 		})
 
 		return () => (
@@ -50,7 +50,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .app-nav {
 	position: relative;
-	background-color: var(--primary-back-color);
+	background-color: var(--primary-grey-color);
 	padding: 5px 10px;
 	.wrapper {
 		white-space: nowrap;
@@ -70,6 +70,8 @@ export default defineComponent({
 				align-items: center;
 				color: var(--text-color);
 				font-size: var(--font-size);
+				background-color: var(--card-color);
+				border-radius: var(--border-radius);
 				transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 				&:hover {
 					color: var(--primary-color);

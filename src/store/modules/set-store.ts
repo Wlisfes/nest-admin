@@ -9,7 +9,7 @@ export const useSetStore = defineStore({
 	id: 'set-store',
 	state: (): UStore => {
 		return {
-			theme: 'light',
+			theme: 'dark',
 			primaryColor: '#18a058'
 		}
 	},
