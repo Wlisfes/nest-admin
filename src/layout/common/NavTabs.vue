@@ -1,12 +1,12 @@
 <script lang="tsx">
 import { defineComponent, ref, CSSProperties } from 'vue'
-import { useUStore } from '@/store/modules/u-store'
+import { useAppStore } from '@/store/modules/app-store'
 import { onEnter } from '@/router'
 
 export default defineComponent({
 	name: 'NavTabs',
 	setup() {
-		const store = useUStore()
+		const store = useAppStore()
 		const tabStyle = ref<CSSProperties>({
 			border: 'none',
 			borderRadius: '2px',

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Transition, VNode, createVNode } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import { Aside, Header, NavTabs } from '@/layout/common'
+import { Aside, Header, NavTabs, NavBetter } from '@/layout/common'
 
 export default defineComponent({
 	name: 'Layout',
@@ -14,8 +14,9 @@ export default defineComponent({
 					<Aside></Aside>
 					<n-layout>
 						<Header></Header>
+						<NavBetter></NavBetter>
 						<NavTabs></NavTabs>
-						<n-layout position="absolute" style={{ top: '102px' }} native-scrollbar={false}>
+						<n-layout position="absolute" style={{ top: '144px' }} native-scrollbar={false}>
 							<RouterView key={route.path}>
 								{{
 									default: ({ Component }: { Component: VNode }) => {

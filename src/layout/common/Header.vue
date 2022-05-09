@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { useUStore } from '@/store/modules/u-store'
+import { useAppStore } from '@/store/modules/app-store'
 import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, onEnter } from '@/router'
@@ -9,7 +9,7 @@ import { init } from '@/core/common/init-aside'
 export default defineComponent({
 	name: 'Header',
 	setup() {
-		const store = useUStore()
+		const store = useAppStore()
 		const client = useWatcher()
 		const avatar = computed(() => {
 			return 'https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg'

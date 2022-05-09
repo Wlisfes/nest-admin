@@ -1,22 +1,33 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, computed, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
-import { useUStore } from '@/store/modules/u-store'
+import { darkTheme, lightTheme, useOsTheme, GlobalThemeOverrides } from 'naive-ui'
+import { useAppStore } from '@/store/modules/app-store'
 import { routes } from '@/router'
 import { useWatcher } from '@/utils/utils-watcher'
 import { useToRoute } from '@/utils/utils-route'
 import { AppProvider } from '@/components/global'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'App',
 	setup() {
-		onMounted(() => useWatcher())
-
-		const store = useUStore()
+		const store = useAppStore()
+		const { theme } = useProvider()
 		store.setRouter(useToRoute(routes))
 
+		const themeOverrides: GlobalThemeOverrides = {
+			common: {
+				// bodyColor1: 'red',
+				fontWeightStrong: '500',
+				primaryColor: 'red'
+			}
+		}
+
+		onMounted(() => useWatcher())
+
 		return () => (
-			<n-config-provider abstract theme-overrides={{ common: { fontWeightStrong: '600' } }}>
+			<n-config-provider abstract theme={theme.value} theme-overrides={themeOverrides}>
 				<AppProvider>
 					<RouterView></RouterView>
 				</AppProvider>

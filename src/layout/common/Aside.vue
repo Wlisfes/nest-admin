@@ -2,13 +2,13 @@
 import { defineComponent } from 'vue'
 import { Menu } from '@/layout/common'
 import { useRoute } from 'vue-router'
-import { useUStore } from '@/store/modules/u-store'
+import { useAppStore } from '@/store/modules/app-store'
 
 export default defineComponent({
 	name: 'Aside',
 	setup() {
 		const route = useRoute()
-		const store = useUStore()
+		const store = useAppStore()
 
 		return () => {
 			return route.meta?.aside ?? true ? (

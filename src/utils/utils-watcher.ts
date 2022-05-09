@@ -1,6 +1,6 @@
 import { onBeforeUnmount } from 'vue'
 import { Observer } from '@/utils/utils-observer'
-import { useUStore } from '@/store/modules/u-store'
+import { useAppStore } from '@/store/modules/app-store'
 
 export type ObserverEvent = {
 	resize: { width: number; device: string; collapse: boolean }
@@ -13,7 +13,7 @@ export class Watcher {
 
 	constructor() {
 		this.observer = new Observer()
-		this.store = useUStore()
+		this.store = useAppStore()
 		this.listener().finally(() => this.on())
 	}
 

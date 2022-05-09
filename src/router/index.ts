@@ -2,7 +2,7 @@ import { App } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router'
 import { authRoutes } from '@/router/auth-routes'
 import { baseRoutes } from '@/router/base-routes'
-import { useUStore } from '@/store/modules/u-store'
+import { useAppStore } from '@/store/modules/app-store'
 import { getToken } from '@/utils/utils-cookie'
 
 /**
@@ -19,14 +19,14 @@ const router = createRouter({
 })
 
 export function onEnter(path: string, query?: Record<string, any>) {
-	const store = useUStore()
+	const store = useAppStore()
 	if (path !== store.current) {
 		router.push({ path, query: query })
 	}
 }
 
 export function onReload(path?: string, query?: Record<string, any>) {
-	const store = useUStore()
+	const store = useAppStore()
 	router.replace({
 		path: '/refresh',
 		query: {
@@ -40,7 +40,7 @@ export function onReload(path?: string, query?: Record<string, any>) {
 export function setupGuardRouter(router: Router) {
 	//白名单页面
 	const whitelist = ['/pipe/login', '/pipe/register']
-	const store = useUStore()
+	const store = useAppStore()
 
 	router.beforeEach(async (to, form, next) => {
 		window.$loading?.start()

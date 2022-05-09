@@ -1,12 +1,12 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
 import { onEnter } from '@/router'
-import { useUStore } from '@/store/modules/u-store'
+import { useAppStore } from '@/store/modules/app-store'
 
 export default defineComponent({
 	name: 'Menu',
 	setup() {
-		const store = useUStore()
+		const store = useAppStore()
 		const logo = computed(() => {
 			if (store.collapse) return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
 			return new URL('/src/assets/resource/large-logo.png', import.meta.url).href
