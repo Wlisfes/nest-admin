@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { Menu } from '@/layout/common'
 import { useRoute } from 'vue-router'
+import { onEnter } from '@/router'
 import { useAppStore } from '@/store/modules/app-store'
 
 export default defineComponent({
@@ -10,6 +10,11 @@ export default defineComponent({
 		const route = useRoute()
 		const app = useAppStore()
 		const mobile = computed(() => app.device === 'MOBILE')
+
+		const logo = computed(() => {
+			if (app.collapse) return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
+			return new URL('/src/assets/resource/large-logo.png', import.meta.url).href
+		})
 
 		return () => {
 			return route.meta?.aside ?? true ? (
@@ -24,7 +29,17 @@ export default defineComponent({
 					expanded-keys={[]}
 					onUpdateCollapsed={() => app.setCollapse(!app.collapse)}
 				>
-					<Menu></Menu>
+					<n-menu
+						accordion
+						root-indent={18}
+						value={app.current}
+						expanded-keys={app.expanded}
+						collapsed={app.collapse}
+						collapsed-width={64}
+						options={app.router}
+						onUpdateValue={(path: string) => onEnter(path)}
+						onUpdateExpanded-keys={(keys: string[]) => app.setExpanded(keys)}
+					/>
 				</n-layout-sider>
 			) : null
 		}
