@@ -1,12 +1,20 @@
 <script lang="tsx">
-import { defineComponent, Transition, VNode, createVNode } from 'vue'
+import { defineComponent, Transition, VNode, createVNode, computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import { Aside, Header, NavTabs, NavBetter } from '@/layout/common'
+import { Aside, Header, NavBetter } from '@/layout/common'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'Layout',
 	setup() {
 		const route = useRoute()
+		const { vars } = useProvider()
+		const layoutStyle = computed(() => {
+			return {
+				top: '102px',
+				backgroundColor: vars.value.backColor
+			}
+		})
 
 		return () => {
 			return (
@@ -15,7 +23,7 @@ export default defineComponent({
 					<n-layout>
 						<Header></Header>
 						<NavBetter></NavBetter>
-						<n-layout position="absolute" style={{ top: '102px' }} native-scrollbar={false}>
+						<n-layout position="absolute" style={layoutStyle.value} native-scrollbar={false}>
 							<RouterView key={route.path}>
 								{{
 									default: ({ Component }: { Component: VNode }) => {
@@ -42,12 +50,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-#app-container {
-	height: 100%;
-	overflow: hidden;
-	position: relative;
-}
-
 .side-bottom-enter-active,
 .side-bottom-leave-active {
 	transition: all 0.2s ease-in-out;

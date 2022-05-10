@@ -1,21 +1,26 @@
-import { computed } from 'vue'
-import { darkTheme, lightTheme, GlobalThemeOverrides } from 'naive-ui'
+import { computed, ComputedRef } from 'vue'
+import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useSetStore } from '@/store/modules/set-store'
+
+type CustomizeVars = {
+	backColor: string
+}
+export type ThemeVars = ComputedRef<ThemeCommonVars & CustomizeVars>
 
 export function useProvider() {
 	const store = useSetStore()
-
+	const vars = useThemeVars() as ThemeVars
 	const lightThemeOverrides = computed<GlobalThemeOverrides>(() => ({
 		common: {
 			fontWeightStrong: '500',
-			primaryGreyColor: 'rgb(244, 246, 248)',
+			backColor: 'rgb(244, 246, 248)',
 			primaryColor: store.primaryColor
 		}
 	}))
 	const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
 		common: {
 			fontWeightStrong: '500',
-			primaryGreyColor: 'rgb(16,16,20)',
+			backColor: 'rgb(16,16,20)',
 			primaryColor: store.primaryColor
 		}
 	}))
@@ -42,5 +47,5 @@ export function useProvider() {
 		}
 	})
 
-	return { theme, themeOverrides }
+	return { theme, themeOverrides, vars }
 }

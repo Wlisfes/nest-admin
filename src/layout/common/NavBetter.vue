@@ -50,7 +50,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .app-nav {
 	position: relative;
-	background-color: var(--primary-grey-color);
+	background-color: var(--back-color);
 	padding: 5px 10px;
 	.wrapper {
 		white-space: nowrap;
