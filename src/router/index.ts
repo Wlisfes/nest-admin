@@ -67,10 +67,7 @@ export function setupGuardRouter(router: Router) {
 		//不是白名单页面路径储存store
 		if (!whitelist.includes(to.path) && to.path !== '/refresh') {
 			store.setCurrent(to.path)
-			store.setMultiple({
-				type: 1,
-				props: { key: to.path, meta: to.meta ?? null }
-			})
+			store.setMultiple({ key: to.path, meta: to.meta as any })
 		}
 
 		window.$loading?.finish()

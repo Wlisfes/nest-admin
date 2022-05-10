@@ -2,6 +2,11 @@ import { defineStore } from 'pinia'
 import { bfs } from '@/utils/utils-route'
 import { MenuOption } from 'naive-ui'
 
+export interface OneMultiple {
+	key: string
+	meta: { icon: string; title: string }
+}
+
 export interface AppStore {
 	device: string
 	width: number
@@ -9,7 +14,7 @@ export interface AppStore {
 	expanded: Array<string>
 	collapse: boolean
 	router: Array<MenuOption>
-	multiple: Array<{ key: string; meta: { icon: string; title: string } }>
+	multiple: Array<OneMultiple>
 }
 
 export const useAppStore = defineStore({
@@ -52,25 +57,27 @@ export const useAppStore = defineStore({
 		setRouter(router: any) {
 			this.router = router
 		},
-		setMultiple({ type = 1, props }: { type: number; props: any }) {
-			if (type === 1) {
-				//插入一条历史路径、需要判断重复路径
-				if (!this.multiple.some((item: any) => item.key === props.key)) {
-					this.multiple.push(props)
-				}
-			} else if (type === 2) {
-				//删除一条历史路径
-				const index = this.multiple.findIndex(item => item.key === props.path)
-				this.multiple.splice(index >>> 0, 1)
-			} else if (type === 3) {
-				//关闭一组历史路径
-				this.multiple = this.multiple.filter(item => {
-					return !props.group.some((k: any) => k.key === item.key)
-				})
-			} else if (type === 4) {
-				//清空历史路径
-				this.multiple = []
+		setMultiple(route: OneMultiple) {
+			//插入一条历史路径、需要判断重复路径
+			if (!this.multiple.some(item => item.key === route?.key)) {
+				this.multiple.push(route)
 			}
+		},
+		closeRoute(type: 'close-current' | 'close-other' | 'close-all', path?: string) {
+			return new Promise(resolve => {
+				if (type === 'close-current' && path) {
+					//关闭一条历史路径
+					const index = this.multiple.findIndex(item => item.key === path)
+					this.multiple.splice(index >>> 0, 1)
+				} else if (type === 'close-other') {
+					//关闭其他历史路径
+					this.multiple = this.multiple.filter(item => item.key === this.current)
+				} else if (type === 'close-all') {
+					//关闭全部历史路径
+					this.multiple = []
+				}
+				resolve(type)
+			})
 		}
 	}
 })
