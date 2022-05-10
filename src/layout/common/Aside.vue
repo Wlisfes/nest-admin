@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { Menu } from '@/layout/common'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/store/modules/app-store'
@@ -8,20 +8,21 @@ export default defineComponent({
 	name: 'Aside',
 	setup() {
 		const route = useRoute()
-		const store = useAppStore()
+		const app = useAppStore()
+		const mobile = computed(() => app.device === 'MOBILE')
 
 		return () => {
 			return route.meta?.aside ?? true ? (
 				<n-layout-sider
 					bordered
-					collapsed={store.collapse}
+					collapsed={app.collapse}
 					width={220}
-					collapsed-width={store.device === 'MOBILE' ? 0 : 64}
+					collapsed-width={mobile.value ? 0 : 64}
 					native-scrollbar={false}
-					show-trigger="bar"
+					show-trigger={mobile.value ? false : 'bar'}
 					collapse-mode="width"
 					expanded-keys={[]}
-					onUpdateCollapsed={() => store.setCollapse(!store.collapse)}
+					onUpdateCollapsed={() => app.setCollapse(!app.collapse)}
 				>
 					<Menu></Menu>
 				</n-layout-sider>
