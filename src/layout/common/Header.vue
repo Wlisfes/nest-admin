@@ -4,52 +4,15 @@ import { useAppStore } from '@/store/modules/app-store'
 import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, onEnter } from '@/router'
-import { init } from '@/core/common/init-aside'
-import { initSetup } from '@/core/common/init-setup'
-
-const MiniAside = defineComponent({
-	name: 'MiniAside',
-	props: {
-		visible: { type: Boolean, default: false }
-	},
-	emits: ['close'],
-	setup(props, { emit }) {
-		const app = useAppStore()
-
-		const onSelecter = (path: string) => {
-			onEnter(path)
-			onClose()
-		}
-
-		const onClose = () => {
-			console.log(1111)
-			emit('close', false)
-		}
-
-		return () => (
-			<n-drawer show={props.visible} width={220} placement="left" on-mask-click={onClose}>
-				<n-drawer-content title="Admin" body-content-style={{ padding: 0 }}>
-					<n-menu
-						accordion
-						root-indent={18}
-						value={app.current}
-						expanded-keys={app.expanded}
-						collapsed={false}
-						collapsed-width={64}
-						options={app.router}
-						on-update-value={onSelecter}
-						onUpdateExpanded-keys={(keys: string[]) => app.setExpanded(keys)}
-					/>
-				</n-drawer-content>
-			</n-drawer>
-		)
-	}
-})
+import { useAside } from '@/core/common/core-aside'
+import { useSetup } from '@/core/common/core-setup'
 
 export default defineComponent({
 	name: 'Header',
 	setup() {
-		const visible = ref<boolean>(false)
+		const aside = useAside()
+		const setup = useSetup()
+
 		const store = useAppStore()
 		const client = useWatcher()
 		const avatar = computed(() => {
@@ -59,7 +22,7 @@ export default defineComponent({
 
 		const onTrigger = () => {
 			if (store.device === 'MOBILE') {
-				visible.value = true
+				aside.init(true)
 			} else {
 				store.setCollapse(!store.collapse)
 			}
@@ -73,14 +36,11 @@ export default defineComponent({
 			}
 		}
 
-		//设置组件
-		const onSetting = () => {
-			initSetup()
-		}
-
 		return () => (
 			<Fragment>
-				<MiniAside visible={visible.value} onClose={value => (visible.value = value)} />
+				<aside.Component />
+				<setup.Component />
+
 				<n-layout-header class="app-header" bordered>
 					<div class="vnode-trigger" onClick={onTrigger}>
 						<u-icon name={store.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
@@ -99,7 +59,7 @@ export default defineComponent({
 						{{
 							trigger: () => (
 								<div class="vnode-trigger">
-									<u-icon name="antd-bell" color="#333639" size={22}></u-icon>
+									<u-icon name="antd-bell" size={22}></u-icon>
 								</div>
 							),
 							default: () => (
@@ -134,7 +94,7 @@ export default defineComponent({
 							)
 						}}
 					</n-dropdown>
-					<div class="vnode-trigger" onClick={onSetting}>
+					<div class="vnode-trigger" onClick={() => setup.init(true)}>
 						<u-icon name="antd-setting" size={20}></u-icon>
 					</div>
 				</n-layout-header>
