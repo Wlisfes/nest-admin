@@ -47,8 +47,8 @@ export function useSetup() {
 										trigger: () => (
 											<NSwitch
 												value={store.theme}
-												checked-value="light"
-												unchecked-value="dark"
+												checked-value="dark"
+												unchecked-value="light"
 												on-update:value={(theme: 'dark' | 'light') => store.setTheme(theme)}
 											>
 												{{

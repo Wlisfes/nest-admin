@@ -16,7 +16,7 @@ export default defineComponent({
 
 		return () => (
 			<div class="container">
-				<div class={{ 'app-compute': true, 'is-active': current.value }}>
+				<n-el class={{ 'app-compute': true, 'is-active': current.value }}>
 					<div class="app-compute__form is-login">
 						<RouterView name="register"></RouterView>
 					</div>
@@ -37,7 +37,7 @@ export default defineComponent({
 							</div>
 						</div>
 					</div>
-				</div>
+				</n-el>
 			</div>
 		)
 	}
@@ -54,7 +54,7 @@ export default defineComponent({
 	justify-content: center;
 	align-items: center;
 	.app-compute {
-		background-color: #ffffff;
+		background-color: var(--body-color);
 		border-radius: 8px;
 		box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25), 0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
 		width: 90%;
