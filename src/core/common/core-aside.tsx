@@ -1,9 +1,10 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { NDrawer, NDrawerContent, NMenu, MenuOption } from 'naive-ui'
 import { useAppStore } from '@/store/modules/app-store'
 import { onEnter } from '@/router'
+import { CoreNode } from '@/core/pipe/pipe-type'
 
-export function useAside() {
+export function useAside(node?: CoreNode | null) {
 	const visible = ref<boolean>(false)
 	const init = (value: boolean) => {
 		visible.value = value
@@ -14,7 +15,7 @@ export function useAside() {
 		emits: ['close'],
 		setup(props, { emit }) {
 			const app = useAppStore()
-
+			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close')
 
 			const onSelecter = (path: string) => {
@@ -24,7 +25,13 @@ export function useAside() {
 			}
 
 			return () => (
-				<NDrawer v-model:show={visible.value} width={220} placement="left" on-mask-click={onClose}>
+				<NDrawer
+					to={to.value}
+					v-model:show={visible.value}
+					width={220}
+					placement="left"
+					on-mask-click={onClose}
+				>
 					<NDrawerContent title="Admin" body-content-style={{ padding: 0 }}>
 						<NMenu
 							accordion

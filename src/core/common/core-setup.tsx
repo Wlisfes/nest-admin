@@ -1,6 +1,7 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { NDrawer, NDrawerContent, NDivider, NTooltip, NSwitch, NIcon } from 'naive-ui'
 import { useSetStore } from '@/store/modules/set-store'
+import { CoreNode } from '@/core/pipe/pipe-type'
 
 const Checked = () => (
 	<svg viewBox="0 0 512 512">
@@ -21,7 +22,7 @@ const UnChecked = () => (
 	</svg>
 )
 
-export function useSetup() {
+export function useSetup(node?: CoreNode | null) {
 	const visible = ref<boolean>(false)
 	const init = (value: boolean) => {
 		visible.value = value
@@ -32,11 +33,17 @@ export function useSetup() {
 		emits: ['close'],
 		setup(props, { emit }) {
 			const store = useSetStore()
-
+			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close', false)
 
 			return () => (
-				<NDrawer v-model:show={visible.value} width={280} placement="right" on-after-leave={onClose}>
+				<NDrawer
+					to={to.value}
+					v-model:show={visible.value}
+					width={280}
+					placement="right"
+					on-after-leave={onClose}
+				>
 					<NDrawerContent title="项目配置" native-scrollbar={false}>
 						<div>
 							<NDivider title-placement="center">主题</NDivider>
