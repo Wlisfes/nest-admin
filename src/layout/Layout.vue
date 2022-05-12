@@ -26,7 +26,7 @@ export default defineComponent({
 					<n-layout>
 						<Header></Header>
 						{set.better && <NavBetter></NavBetter>}
-						<n-layout position="absolute" style={css.value} native-scrollbar={false}>
+						<n-layout class="app-container" position="absolute" style={css.value} native-scrollbar={false}>
 							<RouterView key={route.path}>
 								{{
 									default: ({ Component }: { Component: VNode }) => {
@@ -46,3 +46,13 @@ export default defineComponent({
 	}
 })
 </script>
+
+<style lang="scss" scoped>
+.app-container {
+	:deep(.n-scrollbar-content) {
+		min-height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+}
+</style>
