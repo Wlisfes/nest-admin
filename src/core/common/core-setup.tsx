@@ -162,13 +162,17 @@ export function useSetup(node?: CoreNode | null) {
 								<NSpace vertical size={16}>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>禁用动画</div>
-										<NSwitch value={store.reload} on-update:value={store.setTransition}></NSwitch>
+										<NSwitch
+											value={store.transition}
+											on-update:value={store.setTransition}
+										></NSwitch>
 									</div>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>动画类型</div>
 										<div style={{ flex: 1 }}>
 											<NSelect
 												value={store.transitionName}
+												disabled={store.transition}
 												options={animate.value}
 												on-update:value={store.setTransitionName}
 											></NSelect>

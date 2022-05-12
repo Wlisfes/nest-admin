@@ -17,7 +17,9 @@ export default defineComponent({
 				backgroundColor: vars.value.backColor
 			}
 		})
-		const name = computed(() => {})
+		const name = computed(() => {
+			return set.transition ? '' : set.transitionName
+		})
 
 		return () => {
 			return (
@@ -31,7 +33,7 @@ export default defineComponent({
 								{{
 									default: ({ Component }: { Component: VNode }) => {
 										return (
-											<Transition name={set.transitionName} mode="out-in" appear>
+											<Transition name={name.value} mode="out-in" appear>
 												{createVNode(Component)}
 											</Transition>
 										)
