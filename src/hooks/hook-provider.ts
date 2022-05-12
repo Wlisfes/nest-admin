@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useSetStore } from '@/store/modules/set-store'
 
@@ -24,6 +24,26 @@ export function useProvider() {
 			primaryColor: store.primaryColor
 		}
 	}))
+	const primaryVars = ref<Array<string>>([
+		'#1b73fa',
+		'#0960bd',
+		'#0084f4',
+		'#009688',
+		'#536dfe',
+		'#ff5c93',
+		'#ee4f12',
+		'#0096c7',
+		'#9c27b0',
+		'#ff9800',
+		'#FF3D68',
+		'#00C1D4',
+		'#71EFA3',
+		'#52c41a',
+		'#78DEC7',
+		'#1768AC',
+		'#FB9300',
+		'#FC5404'
+	])
 
 	const theme = computed(() => {
 		switch (store.theme) {
@@ -47,5 +67,5 @@ export function useProvider() {
 		}
 	})
 
-	return { theme, themeOverrides, vars }
+	return { theme, themeOverrides, vars, primaryVars }
 }

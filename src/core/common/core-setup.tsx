@@ -1,7 +1,10 @@
 import { defineComponent, ref, computed } from 'vue'
-import { NDrawer, NDrawerContent, NDivider, NTooltip, NSwitch, NIcon } from 'naive-ui'
+import { NDrawer, NDrawerContent, NDivider, NTooltip, NSwitch, NIcon, NGrid, NGridItem } from 'naive-ui'
+import { UIcon } from '@/components/global'
 import { useSetStore } from '@/store/modules/set-store'
+import { useProvider } from '@/hooks/hook-provider'
 import { CoreNode } from '@/core/pipe/pipe-type'
+import css from '@/core/scss/core-setup.module.scss'
 
 const Checked = () => (
 	<svg viewBox="0 0 512 512">
@@ -32,6 +35,7 @@ export function useSetup(node?: CoreNode | null) {
 		name: 'Core-Setup',
 		emits: ['close'],
 		setup(props, { emit }) {
+			const { primaryVars } = useProvider()
 			const store = useSetStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close', false)
@@ -45,9 +49,9 @@ export function useSetup(node?: CoreNode | null) {
 					on-after-leave={onClose}
 				>
 					<NDrawerContent title="项目配置" native-scrollbar={false}>
-						<div>
-							<NDivider title-placement="center">主题</NDivider>
-							<div>
+						<div class={css['setup-content']}>
+							<div class={css['vnode-column']}>
+								<NDivider style={{ margin: '10px 0' }}>主题</NDivider>
 								<NTooltip trigger="hover" placement="bottom">
 									{{
 										default: () => <span>{store.theme === 'dark' ? '浅色主题' : '深色主题'}</span>,
@@ -56,6 +60,7 @@ export function useSetup(node?: CoreNode | null) {
 												value={store.theme}
 												checked-value="dark"
 												unchecked-value="light"
+												rail-style={() => ({ background: '#000e1c' })}
 												on-update:value={(theme: 'dark' | 'light') => store.setTheme(theme)}
 											>
 												{{
@@ -74,6 +79,24 @@ export function useSetup(node?: CoreNode | null) {
 										)
 									}}
 								</NTooltip>
+							</div>
+							<div class={css['vnode-column']}>
+								<NDivider style={{ margin: '24px 0 10px' }}>系统主题</NDivider>
+								<NGrid cols={9} x-gap={4} y-gap={4}>
+									{primaryVars.value.map((color, index) => (
+										<NGridItem key={index}>
+											<div
+												class={{ [css['color-scope']]: true }}
+												style={{ background: color }}
+												onClick={e => store.setPrimaryColor(color)}
+											>
+												{store.primaryColor === color && (
+													<UIcon name="antd-check" color="#ffffff" />
+												)}
+											</div>
+										</NGridItem>
+									))}
+								</NGrid>
 							</div>
 						</div>
 					</NDrawerContent>
