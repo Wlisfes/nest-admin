@@ -1,5 +1,6 @@
 import { defineComponent, ref, computed } from 'vue'
 import { NDrawer, NDrawerContent, NMenu, MenuOption } from 'naive-ui'
+import { useProvider } from '@/hooks/hook-provider'
 import { useAppStore } from '@/store/modules/app-store'
 import { onEnter } from '@/router'
 import { CoreNode } from '@/core/pipe/pipe-type'
@@ -14,6 +15,7 @@ export function useAside(node?: CoreNode | null) {
 		name: 'Core-Aside',
 		emits: ['close'],
 		setup(props, { emit }) {
+			const { inverted } = useProvider()
 			const app = useAppStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close')
@@ -35,6 +37,7 @@ export function useAside(node?: CoreNode | null) {
 					<NDrawerContent title="Admin" body-content-style={{ padding: 0 }}>
 						<NMenu
 							accordion
+							inverted={inverted.value.aside}
 							root-indent={18}
 							value={app.current}
 							expanded-keys={app.expanded}

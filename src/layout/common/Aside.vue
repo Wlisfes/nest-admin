@@ -3,10 +3,12 @@ import { defineComponent, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { onEnter } from '@/router'
 import { useAppStore } from '@/store/modules/app-store'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'Aside',
 	setup() {
+		const { inverted } = useProvider()
 		const route = useRoute()
 		const app = useAppStore()
 		const mobile = computed(() => app.device === 'MOBILE')
@@ -21,6 +23,7 @@ export default defineComponent({
 				<n-layout-sider
 					bordered
 					collapsed={app.collapse}
+					inverted={inverted.value.aside}
 					width={220}
 					collapsed-width={mobile.value ? 0 : 64}
 					native-scrollbar={false}
@@ -31,6 +34,7 @@ export default defineComponent({
 				>
 					<n-menu
 						accordion
+						inverted={inverted.value.aside}
 						root-indent={18}
 						value={app.current}
 						expanded-keys={app.expanded}

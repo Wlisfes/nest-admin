@@ -45,6 +45,16 @@ export function useProvider() {
 		'#FC5404'
 	])
 
+	const inverted = computed(() => {
+		if (store.theme === 'dark' || store.inverted === 'nav-dark') {
+			return { aside: true, header: true }
+		} else if (store.inverted === 'dark') {
+			return { aside: true, header: false }
+		} else {
+			return { aside: false, header: false }
+		}
+	})
+
 	const theme = computed(() => {
 		switch (store.theme) {
 			case 'light':
@@ -67,5 +77,5 @@ export function useProvider() {
 		}
 	})
 
-	return { theme, themeOverrides, vars, primaryVars }
+	return { theme, themeOverrides, vars, primaryVars, inverted }
 }

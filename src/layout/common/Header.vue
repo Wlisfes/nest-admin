@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, Fragment } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
+import { useProvider } from '@/hooks/hook-provider'
 import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, onEnter } from '@/router'
@@ -10,6 +11,7 @@ import { useSetup } from '@/core/common/core-setup'
 export default defineComponent({
 	name: 'Header',
 	setup() {
+		const { inverted } = useProvider()
 		const aside = useAside()
 		const setup = useSetup()
 
@@ -41,7 +43,7 @@ export default defineComponent({
 				<aside.Component />
 				<setup.Component />
 
-				<n-layout-header class="app-header" bordered>
+				<n-layout-header class="app-header" bordered inverted={inverted.value.header}>
 					<div class="vnode-trigger" onClick={onTrigger}>
 						<u-icon name={store.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
 					</div>

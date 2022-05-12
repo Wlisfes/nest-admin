@@ -1,5 +1,5 @@
 import { defineComponent, ref, computed } from 'vue'
-import { NDrawer, NDrawerContent, NDivider, NTooltip, NSwitch, NIcon, NGrid, NGridItem } from 'naive-ui'
+import { NDrawer, NDrawerContent, NDivider, NTooltip, NSwitch, NIcon, NGrid, NGridItem, NSpace, NBadge } from 'naive-ui'
 import { UIcon } from '@/components/global'
 import { useSetStore } from '@/store/modules/set-store'
 import { useProvider } from '@/hooks/hook-provider'
@@ -97,6 +97,34 @@ export function useSetup(node?: CoreNode | null) {
 										</NGridItem>
 									))}
 								</NGrid>
+							</div>
+							<div class={css['vnode-column']}>
+								<NDivider style={{ margin: '24px 0 10px' }}>导航栏风格</NDivider>
+								<NSpace size={15}>
+									<div class={css['nav-style']} onClick={e => store.setInverted('dark')}>
+										<img
+											src={new URL('/src/assets/base/nav-theme-dark.png', import.meta.url).href}
+											alt=""
+										/>
+										{store.inverted === 'dark' && <NBadge dot color="#19be6b" />}
+									</div>
+									<div class={css['nav-style']} onClick={e => store.setInverted('light')}>
+										<img
+											src={new URL('/src/assets/base/nav-theme-light.png', import.meta.url).href}
+											alt=""
+										/>
+										{store.inverted === 'light' && <NBadge dot color="#19be6b" />}
+									</div>
+									<div class={css['nav-style']} onClick={e => store.setInverted('nav-dark')}>
+										<img
+											src={new URL('/src/assets/base/all-theme-dark.png', import.meta.url).href}
+											alt=""
+										/>
+										{(store.theme === 'dark' || store.inverted === 'nav-dark') && (
+											<NBadge dot color="#19be6b" />
+										)}
+									</div>
+								</NSpace>
 							</div>
 						</div>
 					</NDrawerContent>
