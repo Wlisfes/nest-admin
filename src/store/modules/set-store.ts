@@ -4,6 +4,11 @@ export interface UStore {
 	theme: 'dark' | 'light'
 	inverted: 'dark' | 'light' | 'nav-dark'
 	primaryColor: string
+	reload: boolean
+	breadcr: boolean
+	better: boolean
+	transition: boolean
+	transitionName: string
 }
 
 export const useSetStore = defineStore({
@@ -12,7 +17,12 @@ export const useSetStore = defineStore({
 		return {
 			theme: 'light',
 			inverted: 'light',
-			primaryColor: '#1b73fa'
+			primaryColor: '#18a058',
+			reload: true,
+			breadcr: true,
+			better: true,
+			transition: false,
+			transitionName: 'zoom-fade'
 		}
 	},
 	actions: {
@@ -24,6 +34,21 @@ export const useSetStore = defineStore({
 		},
 		setPrimaryColor(primaryColor: string) {
 			this.primaryColor = primaryColor
+		},
+		setReload(reload: boolean) {
+			this.reload = reload
+		},
+		setBreadcr(breadcr: boolean) {
+			this.breadcr = breadcr
+		},
+		setBetter(better: boolean) {
+			this.better = better
+		},
+		setTransition(transition: boolean) {
+			this.transition = transition
+		},
+		setTransitionName(transitionName: string) {
+			this.transitionName = transitionName
 		}
 	}
 })

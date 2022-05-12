@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, Fragment } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
+import { useSetStore } from '@/store/modules/set-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
@@ -15,7 +16,8 @@ export default defineComponent({
 		const aside = useAside()
 		const setup = useSetup()
 
-		const store = useAppStore()
+		const app = useAppStore()
+		const set = useSetStore()
 		const client = useWatcher()
 		const avatar = computed(() => {
 			return 'https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg'
@@ -23,10 +25,10 @@ export default defineComponent({
 		})
 
 		const onTrigger = () => {
-			if (store.device === 'MOBILE') {
+			if (app.device === 'MOBILE') {
 				aside.init(true)
 			} else {
-				store.setCollapse(!store.collapse)
+				app.setCollapse(!app.collapse)
 			}
 		}
 
@@ -45,11 +47,13 @@ export default defineComponent({
 
 				<n-layout-header class="app-header" bordered inverted={inverted.value.header}>
 					<div class="vnode-trigger" onClick={onTrigger}>
-						<u-icon name={store.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
+						<u-icon name={app.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
 					</div>
-					<div class="vnode-trigger" onClick={e => onReload()}>
-						<u-icon name="antd-reload" size={20}></u-icon>
-					</div>
+					{set.reload && (
+						<div class="vnode-trigger" onClick={e => onReload()}>
+							<u-icon name="antd-reload" size={20}></u-icon>
+						</div>
+					)}
 					<div style={{ flex: 1 }}></div>
 					<div class="vnode-trigger">
 						<u-icon name="antd-search" size={20}></u-icon>

@@ -1,20 +1,23 @@
 <script lang="tsx">
-import { defineComponent, Transition, VNode, createVNode, computed } from 'vue'
+import { defineComponent, Transition, VNode, createVNode, computed, CSSProperties } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { Aside, Header, NavBetter } from '@/layout/common'
+import { useSetStore } from '@/store/modules/set-store'
 import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'Layout',
 	setup() {
+		const set = useSetStore()
 		const route = useRoute()
 		const { vars } = useProvider()
-		const layoutStyle = computed(() => {
+		const css = computed<CSSProperties>(() => {
 			return {
-				top: '102px',
+				top: set.better ? '102px' : '60px',
 				backgroundColor: vars.value.backColor
 			}
 		})
+		const name = computed(() => {})
 
 		return () => {
 			return (
@@ -22,18 +25,13 @@ export default defineComponent({
 					<Aside></Aside>
 					<n-layout>
 						<Header></Header>
-						<NavBetter></NavBetter>
-						<n-layout position="absolute" style={layoutStyle.value} native-scrollbar={false}>
+						{set.better && <NavBetter></NavBetter>}
+						<n-layout position="absolute" style={css.value} native-scrollbar={false}>
 							<RouterView key={route.path}>
 								{{
 									default: ({ Component }: { Component: VNode }) => {
 										return (
-											<Transition
-												name="side-bottom"
-												enter-from-class="side-bottom-enter"
-												mode="out-in"
-												appear
-											>
+											<Transition name={set.transitionName} mode="out-in" appear>
 												{createVNode(Component)}
 											</Transition>
 										)
@@ -48,16 +46,3 @@ export default defineComponent({
 	}
 })
 </script>
-
-<style lang="scss" scoped>
-.side-bottom-enter-active,
-.side-bottom-leave-active {
-	transition: all 0.2s ease-in-out;
-}
-.side-bottom-enter {
-	opacity: 0;
-}
-.side-bottom-leave-to {
-	opacity: 0;
-}
-</style>

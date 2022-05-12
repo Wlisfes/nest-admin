@@ -1,5 +1,17 @@
 import { defineComponent, ref, computed } from 'vue'
-import { NDrawer, NDrawerContent, NDivider, NTooltip, NSwitch, NIcon, NGrid, NGridItem, NSpace, NBadge } from 'naive-ui'
+import {
+	NDrawer,
+	NDrawerContent,
+	NDivider,
+	NTooltip,
+	NSwitch,
+	NIcon,
+	NGrid,
+	NGridItem,
+	NSpace,
+	NBadge,
+	NSelect
+} from 'naive-ui'
 import { UIcon } from '@/components/global'
 import { useSetStore } from '@/store/modules/set-store'
 import { useProvider } from '@/hooks/hook-provider'
@@ -35,7 +47,7 @@ export function useSetup(node?: CoreNode | null) {
 		name: 'Core-Setup',
 		emits: ['close'],
 		setup(props, { emit }) {
-			const { primaryVars } = useProvider()
+			const { primaryVars, animate } = useProvider()
 			const store = useSetStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close', false)
@@ -113,7 +125,9 @@ export function useSetup(node?: CoreNode | null) {
 											src={new URL('/src/assets/base/nav-theme-light.png', import.meta.url).href}
 											alt=""
 										/>
-										{store.inverted === 'light' && <NBadge dot color="#19be6b" />}
+										{store.inverted === 'light' && store.theme !== 'dark' && (
+											<NBadge dot color="#19be6b" />
+										)}
 									</div>
 									<div class={css['nav-style']} onClick={e => store.setInverted('nav-dark')}>
 										<img
@@ -123,6 +137,42 @@ export function useSetup(node?: CoreNode | null) {
 										{(store.theme === 'dark' || store.inverted === 'nav-dark') && (
 											<NBadge dot color="#19be6b" />
 										)}
+									</div>
+								</NSpace>
+							</div>
+							<div class={css['vnode-column']}>
+								<NDivider style={{ margin: '24px 0 10px' }}>界面显示</NDivider>
+								<NSpace vertical size={16}>
+									<div class={css['column-scope']}>
+										<div style={{ flex: 1 }}>显示重载页面按钮</div>
+										<NSwitch value={store.reload} on-update:value={store.setReload}></NSwitch>
+									</div>
+									<div class={css['column-scope']}>
+										<div style={{ flex: 1 }}>显示面包屑导航</div>
+										<NSwitch value={store.breadcr} on-update:value={store.setBreadcr}></NSwitch>
+									</div>
+									<div class={css['column-scope']}>
+										<div style={{ flex: 1 }}>显示多页签</div>
+										<NSwitch value={store.better} on-update:value={store.setBetter}></NSwitch>
+									</div>
+								</NSpace>
+							</div>
+							<div class={css['vnode-column']}>
+								<NDivider style={{ margin: '24px 0 10px' }}>动画</NDivider>
+								<NSpace vertical size={16}>
+									<div class={css['column-scope']}>
+										<div style={{ flex: 1 }}>禁用动画</div>
+										<NSwitch value={store.reload} on-update:value={store.setTransition}></NSwitch>
+									</div>
+									<div class={css['column-scope']}>
+										<div style={{ flex: 1 }}>动画类型</div>
+										<div style={{ flex: 1 }}>
+											<NSelect
+												value={store.transitionName}
+												options={animate.value}
+												on-update:value={store.setTransitionName}
+											></NSelect>
+										</div>
 									</div>
 								</NSpace>
 							</div>
