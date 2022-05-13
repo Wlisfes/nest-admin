@@ -8,3 +8,11 @@ declare module '*.module.scss' {
 	const scssModule: { readonly [key: string]: string }
 	export default scssModule
 }
+
+interface ImportMetaEnv {
+	readonly VITE_PORT: string
+}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv
+}
