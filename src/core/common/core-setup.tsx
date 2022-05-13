@@ -114,17 +114,31 @@ export function useSetup(node?: CoreNode | null) {
 							<div class={css['vnode-column']}>
 								<NDivider style={{ margin: '24px 0 10px' }}>导航栏风格</NDivider>
 								<NSpace size={15}>
-									<div class={css['nav-style']} onClick={e => dvc.setInverted('dark')}>
+									<div
+										class={css['nav-style']}
+										style={{ cursor: dvc.theme === 'dark' ? 'not-allowed' : 'pointer' }}
+										onClick={e => dvc.theme !== 'dark' && dvc.setInverted('dark')}
+									>
 										<img src={loadFile('base/nav-theme-dark.png')} alt="" />
-										{dvc.inverted === 'dark' && <NBadge dot color="#19be6b" />}
+										{dvc.inverted === 'dark' && dvc.theme !== 'dark' && (
+											<NBadge dot color="#19be6b" />
+										)}
 									</div>
-									<div class={css['nav-style']} onClick={e => dvc.setInverted('light')}>
+									<div
+										class={css['nav-style']}
+										style={{ cursor: dvc.theme === 'dark' ? 'not-allowed' : 'pointer' }}
+										onClick={e => dvc.theme !== 'dark' && dvc.setInverted('light')}
+									>
 										<img src={loadFile('base/nav-theme-light.png')} alt="" />
 										{dvc.inverted === 'light' && dvc.theme !== 'dark' && (
 											<NBadge dot color="#19be6b" />
 										)}
 									</div>
-									<div class={css['nav-style']} onClick={e => dvc.setInverted('nav-dark')}>
+									<div
+										class={css['nav-style']}
+										style={{ cursor: 'pointer' }}
+										onClick={e => dvc.setInverted('nav-dark')}
+									>
 										<img src={loadFile('base/all-theme-dark.png')} alt="" />
 										{(dvc.theme === 'dark' || dvc.inverted === 'nav-dark') && (
 											<NBadge dot color="#19be6b" />
