@@ -6,23 +6,18 @@ import { routes } from '@/router'
 import { useWatcher } from '@/utils/utils-watcher'
 import { useToRoute } from '@/utils/utils-route'
 import { AppProvider } from '@/components/global'
-import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'App',
 	setup() {
 		const store = useAppStore()
-		const { theme, themeOverrides } = useProvider()
 		store.setRouter(useToRoute(routes))
-
 		onMounted(() => useWatcher())
 
 		return () => (
-			<n-config-provider abstract theme={theme.value} theme-overrides={themeOverrides.value}>
-				<AppProvider>
-					<RouterView></RouterView>
-				</AppProvider>
-			</n-config-provider>
+			<AppProvider>
+				<RouterView></RouterView>
+			</AppProvider>
 		)
 	}
 })
