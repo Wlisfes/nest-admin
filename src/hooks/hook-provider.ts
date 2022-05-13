@@ -1,6 +1,6 @@
 import { computed, ComputedRef, ref } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
-import { useSetStore } from '@/store/modules/set-store'
+import { useSetStore } from '@/store/modules/dvc-store'
 
 type CustomizeVars = {
 	backColor: string

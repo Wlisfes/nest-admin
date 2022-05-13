@@ -13,7 +13,7 @@ import {
 	NSelect
 } from 'naive-ui'
 import { UIcon } from '@/components/global'
-import { useSetStore } from '@/store/modules/set-store'
+import { useSetStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { CoreNode } from '@/core/pipe/pipe-type'
 import css from '@/core/scss/core-setup.module.scss'
