@@ -1,6 +1,6 @@
 import { computed, ComputedRef, ref } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
-import { useSetStore } from '@/store/modules/dvc-store'
+import { useDvcStore } from '@/store/modules/dvc-store'
 
 type CustomizeVars = {
 	backColor: string
@@ -8,20 +8,20 @@ type CustomizeVars = {
 export type ThemeVars = ComputedRef<ThemeCommonVars & CustomizeVars>
 
 export function useProvider() {
-	const store = useSetStore()
+	const dvc = useDvcStore()
 	const vars = useThemeVars() as ThemeVars
 	const lightThemeOverrides = computed<GlobalThemeOverrides>(() => ({
 		common: {
 			fontWeightStrong: '500',
 			backColor: 'rgb(244, 246, 248)',
-			primaryColor: store.primaryColor
+			primaryColor: dvc.primaryColor
 		}
 	}))
 	const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
 		common: {
 			fontWeightStrong: '500',
 			backColor: 'rgb(16,16,20)',
-			primaryColor: store.primaryColor
+			primaryColor: dvc.primaryColor
 		}
 	}))
 	const primaryVars = ref<Array<string>>([
@@ -54,9 +54,9 @@ export function useProvider() {
 	])
 
 	const inverted = computed(() => {
-		if (store.theme === 'dark' || store.inverted === 'nav-dark') {
+		if (dvc.theme === 'dark' || dvc.inverted === 'nav-dark') {
 			return { aside: true, header: true }
-		} else if (store.inverted === 'dark') {
+		} else if (dvc.inverted === 'dark') {
 			return { aside: true, header: false }
 		} else {
 			return { aside: false, header: false }
@@ -64,7 +64,7 @@ export function useProvider() {
 	})
 
 	const theme = computed(() => {
-		switch (store.theme) {
+		switch (dvc.theme) {
 			case 'light':
 				return lightTheme
 			case 'dark':
@@ -75,7 +75,7 @@ export function useProvider() {
 	})
 
 	const themeOverrides = computed(() => {
-		switch (store.theme) {
+		switch (dvc.theme) {
 			case 'light':
 				return lightThemeOverrides.value
 			case 'dark':

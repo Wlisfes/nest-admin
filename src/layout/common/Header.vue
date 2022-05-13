@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, Fragment } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
-import { useSetStore } from '@/store/modules/set-store'
+import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
@@ -17,7 +17,7 @@ export default defineComponent({
 		const setup = useSetup()
 
 		const app = useAppStore()
-		const set = useSetStore()
+		const dvc = useDvcStore()
 		const client = useWatcher()
 		const avatar = computed(() => {
 			return 'https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg'
@@ -49,7 +49,7 @@ export default defineComponent({
 					<div class="vnode-trigger" onClick={onTrigger}>
 						<u-icon name={app.collapse ? 'antd-indent' : 'antd-outdent'} size={20}></u-icon>
 					</div>
-					{set.reload && (
+					{dvc.reload && (
 						<div class="vnode-trigger" onClick={e => onReload()}>
 							<u-icon name="antd-reload" size={20}></u-icon>
 						</div>

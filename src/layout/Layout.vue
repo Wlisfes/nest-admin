@@ -2,23 +2,23 @@
 import { defineComponent, Transition, VNode, createVNode, computed, CSSProperties } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { Aside, Header, NavBetter } from '@/layout/common'
-import { useSetStore } from '@/store/modules/set-store'
+import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
 	name: 'Layout',
 	setup() {
-		const set = useSetStore()
+		const dvc = useDvcStore()
 		const route = useRoute()
 		const { vars } = useProvider()
 		const css = computed<CSSProperties>(() => {
 			return {
-				top: set.better ? '102px' : '60px',
+				top: dvc.better ? '102px' : '60px',
 				backgroundColor: vars.value.backColor
 			}
 		})
 		const name = computed(() => {
-			return set.transition ? '' : set.transitionName
+			return dvc.transition ? '' : dvc.transitionName
 		})
 
 		return () => {
@@ -27,7 +27,7 @@ export default defineComponent({
 					<Aside></Aside>
 					<n-layout>
 						<Header></Header>
-						{set.better && <NavBetter></NavBetter>}
+						{dvc.better && <NavBetter></NavBetter>}
 						<n-layout class="app-container" position="absolute" style={css.value} native-scrollbar={false}>
 							<RouterView key={route.path}>
 								{{

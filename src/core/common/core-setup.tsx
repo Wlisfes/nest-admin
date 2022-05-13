@@ -13,7 +13,7 @@ import {
 	NSelect
 } from 'naive-ui'
 import { UIcon } from '@/components/global'
-import { useSetStore } from '@/store/modules/dvc-store'
+import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { CoreNode } from '@/core/pipe/pipe-type'
 import css from '@/core/scss/core-setup.module.scss'
@@ -48,7 +48,7 @@ export function useSetup(node?: CoreNode | null) {
 		emits: ['close'],
 		setup(props, { emit }) {
 			const { primaryVars, animate } = useProvider()
-			const store = useSetStore()
+			const dvc = useDvcStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close', false)
 
@@ -66,14 +66,14 @@ export function useSetup(node?: CoreNode | null) {
 								<NDivider style={{ margin: '10px 0' }}>主题</NDivider>
 								<NTooltip trigger="hover" placement="bottom">
 									{{
-										default: () => <span>{store.theme === 'dark' ? '浅色主题' : '深色主题'}</span>,
+										default: () => <span>{dvc.theme === 'dark' ? '浅色主题' : '深色主题'}</span>,
 										trigger: () => (
 											<NSwitch
-												value={store.theme}
+												value={dvc.theme}
 												checked-value="dark"
 												unchecked-value="light"
 												rail-style={() => ({ background: '#000e1c' })}
-												on-update:value={(theme: 'dark' | 'light') => store.setTheme(theme)}
+												on-update:value={(theme: 'dark' | 'light') => dvc.setTheme(theme)}
 											>
 												{{
 													checked: () => (
@@ -100,9 +100,9 @@ export function useSetup(node?: CoreNode | null) {
 											<div
 												class={{ [css['color-scope']]: true }}
 												style={{ background: color }}
-												onClick={e => store.setPrimaryColor(color)}
+												onClick={e => dvc.setPrimaryColor(color)}
 											>
-												{store.primaryColor === color && (
+												{dvc.primaryColor === color && (
 													<UIcon name="antd-check" color="#ffffff" />
 												)}
 											</div>
@@ -113,28 +113,28 @@ export function useSetup(node?: CoreNode | null) {
 							<div class={css['vnode-column']}>
 								<NDivider style={{ margin: '24px 0 10px' }}>导航栏风格</NDivider>
 								<NSpace size={15}>
-									<div class={css['nav-style']} onClick={e => store.setInverted('dark')}>
+									<div class={css['nav-style']} onClick={e => dvc.setInverted('dark')}>
 										<img
 											src={new URL('/src/assets/base/nav-theme-dark.png', import.meta.url).href}
 											alt=""
 										/>
-										{store.inverted === 'dark' && <NBadge dot color="#19be6b" />}
+										{dvc.inverted === 'dark' && <NBadge dot color="#19be6b" />}
 									</div>
-									<div class={css['nav-style']} onClick={e => store.setInverted('light')}>
+									<div class={css['nav-style']} onClick={e => dvc.setInverted('light')}>
 										<img
 											src={new URL('/src/assets/base/nav-theme-light.png', import.meta.url).href}
 											alt=""
 										/>
-										{store.inverted === 'light' && store.theme !== 'dark' && (
+										{dvc.inverted === 'light' && dvc.theme !== 'dark' && (
 											<NBadge dot color="#19be6b" />
 										)}
 									</div>
-									<div class={css['nav-style']} onClick={e => store.setInverted('nav-dark')}>
+									<div class={css['nav-style']} onClick={e => dvc.setInverted('nav-dark')}>
 										<img
 											src={new URL('/src/assets/base/all-theme-dark.png', import.meta.url).href}
 											alt=""
 										/>
-										{(store.theme === 'dark' || store.inverted === 'nav-dark') && (
+										{(dvc.theme === 'dark' || dvc.inverted === 'nav-dark') && (
 											<NBadge dot color="#19be6b" />
 										)}
 									</div>
@@ -145,15 +145,15 @@ export function useSetup(node?: CoreNode | null) {
 								<NSpace vertical size={16}>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>显示重载页面按钮</div>
-										<NSwitch value={store.reload} on-update:value={store.setReload}></NSwitch>
+										<NSwitch value={dvc.reload} on-update:value={dvc.setReload}></NSwitch>
 									</div>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>显示面包屑导航</div>
-										<NSwitch value={store.breadcr} on-update:value={store.setBreadcr}></NSwitch>
+										<NSwitch value={dvc.breadcr} on-update:value={dvc.setBreadcr}></NSwitch>
 									</div>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>显示多页签</div>
-										<NSwitch value={store.better} on-update:value={store.setBetter}></NSwitch>
+										<NSwitch value={dvc.better} on-update:value={dvc.setBetter}></NSwitch>
 									</div>
 								</NSpace>
 							</div>
@@ -162,19 +162,16 @@ export function useSetup(node?: CoreNode | null) {
 								<NSpace vertical size={16}>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>禁用动画</div>
-										<NSwitch
-											value={store.transition}
-											on-update:value={store.setTransition}
-										></NSwitch>
+										<NSwitch value={dvc.transition} on-update:value={dvc.setTransition}></NSwitch>
 									</div>
 									<div class={css['column-scope']}>
 										<div style={{ flex: 1 }}>动画类型</div>
 										<div style={{ flex: 1 }}>
 											<NSelect
-												value={store.transitionName}
-												disabled={store.transition}
+												value={dvc.transitionName}
+												disabled={dvc.transition}
 												options={animate.value}
-												on-update:value={store.setTransitionName}
+												on-update:value={dvc.setTransitionName}
 											></NSelect>
 										</div>
 									</div>

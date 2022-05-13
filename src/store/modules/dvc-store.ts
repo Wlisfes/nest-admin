@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export interface UStore {
+export interface DvcStore {
 	theme: 'dark' | 'light'
 	inverted: 'dark' | 'light' | 'nav-dark'
 	primaryColor: string
@@ -11,9 +11,9 @@ export interface UStore {
 	transitionName: string
 }
 
-export const useSetStore = defineStore({
-	id: 'set-store',
-	state: (): UStore => {
+export const useDvcStore = defineStore({
+	id: 'dvc-store',
+	state: (): DvcStore => {
 		return {
 			theme: 'light',
 			inverted: 'light',
