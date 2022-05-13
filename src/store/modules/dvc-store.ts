@@ -13,6 +13,10 @@ export interface DvcStore {
 
 export const useDvcStore = defineStore({
 	id: 'dvc-store',
+	persist: {
+		enabled: true,
+		strategies: [{ storage: localStorage }]
+	},
 	state: (): DvcStore => {
 		return {
 			theme: 'light',
