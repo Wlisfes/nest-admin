@@ -15,6 +15,7 @@ import {
 import { UIcon } from '@/components/global'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
+import { loadFile } from '@/utils/utils-tool'
 import { CoreNode } from '@/core/pipe/pipe-type'
 import css from '@/core/scss/core-setup.module.scss'
 
@@ -114,26 +115,17 @@ export function useSetup(node?: CoreNode | null) {
 								<NDivider style={{ margin: '24px 0 10px' }}>导航栏风格</NDivider>
 								<NSpace size={15}>
 									<div class={css['nav-style']} onClick={e => dvc.setInverted('dark')}>
-										<img
-											src={new URL('/src/assets/base/nav-theme-dark.png', import.meta.url).href}
-											alt=""
-										/>
+										<img src={loadFile('base/nav-theme-dark.png')} alt="" />
 										{dvc.inverted === 'dark' && <NBadge dot color="#19be6b" />}
 									</div>
 									<div class={css['nav-style']} onClick={e => dvc.setInverted('light')}>
-										<img
-											src={new URL('/src/assets/base/nav-theme-light.png', import.meta.url).href}
-											alt=""
-										/>
+										<img src={loadFile('base/nav-theme-light.png')} alt="" />
 										{dvc.inverted === 'light' && dvc.theme !== 'dark' && (
 											<NBadge dot color="#19be6b" />
 										)}
 									</div>
 									<div class={css['nav-style']} onClick={e => dvc.setInverted('nav-dark')}>
-										<img
-											src={new URL('/src/assets/base/all-theme-dark.png', import.meta.url).href}
-											alt=""
-										/>
+										<img src={loadFile('base/all-theme-dark.png')} alt="" />
 										{(dvc.theme === 'dark' || dvc.inverted === 'nav-dark') && (
 											<NBadge dot color="#19be6b" />
 										)}
