@@ -2,6 +2,7 @@ import { defineComponent, ref, computed } from 'vue'
 import { NDrawer, NDrawerContent, NMenu, MenuOption } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useAppStore } from '@/store/modules/app-store'
+import { useDvcStore } from '@/store/modules/dvc-store'
 import { onEnter } from '@/router'
 import { CoreNode } from '@/core/pipe/pipe-type'
 
@@ -15,8 +16,9 @@ export function useAside(node?: CoreNode | null) {
 		name: 'Core-Aside',
 		emits: ['close'],
 		setup(props, { emit }) {
-			const { inverted } = useProvider()
+			const { vars, inverted } = useProvider()
 			const app = useAppStore()
+			const dvc = useDvcStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)
 			const onClose = () => emit('close')
 
@@ -25,6 +27,12 @@ export function useAside(node?: CoreNode | null) {
 				onClose()
 				init(false)
 			}
+			const color = computed(() => {
+				if (dvc.theme === 'dark' || dvc.inverted === 'dark' || dvc.inverted === 'nav-dark') {
+					return 'rgb(24, 24, 28)'
+				}
+				return vars.value.cardColor
+			})
 
 			return () => (
 				<NDrawer
@@ -34,7 +42,11 @@ export function useAside(node?: CoreNode | null) {
 					placement="left"
 					on-mask-click={onClose}
 				>
-					<NDrawerContent title="Admin" body-content-style={{ padding: 0 }}>
+					<NDrawerContent
+						title="Admin"
+						body-content-style={{ padding: 0, backgroundColor: color.value }}
+						header-style={{ display: 'none' }}
+					>
 						<NMenu
 							accordion
 							inverted={inverted.value.aside}
