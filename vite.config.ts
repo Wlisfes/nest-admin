@@ -6,13 +6,9 @@ import { resolve } from 'path'
 import Vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
 
-interface ImportMetaEnv {
-	VITE_PORT: string
-}
-
 export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
 	const root = process.cwd()
-	const env: ImportMetaEnv = loadEnv(mode, root) as any
+	const env = loadEnv(mode, root)
 
 	return {
 		plugins: [
@@ -42,11 +38,11 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
 			port: Number(env.VITE_PORT),
 			open: true,
 			proxy: {
-				['/api']: {
-					target: 'https://lisfes.cn',
+				[env.VITE_API_BASE]: {
+					target: env.VITE_API_TARGET,
 					ws: true,
 					changeOrigin: true,
-					rewrite: path => path.replace(/^\/api/, '')
+					rewrite: path => path.replace(new RegExp(`^${env.VITE_API_BASE}`), '')
 				}
 			}
 		}
