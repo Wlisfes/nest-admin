@@ -34,10 +34,7 @@ export function useAside(node?: CoreNode | null) {
 				}
 			})
 
-			const onClose = () => {
-				emit('close')
-				done()
-			}
+			const onClose = () => emit('close')
 
 			const onSelecter = (path: string) => {
 				onEnter(path)
