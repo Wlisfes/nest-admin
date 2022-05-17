@@ -12,6 +12,8 @@
 		"@better-scroll/mouse-wheel": "^2.4.2",
 		"@better-scroll/observe-dom": "^2.4.2",
 		"axios": "^0.26.1",
+		"cropperjs": "^1.5.12",
+		"dayjs": "^1.11.2",
 		"element-plus": "^2.1.10",
 		"js-cookie": "^3.0.1",
 		"naive-ui": "^2.28.1",
