@@ -3,6 +3,7 @@ import { NDrawer, NDrawerContent, NMenu, MenuOption } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
+import { useWatcher } from '@/utils/utils-watcher'
 import { onEnter } from '@/router'
 import { CoreNode } from '@/core/pipe/pipe-type'
 
@@ -17,22 +18,32 @@ export function useAside(node?: CoreNode | null) {
 		emits: ['close'],
 		setup(props, { emit }) {
 			const { vars, inverted } = useProvider()
+			const client = useWatcher()
 			const app = useAppStore()
 			const dvc = useDvcStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)
-			const onClose = () => emit('close')
-
-			const onSelecter = (path: string) => {
-				onEnter(path)
-				onClose()
-				init(false)
-			}
 			const color = computed(() => {
 				if (dvc.theme === 'dark' || dvc.inverted === 'dark' || dvc.inverted === 'nav-dark') {
 					return 'rgb(24, 24, 28)'
 				}
 				return vars.value.cardColor
 			})
+			const done = client.observer.on('resize', e => {
+				if (e?.device !== 'MOBILE') {
+					init(false)
+				}
+			})
+
+			const onClose = () => {
+				emit('close')
+				done()
+			}
+
+			const onSelecter = (path: string) => {
+				onEnter(path)
+				onClose()
+				init(false)
+			}
 
 			return () => (
 				<NDrawer

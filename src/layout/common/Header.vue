@@ -3,7 +3,6 @@ import { defineComponent, ref, computed, Fragment } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
-import { useWatcher } from '@/utils/utils-watcher'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, onEnter } from '@/router'
 import { useAside } from '@/core/common/core-aside'
@@ -18,7 +17,6 @@ export default defineComponent({
 
 		const app = useAppStore()
 		const dvc = useDvcStore()
-		const client = useWatcher()
 		const avatar = computed(() => {
 			return 'https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg'
 			// return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href

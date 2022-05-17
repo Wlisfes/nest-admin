@@ -8,8 +8,8 @@ export type ObserverEvent = {
 
 export class Watcher {
 	private static instance: Watcher | null = null
-	private observer: Observer<ObserverEvent>
-	private store
+	public observer: Observer<ObserverEvent>
+	public store
 
 	constructor() {
 		this.observer = new Observer()
