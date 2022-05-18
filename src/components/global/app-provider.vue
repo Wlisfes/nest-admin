@@ -3,8 +3,8 @@ import { defineComponent, Fragment } from 'vue'
 import { useLoadingBar } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 
-const Component = defineComponent({
-	name: 'AppProviderComponent',
+const RComponent = defineComponent({
+	name: 'RComponent',
 	setup(props, { slots }) {
 		window.$loading = useLoadingBar()
 
@@ -23,7 +23,7 @@ export default defineComponent({
 					<n-dialog-provider>
 						<n-notification-provider>
 							<n-message-provider>
-								<Component>{{ default: slots.default }}</Component>
+								<RComponent>{{ default: slots.default }}</RComponent>
 							</n-message-provider>
 						</n-notification-provider>
 					</n-dialog-provider>

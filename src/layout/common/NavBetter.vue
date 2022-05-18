@@ -123,7 +123,7 @@ export default defineComponent({
 	align-items: center;
 	position: relative;
 	background-color: var(--back-color);
-	padding: 5px 10px;
+	padding: 5px 12px;
 	.wrapper {
 		flex: 1;
 		white-space: nowrap;
