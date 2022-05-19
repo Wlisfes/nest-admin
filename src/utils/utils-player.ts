@@ -12,6 +12,7 @@ export interface DoneOption {
 export function initPlayer(option: DoneOption) {
 	const client = new DPlayer({
 		container: option.el,
+		autoplay: option.autoplay ?? false,
 		theme: option.theme ?? '#fb7299',
 		lang: option.lang ?? 'zh-cn',
 		video: {
