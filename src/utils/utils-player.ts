@@ -8,6 +8,7 @@ export interface DoneOption {
 	theme?: string
 	lang?: 'en' | 'zh-cn' | 'zh-tw'
 }
+
 export function initPlayer(option: DoneOption) {
 	const client = new DPlayer({
 		container: option.el,
