@@ -19,5 +19,5 @@ export function initPlayer(option: DoneOption) {
 		}
 	})
 
-	return { client }
+	return client
 }
