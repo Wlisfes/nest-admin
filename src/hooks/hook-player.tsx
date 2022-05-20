@@ -1,9 +1,17 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineComponent } from 'vue'
 import { initPlayer } from '@/utils/utils-player'
 import { Observer } from '@/utils/utils-observer'
 import DPlayer from 'dplayer'
 
 export interface PropsOption {}
+
+const Component = defineComponent({
+	setup() {
+		return () => {
+			return
+		}
+	}
+})
 
 export function usePlayer(option: PropsOption) {
 	const el = ref<HTMLElement | null>(null)
