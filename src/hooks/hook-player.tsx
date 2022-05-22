@@ -1,56 +1,89 @@
-import { ref, onMounted, defineComponent } from 'vue'
-import { initPlayer } from '@/utils/utils-player'
+import { ref, onMounted, defineComponent, computed, CSSProperties } from 'vue'
+import { initPlayer, DoneOption } from '@/utils/utils-player'
 import { Observer } from '@/utils/utils-observer'
+import { useWatcher } from '@/utils/utils-watcher'
 import DPlayer from 'dplayer'
 
-export interface PropsOption {}
+export const NPlayer = defineComponent({
+	name: 'NPlayer',
+	props: {
+		maxWidth: { type: Number, default: () => 1280 },
+		scale: { type: Number, default: () => 16 / 9 }
+	},
+	emits: ['mounte'],
+	setup(props, { emit }) {
+		const el = ref<HTMLElement | null>(null)
+		const height = ref<number>(props.maxWidth / props.scale)
+		const client = useWatcher()
+		const done = client.observer.on('resize', e => {
+			height.value = (el.value as HTMLElement)?.clientWidth / props.scale
+		})
+		const layer = computed<CSSProperties>(() => ({
+			display: 'flex',
+			flexDirection: 'column',
+			justifyContent: 'center',
+			alignItems: 'center',
+			backgroundColor: '#000000'
+		}))
+		const layout = computed<CSSProperties>(() => ({
+			width: '100%',
+			maxWidth: props.maxWidth + 'px'
+		}))
+		const player = computed<CSSProperties>(() => ({
+			width: '100%',
+			height: height.value + 'px'
+		}))
 
-const Component = defineComponent({
-	setup() {
+		onMounted(() => emit('mounte', el.value))
+
 		return () => {
-			return
+			return (
+				<div style={layer.value} class="app-player">
+					<div style={layout.value}>
+						<div style={player.value}>
+							<div ref={el} style={{ width: '100%', height: '100%' }}></div>
+						</div>
+					</div>
+				</div>
+			)
 		}
 	}
 })
 
-export function usePlayer(option: PropsOption) {
+export type IOption = Pick<DoneOption, 'url' | 'cover' | 'autoplay' | 'lang' | 'theme'> & {}
+export function usePlayer() {
 	const el = ref<HTMLElement | null>(null)
 	const client = ref<DPlayer>()
 	const observer = new Observer()
 
-	onMounted(() => init())
+	/**获取挂载元素**/
+	const mounte = async (element: HTMLElement) => (el.value = element)
 
 	/**初始化播放器**/
-	const init = () => {
-		client.value = initPlayer({
-			el: el.value,
-			url: `https://cloud.lisfes.cn/ffc459f3567e40b793e70d58bf0258f9/96f8fe5fb63c4ba184e1dfd3c5032e28-ab2cf1d2c6e8701c8a24e3bcd310f84f-hd.mp4?auth_key=1653051233-c86d913f2e58463793509c08a71dbbe7-0-58bd833214de157c1b5dd42e425172c6`,
-			cover: `https://oss.lisfes.cn/cloud/cover/2021-08/1628497707293.jpg`
-		})
+	const init = (option: IOption) => {
+		client.value = initPlayer({ el: el.value, ...option })
 	}
 
-	const destroy = () => {
-		return new Promise<void>(resolve => {
-			client.value?.destroy()
-			resolve()
-		})
-	}
-
-	/**重新加载视频**/
-	const reload = () => {
-		destroy().finally(() => {
-			client.value = initPlayer({
-				el: el.value,
-				autoplay: true,
-				url: `https://cloud.lisfes.cn/72bc55d65d2d4e13a2c4c798a4cb37b6/814144d261984468873b81d1015fbe97-63eb4e93716e2ffed17b7e6c260e38e5-hd.mp4?auth_key=1653047671-42d0517269db44ea92200f6f373b2571-0-a8dde6501bb39c567ee4969e4cb16052`,
-				cover: `https://oss.lisfes.cn/cloud/cover/2021-09/1632913648240.jpg`
-			})
-		})
-	}
+	/**播放**/
 	const play = () => client.value?.play()
+
+	/**暂停**/
 	const pause = () => client.value?.pause()
+
+	/**跳转到特定时间**/
 	const seek = (time: number) => client.value?.seek(time)
+
+	/**设置速度**/
 	const speed = (rate: number) => client.value?.speed(rate)
 
-	return { el, client, observer, reload, play, pause, seek, speed }
+	/**设置音量**/
+	const volume = (volume: number) => client.value?.volume(volume, true, false)
+
+	/**销毁**/
+	const destroy = async () => client.value?.destroy()
+
+	/**重载**/
+	const reload = (option: IOption) => destroy().finally(() => init(option))
+
+	return { client, observer, mounte, init, play, pause, seek, speed, volume, destroy, reload }
 }
