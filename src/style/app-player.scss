@@ -1,0 +1,20 @@
+.app-player {
+	position: relative;
+	overflow: hidden;
+	.dplayer {
+		position: static;
+		&.dplayer-hide-controller .dplayer-controller {
+			transform: translateY(38px);
+		}
+		.dplayer-controller {
+			opacity: 1 !important;
+			padding: 0;
+		}
+		.dplayer-bar-wrap {
+			width: 100%;
+		}
+		.dplayer-time {
+			margin-left: 10px;
+		}
+	}
+}
