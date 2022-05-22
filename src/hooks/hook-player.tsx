@@ -15,9 +15,6 @@ export const NPlayer = defineComponent({
 		const el = ref<HTMLElement | null>(null)
 		const height = ref<number>(props.maxWidth / props.scale)
 		const client = useWatcher()
-		const done = client.observer.on('resize', e => {
-			height.value = (el.value as HTMLElement)?.clientWidth / props.scale
-		})
 		const layer = computed<CSSProperties>(() => ({
 			display: 'flex',
 			flexDirection: 'column',
@@ -25,7 +22,7 @@ export const NPlayer = defineComponent({
 			alignItems: 'center',
 			backgroundColor: '#000000'
 		}))
-		const layout = computed<CSSProperties>(() => ({
+		const max = computed<CSSProperties>(() => ({
 			width: '100%',
 			maxWidth: props.maxWidth + 'px'
 		}))
@@ -34,12 +31,18 @@ export const NPlayer = defineComponent({
 			height: height.value + 'px'
 		}))
 
-		onMounted(() => emit('mounte', el.value))
+		const onCompute = () => (height.value = (el.value as HTMLElement)?.clientWidth / props.scale)
+		const done = client.observer.on('resize', e => onCompute())
+
+		onMounted(() => {
+			onCompute()
+			emit('mounte', el.value)
+		})
 
 		return () => {
 			return (
 				<div style={layer.value} class="app-player">
-					<div style={layout.value}>
+					<div style={max.value}>
 						<div style={player.value}>
 							<div ref={el} style={{ width: '100%', height: '100%' }}></div>
 						</div>
@@ -60,30 +63,30 @@ export function usePlayer() {
 	const mounte = async (element: HTMLElement) => (el.value = element)
 
 	/**初始化播放器**/
-	const init = (option: IOption) => {
-		client.value = initPlayer({ el: el.value, ...option })
+	const init = async (option: IOption) => {
+		return (client.value = initPlayer({ el: el.value, ...option }))
 	}
 
 	/**播放**/
-	const play = () => client.value?.play()
+	const play = async () => client.value?.play()
 
 	/**暂停**/
-	const pause = () => client.value?.pause()
+	const pause = async () => client.value?.pause()
 
 	/**跳转到特定时间**/
-	const seek = (time: number) => client.value?.seek(time)
+	const seek = async (time: number) => client.value?.seek(time)
 
 	/**设置速度**/
-	const speed = (rate: number) => client.value?.speed(rate)
+	const speed = async (rate: number) => client.value?.speed(rate)
 
 	/**设置音量**/
-	const volume = (volume: number) => client.value?.volume(volume, true, false)
+	const volume = async (volume: number) => client.value?.volume(volume, true, false)
 
 	/**销毁**/
 	const destroy = async () => client.value?.destroy()
 
 	/**重载**/
-	const reload = (option: IOption) => destroy().finally(() => init(option))
+	const reload = async (option: IOption) => destroy().then(() => init(option))
 
 	return { client, observer, mounte, init, play, pause, seek, speed, volume, destroy, reload }
 }
