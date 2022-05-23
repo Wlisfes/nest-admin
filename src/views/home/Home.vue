@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useProvider } from '@/hooks/hook-provider'
 import { usePlayer, NPlayer } from '@/hooks/hook-player'
-import { httpClientCloud, httpCloudCheck } from '@/api'
+import { httpClientCloud, httpCloudCheck } from '@/api/service'
 
 export default defineComponent({
 	name: 'Home',
