@@ -2,6 +2,7 @@ import { ref, onMounted, defineComponent, computed, CSSProperties } from 'vue'
 import { initPlayer, DoneOption } from '@/utils/utils-player'
 import { Observer } from '@/utils/utils-observer'
 import { useWatcher } from '@/utils/utils-watcher'
+import { NSpin } from 'naive-ui'
 import DPlayer from 'dplayer'
 
 export const NPlayer = defineComponent({
@@ -30,6 +31,12 @@ export const NPlayer = defineComponent({
 			width: '100%',
 			height: height.value + 'px'
 		}))
+		const spin = computed<CSSProperties>(() => ({
+			width: '100%',
+			maxWidth: props.maxWidth + 'px',
+			height: height.value + 'px',
+			position: 'absolute'
+		}))
 
 		const onCompute = () => (height.value = (el.value as HTMLElement)?.clientWidth / props.scale)
 		const done = client.observer.on('resize', e => onCompute())
@@ -44,6 +51,9 @@ export const NPlayer = defineComponent({
 				<div style={layer.value} class="app-player">
 					<div style={max.value}>
 						<div style={player.value}>
+							<div style={spin.value}>
+								<NSpin size={48} style={{ width: '100%', height: '100%' }} />
+							</div>
 							<div ref={el} style={{ width: '100%', height: '100%' }}></div>
 						</div>
 					</div>

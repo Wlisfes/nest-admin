@@ -11,18 +11,14 @@ export default defineComponent({
 		const { vars } = useProvider()
 		const { mounte, init, play } = usePlayer()
 
-		const useHttpClientCloud = () => {
-			httpClientCloud({ id: 16 }).then(async response => {
+		const useHttpClientCloud = (id: number = 16) => {
+			httpClientCloud({ id }).then(async ({ data: { key, cover } }) => {
 				try {
-					const { data } = await httpCloudCheck({
-						VideoId: response.data.key,
-						AuthTimeout: 24 * 60 * 60
-					})
-					if (data.list.length > 0) {
-						const node = data.list.shift()
+					const { data } = await httpCloudCheck({ VideoId: key, AuthTimeout: 24 * 60 * 60 })
+					if (data.list?.length > 0) {
 						init({
-							cover: response.data.cover || data.base.CoverURL,
-							url: node.PlayURL,
+							cover: cover || data.base.CoverURL,
+							url: data.list[0].PlayURL,
 							autoplay: true
 						}).then(() => play())
 					}
@@ -34,7 +30,6 @@ export default defineComponent({
 			return (
 				<AppContainer>
 					<NPlayer onMounte={el => mounte(el).finally(useHttpClientCloud)}></NPlayer>
-					<div></div>
 				</AppContainer>
 			)
 		}
