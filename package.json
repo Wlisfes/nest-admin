@@ -16,7 +16,6 @@
 		"cropperjs": "^1.5.12",
 		"dayjs": "^1.11.2",
 		"dplayer": "^1.26.0",
-		"element-plus": "^2.1.10",
 		"js-cookie": "^3.0.1",
 		"naive-ui": "^2.28.1",
 		"normalize.css": "^8.0.1",
