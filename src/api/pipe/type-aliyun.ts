@@ -31,8 +31,30 @@ export type NDemanRate = {
 	Width: number
 }
 
+export type NMezzanine = {
+	Bitrate: string
+	CRC64: string
+	CreationTime: string
+	Duration: string
+	FileName: string
+	FileURL: string
+	Fps: string
+	Height: number
+	OutputType: string
+	PreprocessStatus: string
+	Size: number
+	Status: string
+	VideoId: string
+	Width: number
+}
+
 export type IDemanOption = {
 	RequestId: string
 	base: NDemanBase
 	list: Array<NDemanRate>
+}
+
+export type IDemanFileOption = {
+	RequestId: string
+	Mezzanine: NMezzanine
 }
