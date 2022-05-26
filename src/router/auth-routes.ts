@@ -17,7 +17,7 @@ export const authRoutes: RouteRecordRaw[] = [
 		children: [
 			{
 				path: '/admin',
-				name: 'Home',
+				name: 'Admin',
 				meta: { title: '主控台', auth: true },
 				component: () => import('@/views/home/Home.vue')
 			},

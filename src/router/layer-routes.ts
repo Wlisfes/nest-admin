@@ -10,14 +10,14 @@ import { Layer } from '@/layout'
 export const layerRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		meta: { title: '妖雨录' },
 		component: Layer,
+		redirect: '/home',
 		children: [
 			{
-				path: '/',
+				path: '/home',
 				name: 'Home',
 				meta: { title: '妖雨录' },
-				component: () => import('@/views/home/Home.vue')
+				component: () => import('@/client/Home.vue')
 			}
 		]
 	}
