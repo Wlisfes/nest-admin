@@ -2,6 +2,7 @@ import { App } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router'
 import { authRoutes } from '@/router/auth-routes'
 import { baseRoutes } from '@/router/base-routes'
+import { layerRoutes } from '@/router/layer-routes'
 import { useAppStore } from '@/store/modules/app-store'
 import { getToken } from '@/utils/utils-cookie'
 
@@ -11,7 +12,7 @@ import { getToken } from '@/utils/utils-cookie'
  * @param Boolean meta.hidden   是否显示菜单
  * @param Boolean meta.root     是否为顶层菜单
  */
-export const routes: RouteRecordRaw[] = [...baseRoutes, ...authRoutes]
+export const routes: RouteRecordRaw[] = [...baseRoutes, ...authRoutes, ...layerRoutes]
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -44,21 +45,24 @@ export function setupGuardRouter(router: Router) {
 
 	router.beforeEach(async (to, form, next) => {
 		window.$loading?.start()
-		if (await getToken()) {
-			if (whitelist.includes(to.path)) {
-				next({ path: '/', replace: true })
-				window.$loading?.finish()
-			} else {
-				next()
-			}
-		} else {
-			if (whitelist.includes(to.path)) {
-				next()
-			} else {
-				next({ path: '/pipe/login', replace: true })
-				window.$loading?.finish()
-			}
-		}
+
+		console.log(to)
+		next()
+		// if (await getToken()) {
+		// 	if (whitelist.includes(to.path)) {
+		// 		next({ path: '/', replace: true })
+		// 		window.$loading?.finish()
+		// 	} else {
+		// 		next()
+		// 	}
+		// } else {
+		// 	if (whitelist.includes(to.path)) {
+		// 		next()
+		// 	} else {
+		// 		next({ path: '/pipe/login', replace: true })
+		// 		window.$loading?.finish()
+		// 	}
+		// }
 	})
 
 	router.afterEach((to, form) => {

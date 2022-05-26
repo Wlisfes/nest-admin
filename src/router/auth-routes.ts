@@ -4,32 +4,33 @@ import { Layout, Parent, Refresh } from '@/layout'
 /**
  * @param String meta.title     标题
  * @param String meta.icon      图标
+ * @param String meta.auth      是否需要登录
  * @param Boolean meta.hidden   是否显示菜单
  * @param Boolean meta.root     是否为顶层菜单
  */
 export const authRoutes: RouteRecordRaw[] = [
 	{
-		path: '/',
-		meta: { title: '控制台', icon: 'antd-dashboard' },
+		path: '/admin',
+		meta: { title: '控制台', icon: 'antd-dashboard', auth: true },
 		component: Layout,
-		redirect: '/home',
+		redirect: '/admin',
 		children: [
 			{
-				path: '/home',
+				path: '/admin',
 				name: 'Home',
-				meta: { title: '主控台' },
+				meta: { title: '主控台', auth: true },
 				component: () => import('@/views/home/Home.vue')
 			},
 			{
 				path: '/monitor',
 				name: 'Monitor',
-				meta: { title: '监控页' },
+				meta: { title: '监控页', auth: true },
 				component: () => import('@/views/home/Template.vue')
 			},
 			{
 				path: '/work/bench',
 				name: 'WorkBench',
-				meta: { title: '工作台' },
+				meta: { title: '工作台', auth: true },
 				component: () => import('@/views/home/Template.vue')
 			}
 		]
