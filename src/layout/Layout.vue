@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, Transition, VNode, createVNode, computed, CSSProperties } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView, RouteLocationNormalizedLoaded } from 'vue-router'
 import { Aside, Header, NavBetter } from '@/layout/common'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
@@ -9,7 +9,6 @@ export default defineComponent({
 	name: 'Layout',
 	setup() {
 		const dvc = useDvcStore()
-		const route = useRoute()
 		const { vars } = useProvider()
 		const css = computed<CSSProperties>(() => {
 			return {
@@ -29,15 +28,13 @@ export default defineComponent({
 						<Header></Header>
 						{dvc.better && <NavBetter></NavBetter>}
 						<n-layout class="app-container" position="absolute" style={css.value} native-scrollbar={false}>
-							<RouterView key={route.path}>
-								{{
-									default: ({ Component }: { Component: VNode }) => {
-										return (
-											<Transition name={name.value} mode="out-in" appear>
-												{createVNode(Component)}
-											</Transition>
-										)
-									}
+							<RouterView>
+								{({ Component, route }: { Component: VNode; route: RouteLocationNormalizedLoaded }) => {
+									return (
+										<Transition name={name.value} mode="out-in" appear>
+											{createVNode(Component, { key: route.path })}
+										</Transition>
+									)
 								}}
 							</RouterView>
 						</n-layout>
