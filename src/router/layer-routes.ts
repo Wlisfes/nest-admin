@@ -11,10 +11,10 @@ export const layerRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
 		component: Layer,
-		redirect: '/home',
+		meta: { hidden: true },
 		children: [
 			{
-				path: '/home',
+				path: '/',
 				name: 'Home',
 				meta: { title: '妖雨录' },
 				component: () => import('@/client/Home.vue')

@@ -10,7 +10,7 @@ import { Layout, Parent, Refresh } from '@/layout'
  */
 export const authRoutes: RouteRecordRaw[] = [
 	{
-		path: '/admin',
+		path: '/',
 		meta: { title: '控制台', icon: 'antd-dashboard', auth: true },
 		component: Layout,
 		redirect: '/admin',
@@ -18,19 +18,19 @@ export const authRoutes: RouteRecordRaw[] = [
 			{
 				path: '/admin',
 				name: 'Admin',
-				meta: { title: '主控台', auth: true },
+				meta: { title: '主控台' },
 				component: () => import('@/views/home/Home.vue')
 			},
 			{
 				path: '/monitor',
 				name: 'Monitor',
-				meta: { title: '监控页', auth: true },
+				meta: { title: '监控页' },
 				component: () => import('@/views/home/Template.vue')
 			},
 			{
 				path: '/work/bench',
 				name: 'WorkBench',
-				meta: { title: '工作台', auth: true },
+				meta: { title: '工作台' },
 				component: () => import('@/views/home/Template.vue')
 			}
 		]

@@ -1,7 +1,7 @@
 import { createVNode } from 'vue'
+import { UIcon } from '@/components/global'
 import type { RouteRecordRaw } from 'vue-router'
 import type { MenuOption } from 'naive-ui'
-import UIcon from '@/components/global/u-icon.vue'
 
 export function useToRoute(source: RouteRecordRaw[]): MenuOption[] {
 	const response: MenuOption[] = []

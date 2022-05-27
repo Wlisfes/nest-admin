@@ -12,7 +12,7 @@ import { getToken } from '@/utils/utils-cookie'
  * @param Boolean meta.hidden   是否显示菜单
  * @param Boolean meta.root     是否为顶层菜单
  */
-export const routes: RouteRecordRaw[] = [...baseRoutes, ...authRoutes, ...layerRoutes]
+export const routes: RouteRecordRaw[] = [...layerRoutes, ...baseRoutes, ...authRoutes]
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -45,31 +45,26 @@ export function setupGuardRouter(router: Router) {
 
 	router.beforeEach(async (to, form, next) => {
 		window.$loading?.start()
-
-		console.log(to)
-		next()
-		// if (await getToken()) {
-		// 	if (whitelist.includes(to.path)) {
-		// 		next({ path: '/', replace: true })
-		// 		window.$loading?.finish()
-		// 	} else {
-		// 		next()
-		// 	}
-		// } else {
-		// 	if (whitelist.includes(to.path)) {
-		// 		next()
-		// 	} else {
-		// 		next({ path: '/pipe/login', replace: true })
-		// 		window.$loading?.finish()
-		// 	}
-		// }
+		if (await getToken()) {
+			if (whitelist.includes(to.path)) {
+				next({ path: '/', replace: true })
+				window.$loading?.finish()
+			} else {
+				next()
+			}
+		} else if (to.meta.auth) {
+			next({ path: '/pipe/login', replace: true })
+			window.$loading?.finish()
+		} else {
+			next()
+		}
 	})
 
 	router.afterEach((to, form) => {
 		document.title = (to.meta?.title as string) || document.title
 
-		//不是白名单页面路径储存store
-		if (!whitelist.includes(to.path) && to.path !== '/refresh') {
+		//hidden等于false的页面才储存到store
+		if (!to.meta.hidden) {
 			store.setCurrent(to.path)
 			store.setMultiple({ key: to.path, meta: to.meta as any })
 		}
