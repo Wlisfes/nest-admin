@@ -12,6 +12,7 @@ export default defineComponent({
 	setup() {
 		const store = useAppStore()
 		store.setRouter(useToRoute(routes))
+		store.initBanner()
 		onMounted(() => useWatcher())
 
 		return () => (

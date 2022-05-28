@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { bfs } from '@/utils/utils-route'
-import { MenuOption } from 'naive-ui'
+import { loadCover } from '@/utils/utils-tool'
+import { httpWallpaper } from '@/api/service'
+import type { MenuOption } from 'naive-ui'
+import type { IBannerOption } from '@/api/pipe'
 
 export interface OneMultiple {
 	key: string
@@ -15,6 +18,8 @@ export interface AppStore {
 	collapse: boolean
 	router: Array<MenuOption>
 	multiple: Array<OneMultiple>
+	banner: Array<IBannerOption>
+	index: number
 }
 
 export const useAppStore = defineStore({
@@ -27,7 +32,9 @@ export const useAppStore = defineStore({
 			expanded: ['/'],
 			collapse: false,
 			router: [],
-			multiple: []
+			multiple: [],
+			banner: [],
+			index: 0
 		}
 	},
 	actions: {
@@ -77,6 +84,47 @@ export const useAppStore = defineStore({
 					this.multiple = []
 				}
 				resolve(type)
+			})
+		},
+		initBanner() {
+			return httpWallpaper().then(async ({ data }) => {
+				if (data?.length > 0) {
+					await loadCover(data[0].cover)
+					this.banner = data
+					return data
+				}
+			})
+		},
+		prevBanner() {
+			return new Promise<void>(async resolve => {
+				window.$loading?.start()
+				const { banner, index } = this
+				if (index > 0) {
+					const cover = banner[index - 1]?.cover
+					await loadCover(cover)
+					this.index--
+				} else {
+					const cover = banner[banner.length - 1]?.cover
+					await loadCover(cover)
+					this.index = banner.length - 1
+				}
+				resolve(window.$loading?.finish())
+			})
+		},
+		nextBanner() {
+			return new Promise<void>(async resolve => {
+				window.$loading?.start()
+				const { banner, index } = this
+				if (index < banner.length - 1) {
+					const cover = banner[index + 1]?.cover
+					await loadCover(cover)
+					this.index++
+				} else {
+					const cover = banner[0]?.cover
+					await loadCover(cover)
+					this.index = 0
+				}
+				resolve(window.$loading?.finish())
 			})
 		}
 	}

@@ -1,9 +1,12 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, CSSProperties } from 'vue'
+import { useAppStore } from '@/store/modules/app-store'
 
 export default defineComponent({
 	name: 'MaskCover',
 	setup() {
+		const app = useAppStore()
+		const current = computed(() => app.banner[app.index] || null)
 		const layer = computed<CSSProperties>(() => ({
 			transition: 'all 0.3s',
 			position: 'fixed',
@@ -12,13 +15,16 @@ export default defineComponent({
 			right: 0,
 			bottom: 0
 		}))
-		const cover = computed<CSSProperties>(() => ({
-			backgroundRepeat: 'no-repeat',
-			backgroundSize: 'cover',
-			backgroundPosition: '50%',
-			backgroundImage: `url('https://oss.lisfes.cn/cloud/stctic/1624934512799.jpg')`,
-			zIndex: 1
-		}))
+		const cover = computed<CSSProperties>(() => {
+			const paper = current.value?.cover || 'https://oss.lisfes.cn/cloud/stctic/1624934512799.jpg'
+			return {
+				backgroundRepeat: 'no-repeat',
+				backgroundSize: 'cover',
+				backgroundPosition: '50%',
+				backgroundImage: `url('${paper}')`,
+				zIndex: 1
+			}
+		})
 		const mask = computed<CSSProperties>(() => ({
 			opacity: 0.9,
 			zIndex: 2,
