@@ -24,7 +24,7 @@ export default defineComponent({
 				<n-layout-header id="app-header" style={black.value}>
 					<BarLink></BarLink>
 				</n-layout-header>
-				<n-layout style={{ top: '60px' }} position="absolute" native-scrollbar={false} on-scroll={onScrollbar}>
+				<n-layout style={{ top: '50px' }} position="absolute" native-scrollbar={false} on-scroll={onScrollbar}>
 					<RouterView>
 						{({ Component, route }: { Component: VNode; route: RouteLocationNormalizedLoaded }) => {
 							return createVNode(Component, { key: route.path })
