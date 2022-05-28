@@ -48,13 +48,13 @@ export type NMezzanine = {
 	Width: number
 }
 
-export type IDemanOption = {
+export type IDeman = {
 	RequestId: string
 	base: NDemanBase
 	list: Array<NDemanRate>
 }
 
-export type IDemanFileOption = {
+export type IDemanFile = {
 	RequestId: string
 	Mezzanine: NMezzanine
 }

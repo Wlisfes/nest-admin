@@ -1,3 +1,6 @@
 export * from './type-common'
+export * from './type-user'
 export * from './type-cloud'
 export * from './type-aliyun'
+export * from './type-partner'
+export * from './type-poster'

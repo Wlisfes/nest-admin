@@ -3,7 +3,7 @@ import { bfs } from '@/utils/utils-route'
 import { loadCover } from '@/utils/utils-tool'
 import { httpWallpaper } from '@/api/service'
 import type { MenuOption } from 'naive-ui'
-import type { IBannerOption } from '@/api/pipe'
+import type { IBanner } from '@/api/pipe'
 
 export interface OneMultiple {
 	key: string
@@ -18,7 +18,7 @@ export interface AppStore {
 	collapse: boolean
 	router: Array<MenuOption>
 	multiple: Array<OneMultiple>
-	banner: Array<IBannerOption>
+	banner: Array<IBanner>
 	index: number
 }
 

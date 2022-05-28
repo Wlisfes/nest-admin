@@ -1,6 +1,6 @@
 import type { IDate } from '@/api/pipe'
 
-export type ICloudOption = IDate & {
+export type ICloud = IDate & {
 	id: number
 	type: number
 	title: string
@@ -15,6 +15,6 @@ export type ICloudOption = IDate & {
 	comment: number
 	star: { total: number; where: boolean }
 	description: string
-	parent: ICloudOption
-	children: Array<ICloudOption>
+	parent: ICloud
+	children: Array<ICloud>
 }

@@ -1,6 +1,6 @@
 export type IDate = { createTime: string; updateTime: string }
 
-export type IBannerOption = {
+export type IBanner = {
 	start: string
 	end: string
 	cover: string
