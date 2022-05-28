@@ -16,8 +16,32 @@ export const layerRoutes: RouteRecordRaw[] = [
 			{
 				path: '/',
 				name: 'Home',
-				meta: { title: '妖雨录' },
+				meta: { title: '🍎 首页' },
 				component: () => import('@/client/Home.vue')
+			},
+			{
+				path: '/multiple',
+				name: 'Multiple',
+				meta: { title: '🍀 归档' },
+				component: () => import('@/client/Multiple.vue')
+			},
+			{
+				path: '/client',
+				name: 'Client',
+				meta: { title: '🍓 视频' },
+				component: () => import('@/client/Client.vue')
+			},
+			{
+				path: '/minute',
+				name: 'Minute',
+				meta: { title: '🍒 收录' },
+				component: () => import('@/client/Minute.vue')
+			},
+			{
+				path: '/partner',
+				name: 'Partner',
+				meta: { title: '🍄 生活' },
+				component: () => import('@/client/Partner.vue')
 			}
 		]
 	}

@@ -15,7 +15,7 @@ export default defineComponent({
 						<RouterLink to="/">🍎 首页</RouterLink>
 					</li>
 					<li class="link">
-						<RouterLink to="/admin">🍀 归档</RouterLink>
+						<RouterLink to="/multiple">🍀 归档</RouterLink>
 					</li>
 					<li class="link">
 						<RouterLink to="/client">🍓 视频</RouterLink>
@@ -80,7 +80,7 @@ export default defineComponent({
 			transition: all 0.3s;
 			padding-right: 5px;
 			text-decoration: none;
-			&.router-link-active {
+			&.router-link-exact-active {
 				color: #ffffff;
 				border-color: #ffffff;
 			}
