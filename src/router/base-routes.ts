@@ -9,14 +9,14 @@ import { Compute, Login, Register } from '@/views/pipe'
  */
 export const baseRoutes: RouteRecordRaw[] = [
 	{
-		path: '/pipe',
+		path: '/',
 		name: 'Compute',
 		meta: { hidden: true },
 		component: Compute,
-		redirect: '/pipe/login',
+		// redirect: '/pipe/login',
 		children: [
 			{
-				path: '/pipe/login',
+				path: '/login',
 				name: 'Login',
 				meta: { title: '登录' },
 				components: { default: Login, login: Login }

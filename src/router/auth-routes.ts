@@ -13,7 +13,6 @@ export const authRoutes: RouteRecordRaw[] = [
 		path: '/',
 		meta: { title: '控制台', icon: 'antd-dashboard', auth: true },
 		component: Layout,
-		redirect: '/admin',
 		children: [
 			{
 				path: '/admin',

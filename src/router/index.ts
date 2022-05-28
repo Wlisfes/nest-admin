@@ -40,7 +40,7 @@ export function onReload(path?: string, query?: Record<string, any>) {
 //路由守卫
 export function setupGuardRouter(router: Router) {
 	//白名单页面
-	const whitelist = ['/pipe/login', '/pipe/register']
+	const whitelist = ['/login', '/register']
 	const store = useAppStore()
 
 	router.beforeEach(async (to, form, next) => {
@@ -53,7 +53,7 @@ export function setupGuardRouter(router: Router) {
 				next()
 			}
 		} else if (to.meta.auth) {
-			next({ path: '/pipe/login', replace: true })
+			next({ path: '/login', replace: true })
 			window.$loading?.finish()
 		} else {
 			next()

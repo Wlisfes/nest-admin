@@ -7,7 +7,7 @@ export default defineComponent({
 	name: 'Compute',
 	setup() {
 		const route = useRoute()
-		const current = ref<boolean>(route.path === '/pipe/login')
+		const current = ref<boolean>(route.path === '/login')
 
 		const onChange = (path: string) => {
 			current.value = !current.value
@@ -26,12 +26,12 @@ export default defineComponent({
 					<div class="overlay-container">
 						<div class="app-overlay">
 							<div class="app-overlay__panel is-left">
-								<n-button type="info" round onClick={() => onChange('/pipe/register')}>
+								<n-button type="info" round onClick={() => onChange('/register')}>
 									注 册
 								</n-button>
 							</div>
 							<div class="app-overlay__panel is-right">
-								<n-button type="info" round onClick={() => onChange('/pipe/login')}>
+								<n-button type="info" round onClick={() => onChange('/login')}>
 									登 录
 								</n-button>
 							</div>
