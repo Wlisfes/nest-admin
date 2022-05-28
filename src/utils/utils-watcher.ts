@@ -2,17 +2,16 @@ import { onBeforeUnmount } from 'vue'
 import { Observer } from '@/utils/utils-observer'
 import { useAppStore } from '@/store/modules/app-store'
 
-export type ObserverEvent = {
+type WatcherEvent = {
 	resize: { width: number; device: string; collapse: boolean }
 }
-
-export class Watcher {
+class Watcher {
 	private static instance: Watcher | null = null
-	public observer: Observer<ObserverEvent>
+	public observer
 	public store
 
 	constructor() {
-		this.observer = new Observer()
+		this.observer = new Observer<WatcherEvent>()
 		this.store = useAppStore()
 		this.listener().finally(() => this.on())
 	}
@@ -57,3 +56,15 @@ export function useWatcher() {
 	onBeforeUnmount(() => instance.off())
 	return instance
 }
+
+/***************************************************************************************/
+type InstanceEvent = {
+	scroll: { distance: number }
+}
+export const instance = new (class {
+	public observer = new Observer<InstanceEvent>()
+
+	public onScrollbar(distance: number) {
+		this.observer.emit('scroll', { distance })
+	}
+})()

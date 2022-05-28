@@ -2,6 +2,7 @@
 import { defineComponent, ref, computed, VNode, createVNode, CSSProperties } from 'vue'
 import { RouterView, RouteLocationNormalizedLoaded } from 'vue-router'
 import { MaskCover, BarLink } from '@/layout/common'
+import { instance } from '@/utils/utils-watcher'
 
 export default defineComponent({
 	name: 'Layer',
@@ -12,7 +13,9 @@ export default defineComponent({
 		}))
 
 		const onScrollbar = (e: { target: { scrollTop: number } }) => {
-			distance.value = e.target.scrollTop
+			const top = e.target.scrollTop || 0
+			distance.value = top
+			instance.onScrollbar(top)
 		}
 
 		return () => (
