@@ -13,7 +13,6 @@ export const baseRoutes: RouteRecordRaw[] = [
 		name: 'Compute',
 		meta: { hidden: true },
 		component: Compute,
-		// redirect: '/pipe/login',
 		children: [
 			{
 				path: '/login',

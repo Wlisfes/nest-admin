@@ -33,7 +33,7 @@ export default defineComponent({
 		const onSelecter = (key: string) => {
 			if (key === 'logout') {
 				delToken().finally(() => {
-					onEnter('/pipe/login')
+					onEnter('/login')
 				})
 			}
 		}
