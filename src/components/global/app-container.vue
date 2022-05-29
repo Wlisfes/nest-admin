@@ -1,9 +1,17 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType, CSSProperties } from 'vue'
+import { defineComponent, computed, PropType, CSSProperties, VNode } from 'vue'
 
 export default defineComponent({
 	name: 'AppContainer',
 	props: {
+		loading: {
+			tyep: Boolean,
+			default: false
+		},
+		empty: {
+			tyep: Boolean,
+			default: false
+		},
 		style: {
 			type: Object as PropType<CSSProperties>,
 			default: null
@@ -20,9 +28,20 @@ export default defineComponent({
 			if (props.style) return { ...u, ...props.style }
 			return u
 		})
+		const RContent = () => {
+			if (props.loading && slots.hasOwnProperty('placeholder')) {
+				return (slots.placeholder?.() as unknown as VNode) || slots.default?.()
+			}
+
+			if (props.empty && slots.hasOwnProperty('empty')) {
+				return (slots.empty?.() as unknown as VNode) || slots.default?.()
+			}
+
+			return slots.default?.() as unknown as VNode
+		}
 		return () => (
 			<n-el tag="section" class="app-section" style={style.value}>
-				{slots.default?.()}
+				<RContent></RContent>
 			</n-el>
 		)
 	}
