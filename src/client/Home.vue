@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref, computed } from 'vue'
+import { AppContainer } from '@/components/global'
 import { useAppStore } from '@/store/modules/app-store'
 import { moment } from '@/utils/utils-tool'
 
@@ -31,8 +32,8 @@ export default defineComponent({
 		}
 
 		return () => (
-			<div class="app-base">
-				<div class="app-base__center">
+			<AppContainer class="app-pipe">
+				<div class="app-pipe__center">
 					<div class="vnode-clock">
 						<div class="vnode-clock__date">{`${date.value.time} ${date.value.week}`}</div>
 						<div class="vnode-clock__time">{time.value}</div>
@@ -41,7 +42,7 @@ export default defineComponent({
 						</div>
 					</div>
 				</div>
-				<div class="app-base__operate">
+				<div class="app-pipe__operate">
 					<n-space size={15}>
 						<n-el
 							tag="a"
@@ -70,27 +71,20 @@ export default defineComponent({
 						</n-el>
 					</n-space>
 				</div>
-				<div class="app-base__footer">
+				<div class="app-pipe__footer">
 					<span>Cloud Ant Design ©2022 Created by Wlisfes</span>
 					<a href="https://beian.miit.gov.cn" target="_blank">
 						粤ICP备18016996号-1
 					</a>
 				</div>
-			</div>
+			</AppContainer>
 		)
 	}
 })
 </script>
 
 <style lang="scss" scoped>
-.app-base {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	z-index: 10;
-	position: relative;
-	overflow: hidden;
-
+.app-pipe {
 	&__center {
 		flex: 1 1 0%;
 		display: flex;

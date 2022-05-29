@@ -10,7 +10,7 @@ export default defineComponent({
 		},
 		space: {
 			type: String,
-			default: '0px'
+			default: ''
 		}
 	},
 	setup(props, { slots }) {
@@ -31,10 +31,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .app-section {
-	position: relative;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	margin: 0 12px;
+	z-index: 10;
+	position: relative;
+	overflow: hidden;
 }
 </style>

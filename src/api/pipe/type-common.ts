@@ -1,4 +1,11 @@
-export type IDate = { createTime: string; updateTime: string }
+export type IProvider = {
+	createTime: string
+	updateTime: string
+	total: number
+	page: number
+	size: number
+	message: string
+}
 
 export type IBanner = {
 	start: string

@@ -1,6 +1,6 @@
-import type { IDate } from '@/api/pipe'
+import type { IProvider } from '@/api/pipe'
 
-export type ICloud = IDate & {
+export type ICloud = IProvider & {
 	id: number
 	type: number
 	title: string

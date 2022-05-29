@@ -1,6 +1,6 @@
-import type { IDate } from '@/api/pipe'
+import type { IProvider } from '@/api/pipe'
 
-export type IUser = IDate & {
+export type IUser = IProvider & {
 	id: number
 	uid: number
 	account: number
