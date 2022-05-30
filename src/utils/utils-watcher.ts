@@ -58,13 +58,15 @@ export function useWatcher() {
 }
 
 /***************************************************************************************/
+type IScroll = { distance: number; spin: boolean }
 type InstanceEvent = {
-	scroll: { distance: number }
+	scroll: IScroll
 }
 export const instance = new (class {
 	public observer = new Observer<InstanceEvent>()
 
-	public onScrollbar(distance: number) {
-		this.observer.emit('scroll', { distance })
+	/**滚动事件**/
+	public onScrollbar(node: IScroll) {
+		this.observer.emit('scroll', node)
 	}
 })()
