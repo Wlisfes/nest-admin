@@ -4,10 +4,6 @@ import { AppContainer } from '@/components/global'
 import { useAppStore } from '@/store/modules/app-store'
 import { moment } from '@/utils/utils-tool'
 
-type ICurrent = {
-	target: HTMLButtonElement
-}
-
 export default defineComponent({
 	name: 'Home',
 	setup() {
@@ -22,13 +18,12 @@ export default defineComponent({
 		})
 		setInterval(() => (time.value = moment().format('HH:mm:ss')))
 
-		const onCurrent = (e: ICurrent, fn: Function) => {
-			e.target.disabled = true
-			fn().finally(
-				setTimeout(() => {
-					e.target.disabled = false
-				}, 100)
-			)
+		const onCurrent = ({ target }: { target: HTMLButtonElement }, fn: Function) => {
+			const el = target.tagName === 'BUTTON' ? target : (target.parentNode?.parentNode as HTMLButtonElement)
+			el.disabled = true
+			fn().finally(() => {
+				setTimeout(() => (el.disabled = false), 100)
+			})
 		}
 
 		return () => (
@@ -44,31 +39,32 @@ export default defineComponent({
 				</div>
 				<div class="app-pipe__operate">
 					<n-space size={15}>
-						<n-el
+						<n-button
 							tag="a"
+							bordered={false}
 							title={current.value?.name}
 							href={current.value?.search}
 							class="vnode-block"
 							target="_blank"
 						>
 							<u-icon name="antd-location" size={20}></u-icon>
-						</n-el>
-						<n-el
-							tag="button"
+						</n-button>
+						<n-button
+							bordered={false}
 							title="上一页"
 							class="vnode-block"
-							onClick={(e: ICurrent) => onCurrent(e, app.prevBanner)}
+							onClick={(e: { target: HTMLButtonElement }) => onCurrent(e, app.prevBanner)}
 						>
 							<u-icon name="antd-left" size={20}></u-icon>
-						</n-el>
-						<n-el
-							tag="button"
+						</n-button>
+						<n-button
+							bordered={false}
 							title="下一页"
 							class="vnode-block"
-							onClick={(e: ICurrent) => onCurrent(e, app.nextBanner)}
+							onClick={(e: { target: HTMLButtonElement }) => onCurrent(e, app.nextBanner)}
 						>
 							<u-icon name="antd-right" size={20}></u-icon>
-						</n-el>
+						</n-button>
 					</n-space>
 				</div>
 				<div class="app-pipe__footer">
@@ -136,6 +132,9 @@ export default defineComponent({
 			overflow: none;
 			border: none;
 			padding: 0;
+			&:hover {
+				color: var(--primary-color-hover);
+			}
 		}
 	}
 
