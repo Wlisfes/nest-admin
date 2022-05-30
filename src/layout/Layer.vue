@@ -1,36 +1,51 @@
 <script lang="tsx">
+import type { LayoutInst } from 'naive-ui'
 import { defineComponent, ref, computed, VNode, createVNode, CSSProperties } from 'vue'
 import { RouterView, RouteLocationNormalizedLoaded } from 'vue-router'
-import { MaskCover, BarLink } from '@/layout/common'
+import { MaskCover, BarLink, RollBack } from '@/layout/common'
 import { instance } from '@/utils/utils-watcher'
 
 export default defineComponent({
 	name: 'Layer',
 	setup() {
+		const contentRef = ref<LayoutInst | null>(null)
 		const distance = ref<number>(0)
 		const black = computed<CSSProperties>(() => ({
 			backgroundColor: distance.value > 50 ? '#001529' : 'transparent'
 		}))
 
-		const onScrollbar = (e: { target: { scrollTop: number } }) => {
-			const top = e.target.scrollTop || 0
-			distance.value = top
-			instance.onScrollbar(top)
+		const onScrollbar = (e: { target: Element }) => {
+			const { scrollTop, scrollHeight, clientHeight } = e.target
+			distance.value = scrollTop
+			instance.onScrollbar({
+				distance: scrollTop,
+				spin: scrollTop + clientHeight >= scrollHeight - 200
+			})
 		}
 
 		return () => (
 			<n-layout id="app-layer">
 				<MaskCover></MaskCover>
+				<RollBack
+					visible={distance.value > 200}
+					onTouch={() => contentRef.value?.scrollTo({ top: 0, behavior: 'smooth' })}
+				></RollBack>
 				<n-layout-header id="app-header" style={black.value}>
 					<BarLink></BarLink>
 				</n-layout-header>
-				<n-layout style={{ top: '50px' }} position="absolute" native-scrollbar={false} on-scroll={onScrollbar}>
+				<n-layout-content
+					ref={contentRef}
+					style={{ top: '50px' }}
+					position="absolute"
+					native-scrollbar={false}
+					on-scroll={onScrollbar}
+				>
 					<RouterView>
 						{({ Component, route }: { Component: VNode; route: RouteLocationNormalizedLoaded }) => {
 							return createVNode(Component, { key: route.path })
 						}}
 					</RouterView>
-				</n-layout>
+				</n-layout-content>
 			</n-layout>
 		)
 	}
@@ -47,7 +62,7 @@ export default defineComponent({
 		display: flex;
 		flex-direction: column;
 	}
-	:deep(.n-layout) {
+	:deep(.n-layout-content) {
 		background-color: transparent;
 		z-index: 5;
 	}
