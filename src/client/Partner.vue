@@ -1,6 +1,6 @@
 <script lang="tsx">
 import type { IPartner, IPoster } from '@/api/pipe'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, nextTick, onUnmounted } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpClientPartner } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
@@ -12,37 +12,57 @@ export default defineComponent({
 		const page = ref<number>(1)
 		const size = ref<number>(10)
 		const total = ref<number>(0)
+		const more = ref<boolean>(true)
 		const loading = ref<boolean>(true)
 		const dataSource = ref<Array<IPartner>>([])
 
-		const httpPartner = async () => {
+		/**列表接口**/
+		const httpPartner = async (compose?: boolean) => {
 			try {
-				const { data } = await httpClientPartner({ page: 1, size: 10 })
-				dataSource.value = data.list
+				loading.value = true
+				const { data } = await httpClientPartner({ page: page.value, size: size.value })
+				if (compose) {
+					dataSource.value = dataSource.value.concat(data.list)
+				} else {
+					dataSource.value = data.list
+				}
 				total.value = data.total
+				more.value = dataSource.value.length < total.value
 			} catch (e) {}
 			return (loading.value = false)
 		}
 
-		instance.observer.on('scroll', response => {
-			console.log(response)
-		})
+		/**上拉加载**/
+		const spinPartner = () => {
+			const done = instance.observer.on('scroll', response => {
+				if (response?.spin && !loading.value && more.value) {
+					page.value++
+					nextTick(() => httpPartner(true))
+				}
+			})
+			onUnmounted(() => done())
+		}
 
 		initMounte(() => {
 			httpPartner()
+			spinPartner()
 		})
 
-		const initCover = (index: number, node: IPoster, alt: string) => {
+		const initCover = (index: number, node: IPoster | null, alt?: string) => {
 			return index > 8 ? null : (
 				<li key={index} class="pipe-column">
 					<div class="pipe-position">
 						<div class="pipe-position__content">
-							<n-image
-								object-fit="cover"
-								alt={alt}
-								preview-src={node.url}
-								src={`${node.url}?x-oss-process=style/resize`}
-							/>
+							{node?.url ? (
+								<n-image
+									object-fit="cover"
+									alt={alt}
+									preview-src={node.url}
+									src={`${node.url}?x-oss-process=style/resize`}
+								/>
+							) : (
+								<n-skeleton height="100%" width="100%" />
+							)}
 						</div>
 					</div>
 				</li>
@@ -56,6 +76,7 @@ export default defineComponent({
 				empty={!loading.value && total.value === 0}
 			>
 				{{
+					empty: () => <u-empty space="40px 0" size={240}></u-empty>,
 					placeholder: () => (
 						<n-timeline>
 							<n-timeline-item type="info" class="vnode-column">
@@ -71,21 +92,12 @@ export default defineComponent({
 										</div>
 									</div>
 									<ul class="vnode-column__cover">
-										{[1, 2, 3, 4, 5, 6].map(key => (
-											<li key={key} class="pipe-column">
-												<div class="pipe-position">
-													<div class="pipe-position__content">
-														<n-skeleton height="100%" width="100%" />
-													</div>
-												</div>
-											</li>
-										))}
+										{[1, 2, 3, 4, 5, 6].map(key => initCover(key, null))}
 									</ul>
 								</n-card>
 							</n-timeline-item>
 						</n-timeline>
 					),
-					empty: () => <n-empty></n-empty>,
 					default: () => (
 						<n-timeline>
 							{dataSource.value.map((item, index) => {
@@ -174,10 +186,6 @@ export default defineComponent({
 			flex-wrap: wrap;
 			margin: 0;
 			padding: 0;
-			.pipe-image {
-				width: 100%;
-				height: 100%;
-			}
 			.pipe-column {
 				max-width: 400px;
 				width: 33.33333%;
@@ -191,12 +199,21 @@ export default defineComponent({
 				padding-bottom: 100%;
 				position: relative;
 				overflow: hidden;
+				:deep(.n-image) {
+					width: 100%;
+					height: 100%;
+					img {
+						width: 100%;
+						height: 100%;
+					}
+				}
 				&__content {
 					position: absolute;
 					left: 0;
 					right: 0;
 					top: 0;
 					bottom: 0;
+					background-color: var(--back-color);
 				}
 			}
 		}
