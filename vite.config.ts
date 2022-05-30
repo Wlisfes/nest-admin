@@ -25,7 +25,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
 		],
 		resolve: {
 			alias: {
-				'@': resolve(process.cwd(), 'src')
+				'@': resolve(process.cwd(), 'src'),
+				'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
 			}
 		},
 		css: {
