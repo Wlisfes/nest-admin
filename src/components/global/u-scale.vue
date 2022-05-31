@@ -40,6 +40,10 @@ export default defineComponent({
 		right: 0;
 		top: 0;
 		bottom: 0;
+		:deep(.n-image) img {
+			width: 100%;
+			display: block;
+		}
 	}
 }
 </style>
