@@ -45,7 +45,7 @@ export default defineComponent({
 		}
 
 		initMounte(() => {
-			// httpMinute()
+			httpMinute()
 			spinMinute()
 		})
 
@@ -65,7 +65,35 @@ export default defineComponent({
 			>
 				{{
 					empty: () => <u-empty space="40px 0" size={240}></u-empty>,
-					placeholder: () => <div></div>,
+					placeholder: () => (
+						<n-grid x-gap={20} y-gap={60} cols={3}>
+							{[1, 2, 3].map(key => {
+								return (
+									<n-grid-item key={key} class="vnode-column">
+										<n-card>
+											<u-scale>
+												<n-skeleton height="100%" width="100%" />
+											</u-scale>
+											<n-el class="vnode-column__title" tag="h1">
+												<n-skeleton height="18" style={{ margin: '3px 0' }} />
+											</n-el>
+											<div class="vnode-column__desc">
+												<n-skeleton height="14px" style={{ margin: '3px 0' }} />
+												<n-skeleton height="14px" width="70%" style={{ margin: '3px 0' }} />
+											</div>
+											<n-el tag="div" class="vnode-column__bundle">
+												{['36px', '65px', '18px', '18px', '18px', '18px'].map(px => (
+													<div key={px} class="scope-bundle">
+														<n-skeleton height="18px" width={px} />
+													</div>
+												))}
+											</n-el>
+										</n-card>
+									</n-grid-item>
+								)
+							})}
+						</n-grid>
+					),
 					default: () => (
 						<n-grid x-gap={20} y-gap={60} cols={3}>
 							{dataSource.value.map(item => {
@@ -146,6 +174,7 @@ export default defineComponent({
 		&__desc {
 			height: 40px;
 			display: flex;
+			flex-direction: column;
 			line-height: 20px;
 			color: var(--text-color-3);
 		}
