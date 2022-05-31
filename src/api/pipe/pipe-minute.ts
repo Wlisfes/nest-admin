@@ -11,5 +11,6 @@ export type IMinute = IProvider & {
 	status: number
 	order: number
 	source: Array<ISource>
+	list: Array<IMinute>
 	user: IUser
 }
