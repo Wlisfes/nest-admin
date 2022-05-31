@@ -156,6 +156,14 @@ export default defineComponent({
 	padding: 0 15px;
 	margin: 80px auto;
 	box-sizing: border-box;
+	:deep(.n-grid) {
+		@media (max-width: 992px) {
+			grid-template-columns: repeat(2, minmax(0px, 1fr)) !important;
+		}
+		@media (max-width: 640px) {
+			grid-template-columns: repeat(1, minmax(0px, 1fr)) !important;
+		}
+	}
 	.vnode-column {
 		position: relative;
 		:deep(.n-card) {
