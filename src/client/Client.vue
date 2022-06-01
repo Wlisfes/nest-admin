@@ -97,6 +97,7 @@ export default defineComponent({
 											<u-scale max-width={640}>
 												<n-image
 													object-fit="cover"
+													preview-disabled={true}
 													alt={item.title}
 													src={`${item.cover}?x-oss-process=style/resize`}
 												/>
@@ -173,7 +174,7 @@ export default defineComponent({
 			border: none;
 			border-radius: var(--n-border-radius);
 			overflow: hidden;
-			// transform: translate3d(0, 0, 0);
+			cursor: pointer;
 		}
 		:deep(.n-card__content) {
 			padding: 0;
