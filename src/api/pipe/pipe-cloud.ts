@@ -1,4 +1,4 @@
-import type { IProvider } from '@/api/pipe'
+import type { IProvider, IUser } from '@/api/pipe'
 
 export type ICloud = IProvider & {
 	id: number
@@ -16,5 +16,7 @@ export type ICloud = IProvider & {
 	star: { total: number; where: boolean }
 	description: string
 	parent: ICloud
+	user: IUser
 	children: Array<ICloud>
+	list: Array<ICloud>
 }

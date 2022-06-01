@@ -3,7 +3,7 @@ import type { ICloud } from '@/api/pipe'
 
 /**音视频列表-客户端**/
 export function httpClientClouds(params: { page: number; size: number; type?: number; title?: string }) {
-	return request<Array<ICloud>>({ url: `/api/cloud/client/list-node`, method: 'GET', params })
+	return request<ICloud>({ url: `/api/cloud/client/list-node`, method: 'GET', params })
 }
 
 /**音视频详情-客户端**/
