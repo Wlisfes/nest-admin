@@ -1,14 +1,25 @@
 <script lang="tsx">
-import { defineComponent, computed, CSSProperties } from 'vue'
+import { defineComponent, computed, CSSProperties, PropType } from 'vue'
 
 export default defineComponent({
 	name: 'UScale',
 	props: {
-		maxWidth: { type: Number, default: () => 540 },
-		scale: { type: Number, default: () => 16 / 9 }
+		maxWidth: {
+			type: Number,
+			default: () => 540
+		},
+		scale: {
+			type: Number,
+			default: () => 16 / 9
+		},
+		style: {
+			type: Object as PropType<CSSProperties>,
+			default: null
+		}
 	},
 	setup(props, { slots }) {
 		const max = computed<CSSProperties>(() => ({
+			...props.style,
 			maxWidth: props.maxWidth + 'px'
 		}))
 		const compute = computed<CSSProperties>(() => ({
@@ -40,6 +51,7 @@ export default defineComponent({
 		right: 0;
 		top: 0;
 		bottom: 0;
+		:deep(.n-image),
 		:deep(.n-image) img {
 			width: 100%;
 			display: block;
