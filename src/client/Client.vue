@@ -5,6 +5,7 @@ import { AppContainer } from '@/components/global'
 import { httpClientClouds } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
 import { instance } from '@/utils/utils-watcher'
+import { router } from '@/router'
 
 export default defineComponent({
 	name: 'Client',
@@ -41,6 +42,10 @@ export default defineComponent({
 				}
 			})
 			onUnmounted(() => done())
+		}
+
+		const onSelecter = () => {
+			router.push('/player')
 		}
 
 		initMounte(() => {
@@ -92,7 +97,7 @@ export default defineComponent({
 						<n-grid x-gap={20} y-gap={60} cols={4}>
 							{dataSource.value.map(item => {
 								return (
-									<n-grid-item key={item.id} class="vnode-column">
+									<n-grid-item key={item.id} class="vnode-column" onClick={() => onSelecter()}>
 										<n-card>
 											<u-scale max-width={640}>
 												<n-image

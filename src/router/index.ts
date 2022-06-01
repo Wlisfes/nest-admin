@@ -14,7 +14,7 @@ import { getToken } from '@/utils/utils-cookie'
  */
 export const routes: RouteRecordRaw[] = [...layerRoutes, ...baseRoutes, ...authRoutes]
 
-const router = createRouter({
+export const router = createRouter({
 	history: createWebHistory(),
 	routes
 })

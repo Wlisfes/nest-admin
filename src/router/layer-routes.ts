@@ -42,6 +42,11 @@ export const layerRoutes: RouteRecordRaw[] = [
 				name: 'Partner',
 				meta: { title: '🍄 生活' },
 				component: () => import('@/client/Partner.vue')
+			},
+			{
+				path: '/player',
+				name: 'Player',
+				component: () => import('@/client/bower/Player.vue')
 			}
 		]
 	}
