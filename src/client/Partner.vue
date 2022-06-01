@@ -32,8 +32,8 @@ export default defineComponent({
 			return (loading.value = false)
 		}
 
-		/**上拉加载**/
-		const spinPartner = () => {
+		/**滚动加载**/
+		const spinBatter = () => {
 			const done = instance.observer.on('scroll', response => {
 				if (response?.spin && !loading.value && more.value) {
 					page.value++
@@ -45,7 +45,7 @@ export default defineComponent({
 
 		initMounte(() => {
 			httpPartner()
-			spinPartner()
+			spinBatter()
 		})
 
 		const initCover = (index: number, node: IPoster | null, alt?: string) => {
