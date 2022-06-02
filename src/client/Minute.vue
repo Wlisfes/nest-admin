@@ -4,7 +4,7 @@ import { defineComponent, ref, nextTick, onUnmounted } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpClientMinute } from '@/api/service'
 import { initMounte, moment } from '@/utils/utils-tool'
-import { instance } from '@/utils/utils-watcher'
+import { instance } from '@/utils/utils-instance'
 
 export default defineComponent({
 	name: 'Minute',

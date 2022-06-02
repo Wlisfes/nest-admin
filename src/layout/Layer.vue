@@ -3,7 +3,7 @@ import type { LayoutInst } from 'naive-ui'
 import { defineComponent, ref, computed, VNode, createVNode, CSSProperties } from 'vue'
 import { RouterView, RouteLocationNormalizedLoaded } from 'vue-router'
 import { MaskCover, BarLink, RollBack } from '@/layout/common'
-import { instance } from '@/utils/utils-watcher'
+import { instance } from '@/utils/utils-instance'
 
 export default defineComponent({
 	name: 'Layer',

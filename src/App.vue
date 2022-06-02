@@ -1,9 +1,9 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAppStore } from '@/store/modules/app-store'
 import { routes } from '@/router'
-import { useWatcher } from '@/utils/utils-watcher'
+import { client } from '@/utils/utils-instance'
 import { useToRoute } from '@/utils/utils-route'
 import { AppProvider } from '@/components/global'
 
@@ -13,7 +13,11 @@ export default defineComponent({
 		const store = useAppStore()
 		store.setRouter(useToRoute(routes))
 		store.initBanner()
-		onMounted(() => useWatcher())
+
+		onUnmounted(() => client.off())
+		onMounted(() => {
+			client.listener().then(() => client.on())
+		})
 
 		return () => (
 			<AppProvider>

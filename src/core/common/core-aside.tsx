@@ -3,7 +3,7 @@ import { NDrawer, NDrawerContent, NMenu, MenuOption } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
-import { useWatcher } from '@/utils/utils-watcher'
+import { client } from '@/utils/utils-instance'
 import { onEnter } from '@/router'
 import { CoreNode } from '@/core/pipe/pipe-type'
 
@@ -18,7 +18,6 @@ export function useAside(node?: CoreNode | null) {
 		emits: ['close'],
 		setup(props, { emit }) {
 			const { vars, inverted } = useProvider()
-			const client = useWatcher()
 			const app = useAppStore()
 			const dvc = useDvcStore()
 			const to = computed<string | HTMLElement>(() => node?.to || document.body)

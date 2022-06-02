@@ -1,7 +1,7 @@
 import { ref, onMounted, defineComponent, computed, CSSProperties } from 'vue'
 import { initPlayer, DoneOption } from '@/utils/utils-player'
 import { Observer } from '@/utils/utils-observer'
-import { useWatcher } from '@/utils/utils-watcher'
+import { client } from '@/utils/utils-instance'
 import { NSpin } from 'naive-ui'
 import DPlayer from 'dplayer'
 
@@ -15,7 +15,6 @@ export const NPlayer = defineComponent({
 	setup(props, { emit }) {
 		const el = ref<HTMLElement | null>(null)
 		const height = ref<number>(props.maxWidth / props.scale)
-		const client = useWatcher()
 		const layer = computed<CSSProperties>(() => ({
 			display: 'flex',
 			flexDirection: 'column',
