@@ -82,7 +82,7 @@ export default defineComponent({
 													</div>
 													{[1, 2, 3].map(n => (
 														<div key={n} class="vnode-bundle">
-															<n-skeleton height="20px" width="28px" />
+															<n-skeleton height="20px" width="30px" />
 														</div>
 													))}
 												</div>
