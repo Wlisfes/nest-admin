@@ -82,7 +82,7 @@ export default defineComponent({
 												<n-skeleton height="14px" width="70%" style={{ margin: '3px 0' }} />
 											</div>
 											<n-el tag="div" class="vnode-column__bundle">
-												{['36px', '65px', '18px', '18px', '18px', '18px'].map(px => (
+												{['36px', '65px', '18px', '18px', '18px'].map(px => (
 													<div key={px} class="scope-bundle">
 														<n-skeleton height="18px" width={px} />
 													</div>
