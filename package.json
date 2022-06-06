@@ -19,7 +19,7 @@
 		"flv.js": "^1.6.2",
 		"js-cookie": "^3.0.1",
 		"md-editor-v3": "^2.1.0",
-		"naive-ui": "^2.28.1",
+		"naive-ui": "^2.30.0",
 		"normalize.css": "^8.0.1",
 		"pinia": "^2.0.13",
 		"pinia-plugin-persist": "^1.0.0",
