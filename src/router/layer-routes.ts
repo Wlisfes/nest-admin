@@ -28,7 +28,7 @@ export const layerRoutes: RouteRecordRaw[] = [
 			{
 				path: '/client',
 				name: 'Client',
-				meta: { title: '🍓 视频' },
+				meta: { title: '🍓 视频', keepAlive: true },
 				component: () => import('@/client/Client.vue')
 			},
 			{

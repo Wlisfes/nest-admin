@@ -1,6 +1,7 @@
 <script lang="tsx">
+import type { VNode, CSSProperties } from 'vue'
 import type { LayoutInst } from 'naive-ui'
-import { defineComponent, ref, computed, VNode, createVNode, CSSProperties } from 'vue'
+import { defineComponent, ref, computed, createVNode, KeepAlive, Fragment } from 'vue'
 import { RouterView, RouteLocationNormalizedLoaded } from 'vue-router'
 import { MaskCover, BarLink, RollBack } from '@/layout/common'
 import { instance } from '@/utils/utils-instance'
@@ -42,7 +43,14 @@ export default defineComponent({
 				>
 					<RouterView>
 						{({ Component, route }: { Component: VNode; route: RouteLocationNormalizedLoaded }) => {
-							return createVNode(Component, { key: route.path })
+							return (
+								<Fragment>
+									<KeepAlive>
+										{route.meta?.keepAlive && createVNode(Component, { key: route.path })}
+									</KeepAlive>
+									{!route.meta?.keepAlive && createVNode(Component, { key: route.path })}
+								</Fragment>
+							)
 						}}
 					</RouterView>
 				</n-layout-content>
