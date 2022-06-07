@@ -18,7 +18,7 @@ export default defineComponent({
 		const dataSource = ref<Array<ICloud>>([])
 
 		/**列表接口**/
-		const httpCloud = async (compose?: boolean) => {
+		const httpClouds = async (compose?: boolean) => {
 			try {
 				loading.value = true
 				const { data } = await httpClientClouds({ page: page.value, size: size.value })
@@ -38,18 +38,19 @@ export default defineComponent({
 			const done = instance.observer.on('scroll', response => {
 				if (response?.spin && !loading.value && more.value) {
 					page.value++
-					nextTick(() => httpCloud(true))
+					nextTick(() => httpClouds(true))
 				}
 			})
 			onUnmounted(() => done())
 		}
 
-		const onSelecter = () => {
-			router.push('/player')
+		/**跳转播放详情**/
+		const onSelecter = ({ id }: ICloud) => {
+			router.push(`/player/${id}`)
 		}
 
 		initMounte(() => {
-			httpCloud()
+			httpClouds()
 			spinBatter()
 		})
 
@@ -97,7 +98,7 @@ export default defineComponent({
 						<n-grid x-gap={20} y-gap={60} cols={4}>
 							{dataSource.value.map(item => {
 								return (
-									<n-grid-item key={item.id} class="vnode-column" onClick={() => onSelecter()}>
+									<n-grid-item key={item.id} class="vnode-column" onClick={() => onSelecter(item)}>
 										<n-card>
 											<u-scale max-width={640}>
 												<n-image

@@ -22,7 +22,7 @@ export const layerRoutes: RouteRecordRaw[] = [
 			{
 				path: '/multiple',
 				name: 'Multiple',
-				meta: { title: '🍀 归档' },
+				meta: { title: '🍀 归档', keepAlive: true },
 				component: () => import('@/client/Multiple.vue')
 			},
 			{
@@ -34,17 +34,17 @@ export const layerRoutes: RouteRecordRaw[] = [
 			{
 				path: '/minute',
 				name: 'Minute',
-				meta: { title: '🍒 收录' },
+				meta: { title: '🍒 收录', keepAlive: true },
 				component: () => import('@/client/Minute.vue')
 			},
 			{
 				path: '/partner',
 				name: 'Partner',
-				meta: { title: '🍄 生活' },
+				meta: { title: '🍄 生活', keepAlive: true },
 				component: () => import('@/client/Partner.vue')
 			},
 			{
-				path: '/player',
+				path: '/player/:id',
 				name: 'Player',
 				component: () => import('@/client/bower/Player.vue')
 			}
