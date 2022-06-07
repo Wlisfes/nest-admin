@@ -3,12 +3,14 @@ import type { IPartner, IPoster } from '@/api/pipe'
 import { defineComponent, ref, nextTick, onUnmounted } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpClientPartner } from '@/api/service'
+import { useEditor, MdEditor } from '@/hooks/hook-editor'
 import { initMounte } from '@/utils/utils-tool'
 import { instance } from '@/utils/utils-instance'
 
 export default defineComponent({
 	name: 'Partner',
 	setup() {
+		const { theme, preview } = useEditor()
 		const page = ref<number>(1)
 		const size = ref<number>(10)
 		const total = ref<number>(0)
@@ -121,6 +123,12 @@ export default defineComponent({
 													<div>{item.createTime}</div>
 												</div>
 											</div>
+											<MdEditor
+												previewOnly
+												class={preview.value}
+												theme={theme.value}
+												modelValue={item.html}
+											></MdEditor>
 											{item.cover?.length > 0 && (
 												<ul class="vnode-column__cover">
 													{item.cover.map((v, index) => {
@@ -184,7 +192,7 @@ export default defineComponent({
 			display: flex;
 			justify-content: flex-start;
 			flex-wrap: wrap;
-			margin: 0;
+			margin: 20px 0 0;
 			padding: 0;
 			.pipe-column {
 				max-width: 400px;

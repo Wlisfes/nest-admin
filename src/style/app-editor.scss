@@ -1,0 +1,16 @@
+.app-editor-preview {
+	position: relative;
+	.md-preview {
+		blockquote {
+			padding: 0.3em 1em;
+			margin: 15px 0;
+			background-color: var(--back-color);
+		}
+	}
+	.md-preview > :first-child {
+		margin-top: 0 !important;
+	}
+	.md-preview > :last-child {
+		margin-bottom: 0 !important;
+	}
+}
