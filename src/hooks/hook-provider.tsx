@@ -21,7 +21,9 @@ export function useProvider() {
 		common: {
 			fontWeightStrong: '500',
 			backColor: 'rgb(16,16,20)',
-			primaryColor: dvc.primaryColor
+			primaryColor: dvc.primaryColor,
+			primaryColorSuppl: dvc.primaryColor,
+			primaryColorHover: dvc.primaryColor
 		}
 	}))
 	const primaryVars = ref<Array<string>>([
