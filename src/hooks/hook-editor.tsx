@@ -10,14 +10,6 @@ export const NPreview = defineComponent({
 		const preview = ref<HTMLElement>()
 		const dvc = useDvcStore()
 
-		/**删除无用help容器**/
-		const onRemove = () => {
-			const el = preview.value as unknown as { $refs: { help: HTMLElement } }
-			el.$refs.help.remove()
-		}
-
-		onMounted(() => onRemove())
-
 		return () => (
 			<mavon-editor
 				class="app-preview"
