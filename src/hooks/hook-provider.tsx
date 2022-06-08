@@ -16,7 +16,7 @@ export function useProvider() {
 			backColor: 'rgb(244, 246, 248)',
 			primaryColor: dvc.primaryColor,
 			backMarkBack: 'rgb(235, 235, 235)',
-			codeBack: 'rgb(40, 44, 45)'
+			codeBack: 'rgb(40, 44, 52)'
 		}
 	}))
 	const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
@@ -26,7 +26,7 @@ export function useProvider() {
 			primaryColor: dvc.primaryColor,
 			primaryColorSuppl: dvc.primaryColor,
 			backMarkBack: 'rgb(44, 44, 50)',
-			codeBack: 'rgb(0, 0, 0)'
+			codeBack: 'rgb(16, 16, 20)'
 		}
 	}))
 	const primaryVars = ref<Array<string>>([
