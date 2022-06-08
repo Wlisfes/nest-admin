@@ -14,7 +14,9 @@ export function useProvider() {
 		common: {
 			fontWeightStrong: '500',
 			backColor: 'rgb(244, 246, 248)',
-			primaryColor: dvc.primaryColor
+			primaryColor: dvc.primaryColor,
+			backMarkBack: 'rgb(235, 235, 235)',
+			codeBack: 'rgb(40, 44, 45)'
 		}
 	}))
 	const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
@@ -23,7 +25,8 @@ export function useProvider() {
 			backColor: 'rgb(16,16,20)',
 			primaryColor: dvc.primaryColor,
 			primaryColorSuppl: dvc.primaryColor,
-			primaryColorHover: dvc.primaryColor
+			backMarkBack: 'rgb(44, 44, 50)',
+			codeBack: 'rgb(0, 0, 0)'
 		}
 	}))
 	const primaryVars = ref<Array<string>>([

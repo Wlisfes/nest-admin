@@ -5,6 +5,7 @@ import { AppContainer } from '@/components/global'
 import { httpClientArticles } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
 import { instance } from '@/utils/utils-instance'
+import { router } from '@/router'
 
 export default defineComponent({
 	name: 'Multiple',
@@ -17,7 +18,7 @@ export default defineComponent({
 		const dataSource = ref<Array<IArticle>>([])
 
 		/**列表接口**/
-		const httpArticle = async (compose?: boolean) => {
+		const httpArticles = async (compose?: boolean) => {
 			try {
 				loading.value = true
 				const { data } = await httpClientArticles({ page: page.value, size: size.value })
@@ -26,7 +27,6 @@ export default defineComponent({
 				} else {
 					dataSource.value = data.list
 				}
-				console.log(data)
 				total.value = data.total
 				more.value = dataSource.value.length < total.value
 			} catch (e) {}
@@ -38,14 +38,19 @@ export default defineComponent({
 			const done = instance.observer.on('scroll', response => {
 				if (response?.spin && !loading.value && more.value) {
 					page.value++
-					nextTick(() => httpArticle(true))
+					nextTick(() => httpArticles(true))
 				}
 			})
 			onUnmounted(() => done())
 		}
 
+		/**跳转详情**/
+		const onSelecter = ({ id }: IArticle) => {
+			router.push(`/check/${id}`)
+		}
+
 		initMounte(() => {
-			httpArticle()
+			httpArticles()
 			spinBatter()
 		})
 
@@ -95,7 +100,7 @@ export default defineComponent({
 						<Fragment>
 							{dataSource.value.map(item => {
 								return (
-									<n-card class="vnode-column">
+									<n-card key={item.id} class="vnode-column" onClick={() => onSelecter(item)}>
 										<div class="vnode-column__content">
 											<h1 class="vnode-title">
 												<n-ellipsis line-clamp={1} tooltip={false}>

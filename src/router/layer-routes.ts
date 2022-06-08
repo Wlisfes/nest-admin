@@ -47,6 +47,11 @@ export const layerRoutes: RouteRecordRaw[] = [
 				path: '/player/:id',
 				name: 'Player',
 				component: () => import('@/client/bower/Player.vue')
+			},
+			{
+				path: '/check/:id',
+				name: 'Check',
+				component: () => import('@/client/bower/Check.vue')
 			}
 		]
 	}

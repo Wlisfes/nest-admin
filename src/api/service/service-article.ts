@@ -9,3 +9,12 @@ export function httpClientArticles(params: { page: number; size: number; title?:
 		params
 	})
 }
+
+/**文章详情-客户端**/
+export function httpClientArticle(params: { id: number }) {
+	return request<IArticle>({
+		url: `/api/article/client/info`,
+		method: 'GET',
+		params
+	})
+}

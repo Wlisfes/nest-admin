@@ -6,6 +6,7 @@ import { createApp } from 'vue'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
 import { setupI18n } from '@/lang'
+import { setupEditor } from '@/hooks/hook-editor'
 
 async function bootstrap() {
 	const app = createApp(App)
@@ -18,6 +19,8 @@ async function bootstrap() {
 
 	//挂载路由
 	setupRouter(app)
+
+	setupEditor(app)
 
 	app.mount('#app', true)
 }
