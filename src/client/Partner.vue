@@ -3,14 +3,13 @@ import type { IPartner, IPoster } from '@/api/pipe'
 import { defineComponent, ref, nextTick, onUnmounted } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpClientPartner } from '@/api/service'
-import { useEditor, MdEditor } from '@/hooks/hook-editor'
 import { initMounte } from '@/utils/utils-tool'
 import { instance } from '@/utils/utils-instance'
+import { NPreview } from '@/hooks/hook-editor'
 
 export default defineComponent({
 	name: 'Partner',
 	setup() {
-		const { theme, preview } = useEditor()
 		const page = ref<number>(1)
 		const size = ref<number>(10)
 		const total = ref<number>(0)
@@ -123,12 +122,7 @@ export default defineComponent({
 													<div>{item.createTime}</div>
 												</div>
 											</div>
-											<MdEditor
-												previewOnly
-												class={preview.value}
-												theme={theme.value}
-												modelValue={item.html}
-											></MdEditor>
+											<NPreview value={item.html}></NPreview>
 											{item.cover?.length > 0 && (
 												<ul class="vnode-column__cover">
 													{item.cover.map((v, index) => {
@@ -172,7 +166,6 @@ export default defineComponent({
 			padding: 0 10px;
 			border-radius: 4px;
 			margin-bottom: 20px;
-			background-color: #f8f8f8;
 			background-color: var(--back-color);
 			.pipe-pointer {
 				height: 52px;
@@ -183,7 +176,7 @@ export default defineComponent({
 				justify-content: center;
 				margin-left: 10px;
 				font-size: 14px;
-				color: #999999;
+				color: var(--text-color-2);
 				line-height: 1.3;
 			}
 		}
