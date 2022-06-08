@@ -19,6 +19,7 @@
 		"dplayer": "^1.26.0",
 		"flv.js": "^1.6.2",
 		"js-cookie": "^3.0.1",
+		"mavon-editor": "^3.0.0-beta",
 		"md-editor-v3": "^2.1.0",
 		"naive-ui": "^2.30.2",
 		"normalize.css": "^8.0.1",
