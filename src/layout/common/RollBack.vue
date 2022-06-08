@@ -54,7 +54,7 @@ export default defineComponent({
 	justify-content: center;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	box-shadow: 0 2px 8px 0px rgba(0, 0, 0, 0.3);
-	background-color: var(--n-color);
+	background-color: var(--inverted-color);
 	&:hover .n-base-icon {
 		color: var(--primary-color-hover);
 	}
