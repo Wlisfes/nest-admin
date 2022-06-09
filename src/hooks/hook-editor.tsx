@@ -1,35 +1,46 @@
 import type { App } from 'vue'
-import MavonEditor from 'mavon-editor'
-import { ref, onMounted, defineComponent, computed, CSSProperties } from 'vue'
+import { ref, Fragment, onMounted, defineComponent, computed, CSSProperties } from 'vue'
 import { useDvcStore } from '@/store/modules/dvc-store'
+import MavonEditor from 'mavon-editor'
+import ImagePreview, { ImagePreviewInst } from 'naive-ui/es/image/src/ImagePreview'
 
 export const NPreview = defineComponent({
-	name: 'NPreview',
-	props: { value: String },
-	setup(props) {
-		const preview = ref<HTMLElement>()
-		const dvc = useDvcStore()
+    name: 'NPreview',
+    props: { value: String },
+    setup(props) {
+        const preview = ref<ImagePreviewInst>()
+        const dvc = useDvcStore()
 
-		return () => (
-			<mavon-editor
-				class="app-preview"
-				ref={preview}
-				subfield={false}
-				toolbarsFlag={false}
-				autofocus={false}
-				shortCut={false}
-				boxShadow={false}
-				editable={false}
-				transition={false}
-				tabSize={4}
-				defaultOpen="preview"
-				codeStyle="atom-one-dark"
-				model-value={props.value}
-			></mavon-editor>
-		)
-	}
+        /**图片自定义预览**/
+        const onPreview = (el: HTMLImageElement) => {
+            preview.value?.setPreviewSrc(el.src)
+            preview.value?.setThumbnailEl(el)
+            preview.value?.toggleShow()
+        }
+
+        return () => (
+            <Fragment>
+                <ImagePreview show-toolbar-tooltip ref={preview} clsPrefix="editor"></ImagePreview>
+                <mavon-editor
+                    class="app-preview"
+                    subfield={false}
+                    toolbarsFlag={false}
+                    autofocus={false}
+                    shortCut={false}
+                    boxShadow={false}
+                    editable={false}
+                    transition={false}
+                    tabSize={4}
+                    defaultOpen="preview"
+                    codeStyle="atom-one-dark"
+                    model-value={props.value}
+                    image-click={onPreview}
+                ></mavon-editor>
+            </Fragment>
+        )
+    }
 })
 
 export function setupEditor(app: App<Element>) {
-	app.use(MavonEditor)
+    app.use(MavonEditor)
 }
