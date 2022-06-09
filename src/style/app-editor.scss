@@ -39,11 +39,11 @@
 			line-height: 1;
 			padding: 1px 4px;
 			border-radius: 4px;
-			background-color: var(--back-mark-back);
+			background-color: var(--back-mark-color);
 			font-family: 'Operator Mono', Consolas, Monaco, Menlo, monospace;
 		}
 		pre {
-			background-color: var(--code-back) !important;
+			background-color: var(--back-code-color) !important;
 			border-radius: 4px;
 			position: relative;
 			padding-top: 30px !important;
@@ -65,7 +65,7 @@
 			.hljs {
 				padding: 0;
 				width: 100%;
-				background-color: var(--code-back);
+				background-color: var(--back-code-color);
 				overflow: hidden;
 				overflow-x: auto;
 			}

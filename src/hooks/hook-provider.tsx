@@ -4,6 +4,8 @@ import { useDvcStore } from '@/store/modules/dvc-store'
 
 type CustomizeVars = {
 	backColor: string
+	backMarkColor: string
+	backCodeColor: string
 }
 export type ThemeVars = ComputedRef<ThemeCommonVars & CustomizeVars>
 
@@ -15,8 +17,8 @@ export function useProvider() {
 			fontWeightStrong: '500',
 			backColor: 'rgb(244, 246, 248)',
 			primaryColor: dvc.primaryColor,
-			backMarkBack: 'rgb(235, 235, 235)',
-			codeBack: 'rgb(40, 44, 52)'
+			backMarkColor: 'rgb(235, 235, 235)',
+			backCodeColor: 'rgb(40, 44, 52)'
 		}
 	}))
 	const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
@@ -25,8 +27,8 @@ export function useProvider() {
 			backColor: 'rgb(16,16,20)',
 			primaryColor: dvc.primaryColor,
 			primaryColorSuppl: dvc.primaryColor,
-			backMarkBack: 'rgb(44, 44, 50)',
-			codeBack: 'rgb(16, 16, 20)'
+			backMarkColor: 'rgb(44, 44, 50)',
+			backCodeColor: 'rgb(6, 6, 10)'
 		}
 	}))
 	const primaryVars = ref<Array<string>>([
