@@ -6,6 +6,7 @@ import { layerRoutes } from '@/router/layer-routes'
 import { useAppStore } from '@/store/modules/app-store'
 import { useUserStore } from '@/store/modules/user-store'
 import { getToken } from '@/utils/utils-cookie'
+import { bfs } from '@/utils/utils-route'
 
 /**
  * @param String meta.title     标题
@@ -42,7 +43,7 @@ export function onReload(path?: string, query?: Record<string, any>) {
 export function setupGuardRouter(router: Router) {
     //白名单页面
     const whitelist = ['/login', '/register']
-    const store = useAppStore()
+    const app = useAppStore()
     const user = useUserStore()
 
     router.beforeEach(async (to, form, next) => {
@@ -51,6 +52,7 @@ export function setupGuardRouter(router: Router) {
             if (user.role.length === 0) {
                 try {
                     await user.httpUser()
+                    await app.httpRoute()
                 } catch (e) {}
             }
 
@@ -73,8 +75,8 @@ export function setupGuardRouter(router: Router) {
 
         //hidden等于false的页面才储存到store
         if (!to.meta.hidden) {
-            store.setCurrent(to.path)
-            store.setMultiple({ key: to.path, meta: to.meta as any })
+            app.setCurrent(to.path)
+            app.setMultiple({ key: to.path, meta: to.meta as any })
         }
 
         window.$loading?.finish()
