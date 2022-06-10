@@ -1,15 +1,16 @@
 <script lang="tsx">
 import type { IPartner, IPoster } from '@/api/pipe'
-import { defineComponent, ref, nextTick, onUnmounted } from 'vue'
+import { defineComponent, ref, nextTick, onUnmounted, onActivated, onDeactivated } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpClientPartner } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
-import { instance } from '@/utils/utils-instance'
+import { useBatter } from '@/utils/utils-instance'
 import { NPreview } from '@/hooks/hook-editor'
 
 export default defineComponent({
     name: 'Partner',
     setup() {
+        const { instance, current, setCurrent } = useBatter()
         const page = ref<number>(1)
         const size = ref<number>(10)
         const total = ref<number>(0)
@@ -36,12 +37,14 @@ export default defineComponent({
         /**滚动加载**/
         const spinBatter = () => {
             const done = instance.observer.on('scroll', response => {
-                if (response?.spin && !loading.value && more.value) {
+                if (response?.spin && current.value && !loading.value && more.value) {
                     page.value++
                     nextTick(() => httpPartner(true))
                 }
             })
             onUnmounted(() => done())
+            onActivated(() => setCurrent(true))
+            onDeactivated(() => setCurrent(false))
         }
 
         initMounte(() => {

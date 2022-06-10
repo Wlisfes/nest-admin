@@ -1,14 +1,15 @@
 <script lang="tsx">
 import type { IMinute } from '@/api/pipe'
-import { defineComponent, ref, nextTick, onUnmounted } from 'vue'
+import { defineComponent, ref, nextTick, onUnmounted, onActivated, onDeactivated } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpClientMinute } from '@/api/service'
 import { initMounte, moment } from '@/utils/utils-tool'
-import { instance } from '@/utils/utils-instance'
+import { useBatter } from '@/utils/utils-instance'
 
 export default defineComponent({
     name: 'Minute',
     setup() {
+        const { instance, current, setCurrent } = useBatter()
         const page = ref<number>(1)
         const size = ref<number>(12)
         const total = ref<number>(0)
@@ -36,12 +37,14 @@ export default defineComponent({
         /**滚动加载**/
         const spinBatter = () => {
             const done = instance.observer.on('scroll', response => {
-                if (response?.spin && !loading.value && more.value) {
+                if (response?.spin && current.value && !loading.value && more.value) {
                     page.value++
                     nextTick(() => httpMinute(true))
                 }
             })
             onUnmounted(() => done())
+            onActivated(() => setCurrent(true))
+            onDeactivated(() => setCurrent(false))
         }
 
         initMounte(() => {
