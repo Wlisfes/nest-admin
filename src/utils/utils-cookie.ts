@@ -9,8 +9,8 @@ export const APP_AUTH_TOKEN = 'APP_AUTH_TOKEN'
  * 读取token
  * @returns string | null
  */
-export async function getToken() {
-	return Cookie.get(APP_AUTH_TOKEN) || null
+export function getToken() {
+    return Cookie.get(APP_AUTH_TOKEN) || null
 }
 
 /**
@@ -19,7 +19,7 @@ export async function getToken() {
  * @returns string
  */
 export async function setToken(token: string) {
-	return Cookie.set(APP_AUTH_TOKEN, token, { expires: 1 })
+    return Cookie.set(APP_AUTH_TOKEN, token, { expires: 1 })
 }
 
 /**
@@ -27,7 +27,7 @@ export async function setToken(token: string) {
  * @returns void
  */
 export async function delToken() {
-	return Cookie.remove(APP_AUTH_TOKEN)
+    return Cookie.remove(APP_AUTH_TOKEN)
 }
 
 /**
@@ -36,8 +36,8 @@ export async function delToken() {
  * @returns any
  */
 export function getCookie(key: string) {
-	const data = Cookie.get(key)
-	return data ? JSON.parse(data) : null
+    const data = Cookie.get(key)
+    return data ? JSON.parse(data) : null
 }
 
 /**
@@ -48,12 +48,12 @@ export function getCookie(key: string) {
  * @returns any
  */
 export function setCookie(key: string, data: any, expires?: number) {
-	if (!expires) {
-		return Cookie.set(key, JSON.stringify(data))
-	}
-	return Cookie.set(key, JSON.stringify(data), {
-		expires: new Date(new Date().getTime() + expires)
-	})
+    if (!expires) {
+        return Cookie.set(key, JSON.stringify(data))
+    }
+    return Cookie.set(key, JSON.stringify(data), {
+        expires: new Date(new Date().getTime() + expires)
+    })
 }
 
 /**
@@ -62,5 +62,5 @@ export function setCookie(key: string, data: any, expires?: number) {
  * @returns void
  */
 export function delCookie(key: string) {
-	return Cookie.remove(key)
+    return Cookie.remove(key)
 }

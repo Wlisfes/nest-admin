@@ -1,75 +1,106 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed, CSSProperties } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
 import { onEnter } from '@/router'
-import { setToken } from '@/utils/utils-cookie'
+import { useUserStore } from '@/store/modules/user-store'
 
 export default defineComponent({
-	name: 'Login',
-	setup() {
-		const loading = ref(false)
-		const formRef = ref<FormInst>()
-		const form = ref({ name: 'admin', password: '12345', code: '9527' })
-		const rules: FormRules = {
-			age: [{ required: true, message: '请输入账号' }],
-			password: [{ required: true, message: '请输入密码' }],
-			code: [{ required: true, message: '请输入验证码' }]
-		}
-		const onSubmit = async () => {
-			try {
-				const error = await formRef.value?.validate()
-				if (!error) {
-					loading.value = true
-					setTimeout(() => {
-						setToken(Date.now().toString())
-						onEnter('/')
-					}, 1500)
-				}
-			} catch (e) {}
-		}
+    name: 'Login',
+    setup() {
+        const user = useUserStore()
+        const vcCode = ref<HTMLImageElement>()
+        const formRef = ref<FormInst>()
+        const loading = ref(false)
+        const form = ref({ account: '', password: '', code: '' })
+        const rules: FormRules = {
+            account: [{ required: true, message: '请输入账号', trigger: 'change' }],
+            password: [
+                { required: true, message: '请输入密码', trigger: 'change' },
+                { min: 6, message: '密码不能少于6位', trigger: 'change' }
+            ],
+            code: [{ required: true, message: '请输入验证码', trigger: 'change' }]
+        }
 
-		return () => {
-			return (
-				<div>
-					<h2 class="app-compute__form-title">登 录</h2>
-					<n-form ref={formRef} model={form.value} rules={rules} label-placement="left">
-						<n-form-item path="name">
-							<n-input v-model:value={form.value.name} size="large" placeholder="账号">
-								{{ prefix: () => <u-icon name="antd-user"></u-icon> }}
-							</n-input>
-						</n-form-item>
-						<n-form-item path="password">
-							<n-input
-								v-model:value={form.value.password}
-								size="large"
-								type="password"
-								show-password-on="mousedown"
-								placeholder="密码"
-							>
-								{{ prefix: () => <u-icon name="antd-lock"></u-icon> }}
-							</n-input>
-						</n-form-item>
-						<n-form-item path="code">
-							<n-input v-model:value={form.value.code} size="large" placeholder="验证码">
-								{{ prefix: () => <u-icon name="antd-alert"></u-icon> }}
-							</n-input>
-						</n-form-item>
-						<n-form-item>
-							<n-button
-								class="antd-submit"
-								type="info"
-								size="large"
-								round
-								loading={loading.value}
-								onClick={onSubmit}
-							>
-								提 交
-							</n-button>
-						</n-form-item>
-					</n-form>
-				</div>
-			)
-		}
-	}
+        const onReloadCursor = () => {
+            if (vcCode.value) {
+                vcCode.value.src = `${import.meta.env.VITE_API_BASE}/api/user/code?t=${Date.now()}`
+            }
+        }
+
+        const onSubmit = async () => {
+            try {
+                const error = await formRef.value?.validate()
+                if (!error) {
+                    loading.value = true
+                    await user.login({ ...form.value })
+                    onEnter('/')
+                }
+            } catch (e) {
+                loading.value = false
+            }
+        }
+
+        return () => {
+            return (
+                <div>
+                    <h2 class="app-compute__form-title">登 录</h2>
+                    <n-form ref={formRef} model={form.value} rules={rules} label-placement="left">
+                        <n-form-item path="account">
+                            <n-input
+                                v-model:value={form.value.account}
+                                size="large"
+                                placeholder="账号"
+                                input-props={{ autocomplete: 'off' }}
+                            >
+                                {{ prefix: () => <u-icon name="antd-user"></u-icon> }}
+                            </n-input>
+                        </n-form-item>
+                        <n-form-item path="password">
+                            <n-input
+                                v-model:value={form.value.password}
+                                maxlength={16}
+                                size="large"
+                                type="password"
+                                show-password-on="mousedown"
+                                input-props={{ autocomplete: 'new-password' }}
+                                placeholder="密码"
+                            >
+                                {{ prefix: () => <u-icon name="antd-lock"></u-icon> }}
+                            </n-input>
+                        </n-form-item>
+                        <n-form-item path="code">
+                            <n-input
+                                v-model:value={form.value.code}
+                                size="large"
+                                maxlength={4}
+                                placeholder="验证码"
+                                input-props={{ autocomplete: 'off' }}
+                            >
+                                {{ prefix: () => <u-icon name="antd-alert"></u-icon> }}
+                            </n-input>
+                            <img
+                                class="vc-code"
+                                ref={vcCode}
+                                src={`${import.meta.env.VITE_API_BASE}/api/user/code`}
+                                onClick={onReloadCursor}
+                            />
+                        </n-form-item>
+                        <n-form-item>
+                            <n-button
+                                class="antd-submit"
+                                type="info"
+                                size="large"
+                                round
+                                loading={loading.value}
+                                onClick={onSubmit}
+                            >
+                                提 交
+                            </n-button>
+                        </n-form-item>
+                    </n-form>
+                </div>
+            )
+        }
+    }
 })
 </script>

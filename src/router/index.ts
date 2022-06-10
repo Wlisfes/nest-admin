@@ -4,6 +4,7 @@ import { authRoutes } from '@/router/auth-routes'
 import { baseRoutes } from '@/router/base-routes'
 import { layerRoutes } from '@/router/layer-routes'
 import { useAppStore } from '@/store/modules/app-store'
+import { useUserStore } from '@/store/modules/user-store'
 import { getToken } from '@/utils/utils-cookie'
 
 /**
@@ -15,69 +16,76 @@ import { getToken } from '@/utils/utils-cookie'
 export const routes: RouteRecordRaw[] = [...layerRoutes, ...baseRoutes, ...authRoutes]
 
 export const router = createRouter({
-	history: createWebHistory(),
-	routes
+    history: createWebHistory(),
+    routes
 })
 
 export function onEnter(path: string, query?: Record<string, any>) {
-	const store = useAppStore()
-	if (path !== store.current) {
-		router.push({ path, query: query })
-	}
+    const store = useAppStore()
+    if (path !== store.current) {
+        router.push({ path, query: query })
+    }
 }
 
 export function onReload(path?: string, query?: Record<string, any>) {
-	const store = useAppStore()
-	router.replace({
-		path: '/refresh',
-		query: {
-			...query,
-			url: path ?? store.current
-		}
-	})
+    const store = useAppStore()
+    router.replace({
+        path: '/refresh',
+        query: {
+            ...query,
+            url: path ?? store.current
+        }
+    })
 }
 
 //路由守卫
 export function setupGuardRouter(router: Router) {
-	//白名单页面
-	const whitelist = ['/login', '/register']
-	const store = useAppStore()
+    //白名单页面
+    const whitelist = ['/login', '/register']
+    const store = useAppStore()
+    const user = useUserStore()
 
-	router.beforeEach(async (to, form, next) => {
-		window.$loading?.start()
-		if (await getToken()) {
-			if (whitelist.includes(to.path)) {
-				next({ path: '/', replace: true })
-				window.$loading?.finish()
-			} else {
-				next()
-			}
-		} else if (to.meta.auth) {
-			next({ path: '/login', replace: true })
-			window.$loading?.finish()
-		} else {
-			next()
-		}
-	})
+    router.beforeEach(async (to, form, next) => {
+        window.$loading?.start()
+        if (getToken()) {
+            if (user.role.length === 0) {
+                try {
+                    await user.httpUser()
+                } catch (e) {}
+            }
 
-	router.afterEach((to, form) => {
-		document.title = (to.meta?.title as string) || document.title
+            if (whitelist.includes(to.path)) {
+                next({ path: '/', replace: true })
+                window.$loading?.finish()
+            } else {
+                next()
+            }
+        } else if (to.meta.auth) {
+            next({ path: '/login', replace: true })
+            window.$loading?.finish()
+        } else {
+            next()
+        }
+    })
 
-		//hidden等于false的页面才储存到store
-		if (!to.meta.hidden) {
-			store.setCurrent(to.path)
-			store.setMultiple({ key: to.path, meta: to.meta as any })
-		}
+    router.afterEach((to, form) => {
+        document.title = (to.meta?.title as string) || document.title
 
-		window.$loading?.finish()
-	})
+        //hidden等于false的页面才储存到store
+        if (!to.meta.hidden) {
+            store.setCurrent(to.path)
+            store.setMultiple({ key: to.path, meta: to.meta as any })
+        }
+
+        window.$loading?.finish()
+    })
 }
 
 //挂载路由
 export function setupRouter(app: App<Element>) {
-	app.use(router)
-	//挂载守卫
-	setupGuardRouter(router)
+    app.use(router)
+    //挂载守卫
+    setupGuardRouter(router)
 }
 
 export default router

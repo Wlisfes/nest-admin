@@ -3,7 +3,7 @@ import type { VNode, CSSProperties } from 'vue'
 import type { LayoutInst } from 'naive-ui'
 import { defineComponent, ref, computed, createVNode, KeepAlive, Fragment } from 'vue'
 import { RouterView, RouteLocationNormalizedLoaded } from 'vue-router'
-import { MaskCover, BarLink, RollBack } from '@/layout/common'
+import { MaskCover, BarLink, RollBack, BarUser } from '@/layout/common'
 import { useBatter } from '@/utils/utils-instance'
 
 export default defineComponent({
@@ -34,6 +34,7 @@ export default defineComponent({
                 ></RollBack>
                 <n-layout-header id="app-header" style={black.value}>
                     <BarLink></BarLink>
+                    <BarUser></BarUser>
                 </n-layout-header>
                 <n-layout-content
                     ref={contentRef}
