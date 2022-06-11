@@ -2,6 +2,7 @@ import type { IUser, IRole } from '@/api/pipe'
 import { defineStore } from 'pinia'
 import { httpLogin, httpUser } from '@/api/service'
 import { setToken, getToken, delToken } from '@/utils/utils-cookie'
+import { useAppStore } from '@/store/modules/app-store'
 
 export interface UserStore {
     uid: number | null
@@ -47,6 +48,7 @@ export const useUserStore = defineStore({
         async httpUser() {
             try {
                 const { data } = await httpUser()
+                await useAppStore().httpRoute()
                 return this.setUser(data)
             } catch (e: unknown) {
                 return Promise.reject(e)

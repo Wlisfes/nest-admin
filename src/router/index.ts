@@ -52,7 +52,6 @@ export function setupGuardRouter(router: Router) {
             if (user.role.length === 0) {
                 try {
                     await user.httpUser()
-                    await app.httpRoute()
                 } catch (e) {}
             }
 
