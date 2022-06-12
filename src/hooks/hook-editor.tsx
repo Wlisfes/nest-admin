@@ -1,6 +1,5 @@
 import type { App } from 'vue'
-import { ref, Fragment, onMounted, defineComponent, computed, CSSProperties } from 'vue'
-import { useDvcStore } from '@/store/modules/dvc-store'
+import { ref, Fragment, defineComponent } from 'vue'
 import MavonEditor from 'mavon-editor'
 import ImagePreview, { ImagePreviewInst } from 'naive-ui/es/image/src/ImagePreview'
 
@@ -9,7 +8,6 @@ export const NPreview = defineComponent({
     props: { value: String },
     setup(props) {
         const preview = ref<ImagePreviewInst>()
-        const dvc = useDvcStore()
 
         /**图片自定义预览**/
         const onPreview = (el: HTMLImageElement) => {
