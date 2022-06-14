@@ -1,12 +1,14 @@
 <script lang="tsx">
-import { defineComponent, ref, computed, CSSProperties } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
 import { onEnter } from '@/router'
 import { useUserStore } from '@/store/modules/user-store'
+import { useCompute } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Login',
     setup() {
+        const { compute } = useCompute()
         const user = useUserStore()
         const vcCode = ref<HTMLImageElement>()
         const formRef = ref<FormInst>()
@@ -52,7 +54,7 @@ export default defineComponent({
                                 placeholder="账号"
                                 input-props={{ autocomplete: 'off' }}
                             >
-                                {{ prefix: () => <u-icon name="antd-user"></u-icon> }}
+                                {{ prefix: () => <n-icon component={compute('UserOutlined')}></n-icon> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="password">
@@ -65,7 +67,7 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'new-password' }}
                                 placeholder="密码"
                             >
-                                {{ prefix: () => <u-icon name="antd-lock"></u-icon> }}
+                                {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="code">
@@ -76,7 +78,7 @@ export default defineComponent({
                                 placeholder="验证码"
                                 input-props={{ autocomplete: 'off' }}
                             >
-                                {{ prefix: () => <u-icon name="antd-alert"></u-icon> }}
+                                {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
                             </n-input>
                             <img
                                 class="vc-code"

@@ -8,7 +8,9 @@ import {
     UserOutlined,
     DashboardOutlined,
     LogoutOutlined,
-    LoginOutlined
+    LoginOutlined,
+    LockOutlined,
+    VerifiedOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -19,7 +21,9 @@ export const Icons = {
     UserOutlined,
     DashboardOutlined,
     LogoutOutlined,
-    LoginOutlined
+    LoginOutlined,
+    LockOutlined,
+    VerifiedOutlined
 }
 
 export function useCompute() {
