@@ -2,23 +2,25 @@
 import { defineComponent, computed } from 'vue'
 import { useDialog } from 'naive-ui'
 import { useUserStore } from '@/store/modules/user-store'
+import { Icons, useCompute } from '@/hooks/hook-icon'
 import { onEnter } from '@/router'
 
-type IOption = { label: string; key: string; icon: string; color: string }
+type IOption = { label: string; key: string; icon: keyof typeof Icons; color: string }
 
 export default defineComponent({
     name: 'BarUser',
     setup() {
+        const { compute } = useCompute()
         const user = useUserStore()
         const dialog = useDialog()
         const options = computed<Array<IOption>>(() => {
             if (user.uid) {
                 return [
-                    { label: '控制台', key: 'admin', icon: 'antd-dashboard', color: '#1890ff' },
-                    { label: '退出登录', key: 'logout', icon: 'antd-logout', color: '#f5222d' }
+                    { label: '控制台', key: 'admin', icon: 'DashboardOutlined', color: '#1890ff' },
+                    { label: '退出登录', key: 'logout', icon: 'LogoutOutlined', color: '#f5222d' }
                 ]
             }
-            return [{ label: '立即登录', key: 'login', icon: 'antd-login', color: '#13c2c2' }]
+            return [{ label: '立即登录', key: 'login', icon: 'LoginOutlined', color: '#13c2c2' }]
         })
 
         /**退出登录**/
@@ -63,14 +65,14 @@ export default defineComponent({
             <div class="app-user">
                 <n-dropdown
                     options={options.value}
-                    render-icon={(u: IOption) => <u-icon name={u.icon} color={u.color} style={{ zIndex: 9 }}></u-icon>}
+                    render-icon={(u: IOption) => <n-icon color={u.color} component={compute(u.icon)}></n-icon>}
                     render-label={(u: IOption) => <span style={{ color: u.color }}>{u.label}</span>}
                     show-arrow
                     trigger="click"
                     onSelect={onSelecter}
                 >
                     <n-avatar round bordered={false} size={36} src={user.avatar} style={{ cursor: 'pointer' }}>
-                        {!user.avatar && <u-icon name="antd-user"></u-icon>}
+                        {!user.avatar && <n-icon size={20} component={compute('UserOutlined')}></n-icon>}
                     </n-avatar>
                 </n-dropdown>
             </div>

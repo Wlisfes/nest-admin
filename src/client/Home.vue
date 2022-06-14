@@ -57,7 +57,7 @@ export default defineComponent({
                             class="vnode-block"
                             onClick={(e: { target: HTMLButtonElement }) => onCurrent(e, app.prevBanner)}
                         >
-                            <n-icon class="vnode-block" size={22} component={compute('ChevronBack')}></n-icon>
+                            <n-icon class="vnode-block" size={22} component={compute('LeftOutlined')}></n-icon>
                         </n-button>
                         <n-button
                             bordered={false}
@@ -65,7 +65,7 @@ export default defineComponent({
                             class="vnode-block"
                             onClick={(e: { target: HTMLButtonElement }) => onCurrent(e, app.nextBanner)}
                         >
-                            <n-icon class="vnode-block" size={22} component={compute('ChevronForward')}></n-icon>
+                            <n-icon class="vnode-block" size={22} component={compute('RightOutlined')}></n-icon>
                         </n-button>
                     </n-space>
                 </div>

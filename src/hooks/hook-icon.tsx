@@ -1,11 +1,25 @@
 import { h, Component } from 'vue'
 import { NIcon as Icon } from 'naive-ui'
-import { LocationOutline, ChevronBack, ChevronForward } from '@vicons/ionicons5'
+import { LocationOutline } from '@vicons/ionicons5'
+import {
+    LeftOutlined,
+    RightOutlined,
+    MenuOutlined,
+    UserOutlined,
+    DashboardOutlined,
+    LogoutOutlined,
+    LoginOutlined
+} from '@vicons/antd'
 
-const Icons = {
+export const Icons = {
     LocationOutline,
-    ChevronBack,
-    ChevronForward
+    LeftOutlined,
+    RightOutlined,
+    MenuOutlined,
+    UserOutlined,
+    DashboardOutlined,
+    LogoutOutlined,
+    LoginOutlined
 }
 
 export function useCompute() {
