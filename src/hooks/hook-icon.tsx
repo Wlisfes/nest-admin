@@ -27,7 +27,8 @@ import {
     SoundOutlined,
     BankOutlined,
     SettingOutlined,
-    CheckOutlined
+    CheckOutlined,
+    HomeOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -81,7 +82,8 @@ export const Icons = {
     SoundOutlined,
     BankOutlined,
     SettingOutlined,
-    CheckOutlined
+    CheckOutlined,
+    HomeOutlined
 }
 
 export function useCompute() {

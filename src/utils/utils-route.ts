@@ -1,31 +1,21 @@
-import { createVNode } from 'vue'
-import { NIcon, MenuOption } from 'naive-ui'
+import type { MenuOption } from 'naive-ui'
 import type { IRoute } from '@/api/pipe'
+import { h } from 'vue'
+import { NIcon } from 'naive-ui'
+import { useCompute } from '@/hooks/hook-icon'
 
 export function useToRoute(source: IRoute[]): MenuOption[] {
-    const response: MenuOption[] = []
-    for (const node of source) {
-        if (!node.visible) {
-            continue
-        }
-        // if (node.meta?.root) {
-        // 	const nodes = useToRoute(node.children || [])
-        // 	if (nodes.length) {
-        // 		response.push(...nodes)
-        // 	}
-        // 	break
-        // }
-        const props: MenuOption = { key: node.router || node.id, label: node.name }
-        const children = useToRoute(node.children || [])
-        if (children.length) {
-            props.children = children
+    const { compute } = useCompute()
+    return source.map(node => {
+        const option: MenuOption = { key: node.router || node.id, label: node.name }
+        if (node.children?.length) {
+            option.children = useToRoute(node.children || [])
         }
         if (node.icon) {
-            props.icon = () => createVNode(NIcon, { name: 'antd-' + node.icon, size: 22 })
+            option.icon = () => h(NIcon, { size: 20, component: compute('GithubOutlined') })
         }
-        response.push(props)
-    }
-    return response
+        return option
+    })
 }
 
 export function bfs(target: MenuOption[], path: string, children = 'children') {
