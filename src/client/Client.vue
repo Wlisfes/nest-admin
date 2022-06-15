@@ -5,11 +5,13 @@ import { AppContainer } from '@/components/global'
 import { httpClientClouds } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
+import { useCompute } from '@/hooks/hook-icon'
 import { router } from '@/router'
 
 export default defineComponent({
     name: 'Client',
     setup() {
+        const { compute } = useCompute()
         const { instance, current, setCurrent } = useBatter()
         const page = ref<number>(1)
         const size = ref<number>(12)
@@ -132,15 +134,18 @@ export default defineComponent({
                                                         </n-ellipsis>
                                                     </div>
                                                     <div class="vnode-bundle">
-                                                        <u-icon name="antd-eye" size={18}></u-icon>
+                                                        <n-icon size={18} component={compute('EyeOutlined')}></n-icon>
                                                         <span>{item.browse || 0}</span>
                                                     </div>
                                                     <div class="vnode-bundle">
-                                                        <u-icon name="antd-star" size={18}></u-icon>
+                                                        <n-icon size={18} component={compute('StarOutlined')}></n-icon>
                                                         <span>{item.star.total || 0}</span>
                                                     </div>
                                                     <div class="vnode-bundle">
-                                                        <u-icon name="antd-comment" size={18}></u-icon>
+                                                        <n-icon
+                                                            size={18}
+                                                            component={compute('CommentOutlined')}
+                                                        ></n-icon>
                                                         <span>{item.comment || 0}</span>
                                                     </div>
                                                 </div>

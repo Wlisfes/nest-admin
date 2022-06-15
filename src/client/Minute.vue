@@ -5,10 +5,12 @@ import { AppContainer } from '@/components/global'
 import { httpClientMinute } from '@/api/service'
 import { initMounte, moment } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
+import { Icons, useCompute } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Minute',
     setup() {
+        const { compute } = useCompute()
         const { instance, current, setCurrent } = useBatter()
         const page = ref<number>(1)
         const size = ref<number>(12)
@@ -51,14 +53,6 @@ export default defineComponent({
             httpMinute()
             spinBatter()
         })
-
-        const initHundle = (url: string, icon: string) => {
-            return (
-                <n-el tag="a" href={url} target="_blank" class="scope-bundle">
-                    <u-icon name={icon} size={18}></u-icon>
-                </n-el>
-            )
-        }
 
         return () => (
             <AppContainer
@@ -136,9 +130,27 @@ export default defineComponent({
                                                 <time datetime={item.createTime} class="scope-bundle">
                                                     <span>{moment(item.createTime).format('YYYY-MM-DD')}</span>
                                                 </time>
-                                                {item.github && initHundle(item.github, 'antd-github-fill')}
-                                                {item.url && initHundle(item.url, 'antd-link')}
-                                                {item.npm && initHundle(item.npm, 'antd-medium')}
+                                                {item.github && (
+                                                    <n-el tag="a" href={item.github} target="_blank" class="scope-bundle">
+                                                        <n-icon
+                                                            size={18}
+                                                            component={compute('GithubOutlined')}
+                                                        ></n-icon>
+                                                    </n-el>
+                                                )}
+                                                {item.url && (
+                                                    <n-el tag="a" href={item.url} target="_blank" class="scope-bundle">
+                                                        <n-icon size={18} component={compute('LinkOutlined')}></n-icon>
+                                                    </n-el>
+                                                )}
+                                                {item.npm && (
+                                                    <n-el tag="a" href={item.npm} target="_blank" class="scope-bundle">
+                                                        <n-icon
+                                                            size={18}
+                                                            component={compute('MediumOutlined')}
+                                                        ></n-icon>
+                                                    </n-el>
+                                                )}
                                             </n-el>
                                         </n-card>
                                     </n-grid-item>

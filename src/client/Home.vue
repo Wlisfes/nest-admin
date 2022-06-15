@@ -49,7 +49,7 @@ export default defineComponent({
                             class="vnode-block"
                             target="_blank"
                         >
-                            <n-icon class="vnode-block" size={22} component={compute('LocationOutline')}></n-icon>
+                            <n-icon class="vnode-block" size={22} component={compute('LocationOutlined')}></n-icon>
                         </n-button>
                         <n-button
                             bordered={false}

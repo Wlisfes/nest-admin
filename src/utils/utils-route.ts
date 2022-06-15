@@ -1,7 +1,6 @@
-import type { MenuOption } from 'naive-ui'
-import type { IRoute } from '@/api/pipe'
 import { createVNode } from 'vue'
-import { UIcon } from '@/components/global'
+import { NIcon, MenuOption } from 'naive-ui'
+import type { IRoute } from '@/api/pipe'
 
 export function useToRoute(source: IRoute[]): MenuOption[] {
     const response: MenuOption[] = []
@@ -22,7 +21,7 @@ export function useToRoute(source: IRoute[]): MenuOption[] {
             props.children = children
         }
         if (node.icon) {
-            props.icon = () => createVNode(UIcon, { name: 'antd-' + node.icon, size: 22 })
+            props.icon = () => createVNode(NIcon, { name: 'antd-' + node.icon, size: 22 })
         }
         response.push(props)
     }
