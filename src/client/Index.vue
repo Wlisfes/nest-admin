@@ -6,7 +6,7 @@ import { moment } from '@/utils/utils-tool'
 import { useCompute } from '@/hooks/hook-icon'
 
 export default defineComponent({
-    name: 'Home',
+    name: 'Index',
     setup() {
         const { Icon, compute } = useCompute()
         const app = useAppStore()
