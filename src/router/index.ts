@@ -5,7 +5,6 @@ import { routes } from './routes'
 import { useAppStore } from '@/store/modules/app-store'
 import { useUserStore } from '@/store/modules/user-store'
 import { getToken } from '@/utils/utils-cookie'
-import { bfs } from '@/utils/utils-route'
 
 export const router = createRouter({
     history: createWebHistory(),
@@ -32,30 +31,26 @@ export function onReload(path?: string, query?: Record<string, any>) {
 
 //路由守卫
 export function setupGuardRouter(router: Router) {
-    //白名单页面
-    const whitelist = ['/login', '/register']
+    const white = ['/login', '/register']
     const app = useAppStore()
     const user = useUserStore()
 
     router.beforeEach(async (to, form, next) => {
         window.$loading?.start()
-        console.log(to)
-        if (getToken()) {
-            if (user.role.length === 0) {
+        const token = getToken()
+
+        if (token) {
+            if (!user.uid || app.router.length === 0) {
                 try {
                     await user.httpUser()
-                } catch (e) {}
+                    await app.httpRoute(user.role)
+                } catch (e) {
+                    await user.logout()
+                    next({ path: '/login', replace: true })
+                }
             }
 
-            if (whitelist.includes(to.path)) {
-                next({ path: '/', replace: true })
-                window.$loading?.finish()
-            } else {
-                next()
-            }
-        } else if (to.meta.auth) {
-            next({ path: '/login', replace: true })
-            window.$loading?.finish()
+            next()
         } else {
             next()
         }
@@ -64,9 +59,8 @@ export function setupGuardRouter(router: Router) {
     router.afterEach((to, form) => {
         document.title = (to.meta?.title as string) || document.title
 
-        //hidden等于false的页面才储存到store
-        if (!to.meta.hidden) {
-            app.setCurrent(to.path)
+        app.setCurrent(to.path)
+        if (to.meta?.route) {
             app.setMultiple({ key: to.path, meta: to.meta as any })
         }
 
