@@ -1,9 +1,10 @@
 import type { MenuOption } from 'naive-ui'
-import type { IBanner } from '@/api/pipe'
+import type { IBanner, IRole } from '@/api/pipe'
 import { defineStore } from 'pinia'
-import { httpWallpaper, httpRoute } from '@/api/service'
+import { httpWallpaper } from '@/api/service'
 import { bfs, useToRoute } from '@/utils/utils-route'
 import { loadCover } from '@/utils/utils-tool'
+import { authRoutes } from '@/router/routes/auth-routes'
 
 export interface OneMultiple {
     key: string
@@ -38,16 +39,9 @@ export const useAppStore = defineStore({
         }
     },
     actions: {
-        /**角色路由菜单**/
-        async httpRoute() {
-            try {
-                const { data } = await httpRoute()
-                const router = useToRoute(data || [])
-                console.log(router)
-                this.setRouter(router)
-            } catch (e) {
-                return Promise.reject(e)
-            }
+        async httpRoute(role: Array<IRole>) {
+            const route = useToRoute(authRoutes, role) as Array<any>
+            return this.setRouter(route)
         },
         setDevice(device: string): void {
             this.device = device
@@ -73,7 +67,7 @@ export const useAppStore = defineStore({
             this.collapse = collapse
         },
         setRouter(router: any) {
-            this.router = router
+            return (this.router = router)
         },
         setMultiple(route: OneMultiple) {
             //插入一条历史路径、需要判断重复路径

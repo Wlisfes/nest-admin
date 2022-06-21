@@ -29,9 +29,9 @@ export const useUserStore = defineStore({
         /**登录**/
         async login(props: { account: string; password: string; code: string }) {
             try {
-                return await httpLogin({ ...props }).then(response => {
-                    this.setToken(response.data.token)
-                    return this.httpUser()
+                return await httpLogin({ ...props }).then(async ({ data: { token } }) => {
+                    this.token = token
+                    return await setToken(token)
                 })
             } catch (e: unknown) {
                 return Promise.reject(e)
@@ -39,24 +39,20 @@ export const useUserStore = defineStore({
         },
         /**退出登录**/
         async logout() {
+            const app = useAppStore()
+            await delToken()
             this.setUser()
-            return await delToken().then(() => {
-                this.token = null
-            })
+            app.setRouter([])
+            return (this.token = null)
         },
         /**拉取用户信息、权限**/
         async httpUser() {
             try {
                 const { data } = await httpUser()
-                await useAppStore().httpRoute()
                 return this.setUser(data)
             } catch (e: unknown) {
                 return Promise.reject(e)
             }
-        },
-        async setToken(token: string) {
-            this.token = token || null
-            return setToken(token)
         },
         setUser(props?: IUser) {
             this.uid = props?.uid || null
