@@ -42,7 +42,7 @@ export default defineComponent({
                     trigger.value = (scope.value?.clientWidth ?? 0) >= (wrapper.value?.clientWidth ?? 0)
                     const el = document.querySelector(`.wrapper-column-scope.is-active`) as HTMLElement
                     better.value?.refresh()
-                    better.value?.scrollToElement(el, 300, 0, false)
+                    el && better.value?.scrollToElement(el, 300, 0, false)
                 })
             }
         )
