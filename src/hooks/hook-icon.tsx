@@ -28,7 +28,22 @@ import {
     BankOutlined,
     SettingOutlined,
     CheckOutlined,
-    HomeOutlined
+    HomeOutlined,
+    SecurityScanOutlined,
+    KeyOutlined,
+    CloudUploadOutlined,
+    CarryOutOutlined,
+    ScheduleOutlined,
+    ApartmentOutlined,
+    PicCenterOutlined,
+    FileImageOutlined,
+    CloudOutlined,
+    VideoCameraOutlined,
+    InstagramOutlined,
+    RadarChartOutlined,
+    TrophyOutlined,
+    WalletOutlined,
+    TagOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -83,7 +98,22 @@ export const Icons = {
     BankOutlined,
     SettingOutlined,
     CheckOutlined,
-    HomeOutlined
+    HomeOutlined,
+    SecurityScanOutlined,
+    KeyOutlined,
+    CloudUploadOutlined,
+    CarryOutOutlined,
+    ScheduleOutlined,
+    ApartmentOutlined,
+    PicCenterOutlined,
+    FileImageOutlined,
+    CloudOutlined,
+    VideoCameraOutlined,
+    InstagramOutlined,
+    RadarChartOutlined,
+    TrophyOutlined,
+    WalletOutlined,
+    TagOutlined
 }
 
 export function useCompute() {
