@@ -1,20 +1,11 @@
-import { App } from 'vue'
-import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router'
-import { authRoutes } from '@/router/auth-routes'
-import { baseRoutes } from '@/router/base-routes'
-import { layerRoutes } from '@/router/layer-routes'
+import type { App } from 'vue'
+import type { Router } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import { routes } from './routes'
 import { useAppStore } from '@/store/modules/app-store'
 import { useUserStore } from '@/store/modules/user-store'
 import { getToken } from '@/utils/utils-cookie'
 import { bfs } from '@/utils/utils-route'
-
-/**
- * @param String meta.title     标题
- * @param String meta.icon      图标
- * @param Boolean meta.hidden   是否显示菜单
- * @param Boolean meta.root     是否为顶层菜单
- */
-export const routes: RouteRecordRaw[] = [...layerRoutes, ...baseRoutes, ...authRoutes]
 
 export const router = createRouter({
     history: createWebHistory(),
@@ -48,6 +39,7 @@ export function setupGuardRouter(router: Router) {
 
     router.beforeEach(async (to, form, next) => {
         window.$loading?.start()
+        console.log(to)
         if (getToken()) {
             if (user.role.length === 0) {
                 try {

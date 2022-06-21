@@ -7,7 +7,7 @@ import { useCompute } from '@/hooks/hook-icon'
 export function useToRoute(source: IRoute[]): MenuOption[] {
     const { compute } = useCompute()
     return source.map(node => {
-        const option: MenuOption = { key: node.router || node.id, label: node.name }
+        const option: MenuOption = { key: node.router || node.id, label: node.title }
         if (node.children?.length) {
             option.children = useToRoute(node.children || [])
         }

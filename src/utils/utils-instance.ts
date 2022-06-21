@@ -6,7 +6,7 @@ type ClientEvent = {
     resize: { width: number; device: string; collapse: boolean }
 }
 
-export const client = new (class Client {
+const client = new (class Client {
     public observer = new Observer<ClientEvent>()
     public store: any = null
 
@@ -49,7 +49,7 @@ type IScroll = { distance: number; spin: boolean }
 type InstanceEvent = {
     scroll: IScroll
 }
-export const instance = new (class {
+const instance = new (class {
     public observer = new Observer<InstanceEvent>()
 
     /**滚动事件**/

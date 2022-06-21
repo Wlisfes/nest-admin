@@ -5,13 +5,14 @@ export type IRoute = IProvider & {
     type: number
     role: IRole[]
     name: string
+    title: string
     router: string
-    path: string | undefined
+    path: string
     keepAlive: number
     status: number
-    visible: number
-    icon: string | null
-    order: number | null
-    parent: IRoute | null
+    hidden: number
+    icon: string
+    order: number
+    parent: IRoute
     children: IRoute[]
 }

@@ -3,15 +3,15 @@ import { Layout, Parent, Refresh } from '@/layout'
 
 export const authRoutes: RouteRecordRaw[] = [
     {
-        path: '/',
-        meta: { title: '控制台' },
+        path: '/admin',
         component: Layout,
+        redirect: '/admin/console',
         children: [
             {
-                path: '/admin/home',
-                name: 'Home',
-                meta: { title: '首页' },
-                component: () => import('@/admin/Home.vue')
+                path: '/admin/console',
+                name: 'Console',
+                meta: { title: '控制台' },
+                component: () => import('@/admin/Console.vue')
             }
         ]
     },
