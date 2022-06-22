@@ -33,6 +33,7 @@ export const authRoutes: RouteColumn[] = [
         path: '/admin/chive',
         meta: { title: '归档中心', icon: 'RadarChartOutlined' },
         component: Layout,
+        redirect: '/admin/chive/record',
         children: [
             {
                 path: '/admin/chive/record',
@@ -70,6 +71,7 @@ export const authRoutes: RouteColumn[] = [
         path: '/admin/cloud',
         meta: { title: '云点播', icon: 'CloudOutlined' },
         component: Layout,
+        redirect: '/admin/cloud/media',
         children: [
             {
                 path: '/admin/cloud/media',
@@ -89,6 +91,7 @@ export const authRoutes: RouteColumn[] = [
         path: '/admin/source',
         meta: { title: '资源管理', icon: 'PicCenterOutlined' },
         component: Layout,
+        redirect: '/admin/source/poster',
         children: [
             {
                 path: '/admin/source/poster',
@@ -102,6 +105,7 @@ export const authRoutes: RouteColumn[] = [
         path: '/admin/system',
         meta: { title: '系统管理', icon: 'SettingOutlined', role: ['admin', 'dev'] },
         component: Layout,
+        redirect: '/admin/system/permission',
         children: [
             {
                 path: '/admin/system/permission',

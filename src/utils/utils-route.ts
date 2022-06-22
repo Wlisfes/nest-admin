@@ -1,37 +1,38 @@
 import type { MenuOption } from 'naive-ui'
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteColumn } from '@/router/routes/auth-routes'
 import type { IRole } from '@/api/pipe'
 import { h } from 'vue'
-import { NIcon } from 'naive-ui'
 import { Icons, useCompute } from '@/hooks/hook-icon'
 
-export function useToRoute(source: Array<RouteRecordRaw>, role: Array<IRole>): Array<MenuOption> {
-    const { compute } = useCompute()
+export function useToRoute(source: Array<RouteColumn>, role: Array<IRole>): Array<MenuOption> {
+    const { Icon, compute } = useCompute()
     const response: Array<MenuOption> = []
     for (const node of source) {
         const option: MenuOption = { key: node.path, label: node.meta?.title }
 
-        if (node.meta?.role) {
+        if (node.meta?.role?.length) {
             // 如果有角色限制，则检查是否有权限
-            const hasRole = role.some(x => {
-                return x.status === 1 && (node.meta as any).role.includes(x.primary)
+            const hasRole = node.meta.role.some(key => {
+                return role.some(x => x.status === 1 && x.primary === key)
             })
-            if (!hasRole) continue
+            if (!hasRole) {
+                continue
+            }
         }
 
         if (node.meta?.hidden) {
             //当前菜单设置隐藏、直接过滤
             continue
         } else if (node.meta?.root && node.children?.length) {
-            const nodes = useToRoute(node.children, role)
+            const nodes = useToRoute(node.children as Array<RouteColumn>, role)
             response.push(...nodes)
             continue
         } else if (node.children?.length) {
-            option.children = useToRoute(node.children, role)
+            option.children = useToRoute(node.children as Array<RouteColumn>, role)
         }
 
         if (node.meta?.icon) {
-            option.icon = () => h(NIcon, { size: 20, component: compute(node.meta?.icon as keyof typeof Icons) })
+            option.icon = () => h(Icon, { size: 20, component: compute(node.meta?.icon as keyof typeof Icons) })
         }
 
         response.push(option)
