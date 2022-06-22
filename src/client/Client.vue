@@ -108,10 +108,13 @@ export default defineComponent({
                                             <u-scale max-width={640}>
                                                 <n-image
                                                     object-fit="cover"
+                                                    lazy
                                                     preview-disabled={true}
                                                     alt={item.title}
                                                     src={`${item.cover}?x-oss-process=style/resize`}
-                                                />
+                                                >
+                                                    {{ placeholder: () => <n-skeleton height="100%" width="100%" /> }}
+                                                </n-image>
                                             </u-scale>
                                             <div class="vnode-column__content">
                                                 <div class="vnode-title">

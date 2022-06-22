@@ -142,10 +142,13 @@ export default defineComponent({
                                             <u-scale>
                                                 <n-image
                                                     object-fit="cover"
+                                                    lazy
                                                     preview-disabled
                                                     alt={item.title}
                                                     src={`${item.cover}?x-oss-process=style/resize-16-9`}
-                                                />
+                                                >
+                                                    {{ placeholder: () => <n-skeleton height="100%" width="100%" /> }}
+                                                </n-image>
                                             </u-scale>
                                         </div>
                                     </n-card>

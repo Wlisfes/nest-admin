@@ -101,10 +101,13 @@ export default defineComponent({
                                                 <n-image
                                                     object-fit="cover"
                                                     alt={item.name}
+                                                    lazy
                                                     preview-src={item.cover}
                                                     show-toolbar-tooltip
                                                     src={`${item.cover}?x-oss-process=style/resize`}
-                                                />
+                                                >
+                                                    {{ placeholder: () => <n-skeleton height="100%" width="100%" /> }}
+                                                </n-image>
                                             </u-scale>
                                             <n-el class="vnode-column__title" tag="h1">
                                                 <n-ellipsis tooltip={false} line-clamp={1}>
@@ -131,7 +134,12 @@ export default defineComponent({
                                                     <span>{moment(item.createTime).format('YYYY-MM-DD')}</span>
                                                 </time>
                                                 {item.github && (
-                                                    <n-el tag="a" href={item.github} target="_blank" class="scope-bundle">
+                                                    <n-el
+                                                        tag="a"
+                                                        href={item.github}
+                                                        target="_blank"
+                                                        class="scope-bundle"
+                                                    >
                                                         <n-icon
                                                             size={18}
                                                             component={compute('GithubOutlined')}

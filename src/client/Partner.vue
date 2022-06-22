@@ -61,10 +61,13 @@ export default defineComponent({
                                 <n-image
                                     object-fit="cover"
                                     alt={alt}
+                                    lazy
                                     preview-src={node.url}
                                     show-toolbar-tooltip
                                     src={`${node.url}?x-oss-process=style/resize`}
-                                />
+                                >
+                                    {{ placeholder: () => <n-skeleton height="100%" width="100%" /> }}
+                                </n-image>
                             ) : (
                                 <n-skeleton height="100%" width="100%" />
                             )}
