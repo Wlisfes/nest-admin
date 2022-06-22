@@ -2,6 +2,7 @@
 import { defineComponent, computed, Fragment } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
+import { useUserStore } from '@/store/modules/user-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { Icons, useCompute } from '@/hooks/hook-icon'
 import { delToken } from '@/utils/utils-cookie'
@@ -21,9 +22,9 @@ export default defineComponent({
 
         const app = useAppStore()
         const dvc = useDvcStore()
+        const user = useUserStore()
         const avatar = computed(() => {
-            return 'https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg'
-            // return new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
+            return user.avatar || new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
         })
 
         const onTrigger = () => {
@@ -35,7 +36,9 @@ export default defineComponent({
         }
 
         const onSelecter = (key: string) => {
-            if (key === 'logout') {
+            if (key === 'home') {
+                onEnter('/')
+            } else if (key === 'logout') {
                 delToken().finally(() => {
                     onEnter('/login')
                 })
