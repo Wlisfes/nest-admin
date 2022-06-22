@@ -1,13 +1,22 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { onEnter } from '@/router'
+import { MaskCover } from '@/layout/common'
 
 export default defineComponent({
     name: 'Compute',
     setup() {
         const route = useRoute()
+        const cover = ref()
         const current = ref<boolean>(route.path === '/login')
+        const overlay = computed(() => {
+            if (cover.value) {
+                return {
+                    background: `url('${cover.value}') center center / cover no-repeat`
+                }
+            }
+        })
 
         const onChange = (path: string) => {
             current.value = !current.value
@@ -16,6 +25,7 @@ export default defineComponent({
 
         return () => (
             <div class="container">
+                <MaskCover onChange={e => (cover.value = e?.cover)}></MaskCover>
                 <n-el class={{ 'app-compute': true, 'is-active': current.value }}>
                     <div class="app-compute__form is-login">
                         <RouterView name="register"></RouterView>
@@ -24,7 +34,7 @@ export default defineComponent({
                         <RouterView name="login"></RouterView>
                     </div>
                     <div class="overlay-container">
-                        <div class="app-overlay">
+                        <div class="app-overlay" style={overlay.value}>
                             <div class="app-overlay__panel is-left">
                                 <n-space>
                                     <n-button type="info" onClick={() => onChange('/register')}>
@@ -74,6 +84,7 @@ export default defineComponent({
         height: 380px;
         position: relative;
         overflow: hidden;
+        z-index: 3;
         &__form-title {
             font-size: 24px;
             color: #000000;
@@ -131,7 +142,7 @@ export default defineComponent({
                 left: -100%;
                 position: relative;
                 transform: translateX(0);
-                transition: transform 0.6s ease-in-out;
+                transition: transform 0.6s ease-in-out, background 0.3s;
                 width: 200%;
                 &__panel {
                     align-items: center;
@@ -148,7 +159,7 @@ export default defineComponent({
                     padding: 0 32px;
                     box-sizing: border-box;
                     &.is-left {
-                        transform: translateX(-20%);
+                        transform: translateX(0);
                     }
                     &.is-right {
                         right: 0;
@@ -187,7 +198,7 @@ export default defineComponent({
                         transform: translateX(0);
                     }
                     .is-right {
-                        transform: translateX(20%);
+                        transform: translateX(0);
                     }
                 }
             }
