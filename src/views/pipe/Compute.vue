@@ -26,14 +26,24 @@ export default defineComponent({
                     <div class="overlay-container">
                         <div class="app-overlay">
                             <div class="app-overlay__panel is-left">
-                                <n-button type="info" round onClick={() => onChange('/register')}>
-                                    注 册
-                                </n-button>
+                                <n-space>
+                                    <n-button type="info" onClick={() => onChange('/register')}>
+                                        注 册
+                                    </n-button>
+                                    <n-button type="success" onClick={() => onEnter('/')}>
+                                        返回首页
+                                    </n-button>
+                                </n-space>
                             </div>
                             <div class="app-overlay__panel is-right">
-                                <n-button type="info" round onClick={() => onChange('/login')}>
-                                    登 录
-                                </n-button>
+                                <n-space>
+                                    <n-button type="info" onClick={() => onChange('/login')}>
+                                        登 录
+                                    </n-button>
+                                    <n-button type="success" onClick={() => onEnter('/')}>
+                                        返回首页
+                                    </n-button>
+                                </n-space>
                             </div>
                         </div>
                     </div>
@@ -48,6 +58,7 @@ export default defineComponent({
 .container {
     background: url('@/assets/resource/login-background.jpg') center center / cover no-repeat;
     position: relative;
+    min-width: 680px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -144,10 +155,15 @@ export default defineComponent({
                         transform: translateX(0);
                     }
                 }
+                :deep(.n-space) {
+                    width: 100%;
+                    > div {
+                        flex: 1;
+                    }
+                }
                 :deep(.n-button) {
+                    width: 100%;
                     height: 40px;
-                    width: 70%;
-                    margin: 0 15%;
                     font-size: 16px;
                 }
             }
