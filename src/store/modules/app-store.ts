@@ -29,8 +29,8 @@ export const useAppStore = defineStore({
         return {
             device: 'PC',
             width: 0,
-            current: '/home',
-            expanded: ['/'],
+            current: '',
+            expanded: [],
             collapse: false,
             router: [],
             multiple: [],
@@ -40,7 +40,7 @@ export const useAppStore = defineStore({
     },
     actions: {
         async httpRoute(role: Array<IRole>) {
-            const route = useToRoute(authRoutes, role) as Array<any>
+            const route = useToRoute(authRoutes, role) as Array<any | MenuOption>
             return this.setRouter(route)
         },
         setDevice(device: string): void {
@@ -66,8 +66,8 @@ export const useAppStore = defineStore({
         setCollapse(collapse: boolean) {
             this.collapse = collapse
         },
-        setRouter(router: any) {
-            return (this.router = router)
+        setRouter(router: Array<any | MenuOption>) {
+            this.router = router
         },
         setMultiple(route: OneMultiple) {
             //插入一条历史路径、需要判断重复路径

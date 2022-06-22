@@ -37,14 +37,6 @@ export const useUserStore = defineStore({
                 return Promise.reject(e)
             }
         },
-        /**退出登录**/
-        async logout() {
-            const app = useAppStore()
-            await delToken()
-            this.setUser()
-            app.setRouter([])
-            return (this.token = null)
-        },
         /**拉取用户信息、权限**/
         async httpUser() {
             try {
@@ -53,6 +45,19 @@ export const useUserStore = defineStore({
             } catch (e: unknown) {
                 return Promise.reject(e)
             }
+        },
+        /**退出登录**/
+        logout(): Promise<void> {
+            return new Promise(resolve => {
+                const app = useAppStore()
+                delToken().then(() => {
+                    this.token = null
+                    this.setUser()
+                    app.setRouter([])
+                    app.closeRoute('close-all')
+                    resolve()
+                })
+            })
         },
         setUser(props?: IUser) {
             this.uid = props?.uid || null
