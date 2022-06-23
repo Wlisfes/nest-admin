@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
-import { Compute, Login, Register } from '@/views/pipe'
+import { Compute, Login, Register } from '@/client/pipe'
 import { Layer } from '@/layout'
 
 export const layerRoutes: RouteRecordRaw[] = [
