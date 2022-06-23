@@ -41,6 +41,9 @@ export const useAppStore = defineStore({
     actions: {
         async httpRoute(role: Array<IRole>) {
             const route = useToRoute(authRoutes, role) as Array<any | MenuOption>
+            if (this.multiple.length === 0 && route.length > 0) {
+                this.setMultiple(route[0])
+            }
             return this.setRouter(route)
         },
         setDevice(device: string): void {

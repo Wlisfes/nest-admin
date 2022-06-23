@@ -8,7 +8,7 @@ export function useToRoute(source: Array<RouteColumn>, role: Array<IRole>): Arra
     const { Icon, compute } = useCompute()
     const response: Array<MenuOption> = []
     for (const node of source) {
-        const option: MenuOption = { key: node.path, label: node.meta?.title }
+        const option: MenuOption = { key: node.path, label: node.meta?.title, meta: node.meta || {} }
 
         if (node.meta?.role?.length) {
             // 如果有角色限制，则检查是否有权限

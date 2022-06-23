@@ -91,11 +91,11 @@ export default defineComponent({
                                     tag="div"
                                     class={{ 'wrapper-column-scope': true, 'is-active': item.key === app.current }}
                                 >
-                                    <span style={{ marginRight: '4px' }}>{item.meta.title}</span>
-                                    {!disabled.value && (
+                                    <span>{item.meta.title}</span>
+                                    {!disabled.value && item.key !== '/admin/console' && (
                                         <n-icon
                                             size={14}
-                                            style={{ marginRight: '-2px' }}
+                                            style={{ marginLeft: '4px', marginRight: '-2px' }}
                                             component={compute('CloseOutlined')}
                                             onClick={(e: Event) => stopEvent(e, () => onCloseScope(item.key))}
                                         ></n-icon>
