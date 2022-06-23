@@ -82,7 +82,12 @@ export default defineComponent({
 
         return () => (
             <n-el tag="div" class="app-nav">
-                {trigger.value && <n-icon style={{ marginRight: '10px' }} component={compute('LeftOutlined')}></n-icon>}
+                {trigger.value && (
+                    <n-icon
+                        style={{ marginRight: '10px', cursor: 'pointer' }}
+                        component={compute('LeftOutlined')}
+                    ></n-icon>
+                )}
                 <div ref={wrapper} class="wrapper">
                     <div ref={scope} class="wrapper-container">
                         {app.multiple.map(item => (
@@ -105,7 +110,12 @@ export default defineComponent({
                         ))}
                     </div>
                 </div>
-                {trigger.value && <n-icon style={{ marginLeft: '10px' }} component={compute('RightOutlined')}></n-icon>}
+                {trigger.value && (
+                    <n-icon
+                        style={{ marginLeft: '10px', cursor: 'pointer' }}
+                        component={compute('RightOutlined')}
+                    ></n-icon>
+                )}
                 <n-dropdown
                     options={[
                         { label: '刷新当前', key: 'reload', icon: 'ReloadOutlined' },
@@ -122,7 +132,10 @@ export default defineComponent({
                     show-arrow
                     on-select={onSelecter}
                 >
-                    <n-icon style={{ marginLeft: '10px' }} component={compute('MenuOutlined')}></n-icon>
+                    <n-icon
+                        style={{ marginLeft: '10px', cursor: 'pointer' }}
+                        component={compute('MenuOutlined')}
+                    ></n-icon>
                 </n-dropdown>
             </n-el>
         )
