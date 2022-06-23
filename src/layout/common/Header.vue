@@ -6,7 +6,7 @@ import { useUserStore } from '@/store/modules/user-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { Icons, useCompute } from '@/hooks/hook-icon'
 import { delToken } from '@/utils/utils-cookie'
-import { onReload, onEnter } from '@/router'
+import { onReload, router } from '@/router'
 import { useAside } from '@/core/common/core-aside'
 import { useSetup } from '@/core/common/core-setup'
 
@@ -37,10 +37,10 @@ export default defineComponent({
 
         const onSelecter = (key: string) => {
             if (key === 'home') {
-                onEnter('/')
+                router.push('/')
             } else if (key === 'logout') {
                 delToken().finally(() => {
-                    onEnter('/login')
+                    router.replace('/')
                 })
             }
         }

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import { onEnter } from '@/router'
+import { router } from '@/router'
 import { MaskCover } from '@/layout/common'
 
 export default defineComponent({
@@ -20,7 +20,7 @@ export default defineComponent({
 
         const onChange = (path: string) => {
             current.value = !current.value
-            onEnter(path)
+            router.replace(path)
         }
 
         return () => (
@@ -40,7 +40,7 @@ export default defineComponent({
                                     <n-button type="info" onClick={() => onChange('/register')}>
                                         注 册
                                     </n-button>
-                                    <n-button type="success" onClick={() => onEnter('/')}>
+                                    <n-button type="success" onClick={() => router.push('/')}>
                                         返回首页
                                     </n-button>
                                 </n-space>
@@ -50,7 +50,7 @@ export default defineComponent({
                                     <n-button type="info" onClick={() => onChange('/login')}>
                                         登 录
                                     </n-button>
-                                    <n-button type="success" onClick={() => onEnter('/')}>
+                                    <n-button type="success" onClick={() => router.push('/')}>
                                         返回首页
                                     </n-button>
                                 </n-space>

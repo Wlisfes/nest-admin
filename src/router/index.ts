@@ -11,10 +11,10 @@ export const router = createRouter({
     routes
 })
 
-export function onEnter(path: string, query?: Record<string, any>) {
+export function onEnter(path: string, query?: Record<string, any>, props?: Record<string, any>) {
     const store = useAppStore()
     if (path !== store.current) {
-        router.push({ path, query: query })
+        router.push({ path, query: query, replace: props?.replace ?? false })
     }
 }
 

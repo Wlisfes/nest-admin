@@ -4,7 +4,7 @@ import { useProvider } from '@/hooks/hook-provider'
 import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useClient } from '@/utils/utils-instance'
-import { onEnter } from '@/router'
+import { router } from '@/router'
 import { CoreNode } from '@/core/pipe/pipe-type'
 
 export function useAside(node?: CoreNode | null) {
@@ -37,7 +37,9 @@ export function useAside(node?: CoreNode | null) {
             const onClose = () => emit('close')
 
             const onSelecter = (path: string) => {
-                onEnter(path)
+                if (app.current !== path) {
+                    router.push(path)
+                }
                 onClose()
                 init(false)
             }

@@ -1,8 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
-import { onEnter } from '@/router'
-import { setToken } from '@/utils/utils-cookie'
 import { useCompute } from '@/hooks/hook-icon'
 
 export default defineComponent({
@@ -21,11 +19,6 @@ export default defineComponent({
             try {
                 const error = await formRef.value?.validate()
                 if (!error) {
-                    loading.value = true
-                    setTimeout(() => {
-                        setToken(Date.now().toString())
-                        onEnter('/')
-                    }, 1500)
                 }
             } catch (e) {}
         }

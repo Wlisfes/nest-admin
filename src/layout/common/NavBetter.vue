@@ -2,7 +2,7 @@
 import { defineComponent, onMounted, ref, watch, nextTick, computed } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
 import { Icons, useCompute } from '@/hooks/hook-icon'
-import { onEnter, onReload } from '@/router'
+import { onReload, router } from '@/router'
 import { stopEvent } from '@/utils/utils-event'
 import BScroll, { BScrollInstance } from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
@@ -51,7 +51,9 @@ export default defineComponent({
         const onCloseScope = (path: string) => {
             app.closeRoute('close-current', path).finally(() => {
                 if (path === app.current) {
-                    onEnter(app.multiple[app.multiple.length - 1].key)
+                    router.push({
+                        path: app.multiple[app.multiple.length - 1].key
+                    })
                 }
             })
         }
@@ -64,14 +66,16 @@ export default defineComponent({
                     break
                 case 'close-current':
                     app.closeRoute(key, app.current).finally(() => {
-                        onEnter(app.multiple[app.multiple.length - 1].key)
+                        router.push({
+                            path: app.multiple[app.multiple.length - 1].key
+                        })
                     })
                     break
                 case 'close-other':
                     app.closeRoute(key)
                     break
                 case 'close-all':
-                    app.closeRoute(key).finally(() => onEnter('/'))
+                    app.closeRoute(key).finally(() => router.push('/'))
                     break
             }
         }
@@ -82,7 +86,7 @@ export default defineComponent({
                 <div ref={wrapper} class="wrapper">
                     <div ref={scope} class="wrapper-container">
                         {app.multiple.map(item => (
-                            <div class="wrapper-column" key={item.key} onClick={e => onEnter(item.key)}>
+                            <div class="wrapper-column" key={item.key} onClick={e => router.push(item.key)}>
                                 <n-el
                                     tag="div"
                                     class={{ 'wrapper-column-scope': true, 'is-active': item.key === app.current }}

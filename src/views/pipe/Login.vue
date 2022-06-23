@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
-import { onEnter } from '@/router'
+import { router } from '@/router'
 import { useUserStore } from '@/store/modules/user-store'
 import { useCompute } from '@/hooks/hook-icon'
 
@@ -35,7 +35,7 @@ export default defineComponent({
                 if (!error) {
                     loading.value = true
                     await user.login({ ...form.value })
-                    onEnter('/')
+                    router.replace('/')
                 }
             } catch (e) {
                 loading.value = false

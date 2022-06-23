@@ -3,7 +3,7 @@ import { defineComponent, computed } from 'vue'
 import { useDialog } from 'naive-ui'
 import { useUserStore } from '@/store/modules/user-store'
 import { Icons, useCompute } from '@/hooks/hook-icon'
-import { onEnter } from '@/router'
+import { router } from '@/router'
 
 type IOption = { label: string; key: string; icon: keyof typeof Icons; color: string }
 
@@ -53,9 +53,9 @@ export default defineComponent({
 
         const onSelecter = (key: string) => {
             if (key === 'login') {
-                onEnter('/login')
+                router.push('/login')
             } else if (key === 'admin') {
-                onEnter('/admin')
+                router.push('/admin')
             } else {
                 logout()
             }
