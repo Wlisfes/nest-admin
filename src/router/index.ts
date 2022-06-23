@@ -40,7 +40,9 @@ export function setupGuardRouter(router: Router) {
         const token = getToken()
 
         if (token) {
-            if (!user.uid || app.router.length === 0) {
+            if (white.includes(to.path)) {
+                next({ path: '/', replace: true })
+            } else if (!user.uid || app.router.length === 0) {
                 try {
                     await user.httpUser()
                     await app.httpRoute(user.role)
@@ -49,10 +51,13 @@ export function setupGuardRouter(router: Router) {
                     next({ path: '/login', replace: true })
                 }
             }
-
             next()
         } else {
-            next()
+            if (to.meta?.login) {
+                next({ path: '/login', replace: true })
+            } else {
+                next()
+            }
         }
     })
 
