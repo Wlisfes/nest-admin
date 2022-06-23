@@ -130,7 +130,7 @@ export const authRoutes: RouteColumn[] = [
                 path: '/admin/system/user',
                 name: 'User',
                 meta: { title: '用户管理', icon: 'UserOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/User.vue')
             },
             {
                 path: '/admin/system/chunk',

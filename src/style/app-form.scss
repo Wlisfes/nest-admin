@@ -1,0 +1,45 @@
+.n-form.is-customize {
+    flex-wrap: wrap;
+    .n-form-item {
+        margin-bottom: 8px;
+    }
+    .app-inline {
+        display: flex;
+        .n-form-item {
+            margin-right: 18px;
+        }
+        &.space-660 {
+            @media (max-width: 660px) {
+                width: 100%;
+                .n-form-item {
+                    flex: 1;
+                    .n-select,
+                    .n-input {
+                        width: 100% !important;
+                    }
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+        &.space-580 {
+            @media (max-width: 660px) {
+                width: calc(50% + 9px);
+                .n-form-item {
+                    flex: 1;
+                    .n-select,
+                    .n-input {
+                        width: 100% !important;
+                    }
+                }
+            }
+            @media (max-width: 375px) {
+                width: 100%;
+                .n-form-item:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}

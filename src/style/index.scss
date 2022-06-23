@@ -3,10 +3,11 @@
 @import 'transition/index.scss';
 @import './app-player.scss';
 @import './app-editor.scss';
+@import './app-form.scss';
 
 html,
 body,
 #app {
-	height: 100%;
-	overflow: hidden;
+    height: 100%;
+    overflow: hidden;
 }
