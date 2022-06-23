@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment } from 'vue'
+import { useDialog } from 'naive-ui'
 import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useUserStore } from '@/store/modules/user-store'
@@ -17,6 +18,7 @@ export default defineComponent({
     setup() {
         const { inverted } = useProvider()
         const { compute } = useCompute()
+        const dialog = useDialog()
         const aside = useAside()
         const setup = useSetup()
 
@@ -39,8 +41,30 @@ export default defineComponent({
             if (key === 'home') {
                 router.push('/')
             } else if (key === 'logout') {
-                delToken().finally(() => {
-                    router.replace('/')
+                const e = dialog.warning({
+                    title: '确定要退出吗？',
+                    positiveText: '退出登录',
+                    negativeText: '在看看',
+                    negativeButtonProps: { type: 'info', size: 'medium', ghost: false },
+                    positiveButtonProps: { type: 'error', size: 'medium' },
+                    style: {
+                        minHeight: '160px',
+                        padding: '24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        margin: '100px auto auto'
+                    },
+                    closable: false,
+                    onPositiveClick: () => {
+                        return new Promise(resolve => {
+                            e.loading = true
+                            user.logout().finally(() => {
+                                router.replace('/')
+                                resolve(true)
+                            })
+                        })
+                    }
                 })
             }
         }

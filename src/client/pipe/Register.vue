@@ -26,7 +26,7 @@ export default defineComponent({
         return () => {
             return (
                 <div>
-                    <h2 class="app-compute__form-title">注 册</h2>
+                    <h2>注 册</h2>
                     <n-form ref={formRef} model={form.value} rules={rules} label-placement="left">
                         <n-form-item path="name">
                             <n-input v-model:value={form.value.name} size="large" placeholder="账号">

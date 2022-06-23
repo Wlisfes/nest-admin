@@ -85,11 +85,12 @@ export default defineComponent({
         position: relative;
         overflow: hidden;
         z-index: 3;
-        &__form-title {
-            font-size: 24px;
-            color: #000000;
+        :deep(h2) {
+            font-size: 22px;
+            color: var(--text-color-2);
             text-align: center;
-            margin: 20px 0;
+            line-height: 1.5;
+            margin: 16px 0;
         }
         &__form {
             height: 100%;
