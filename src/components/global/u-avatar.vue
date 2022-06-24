@@ -30,7 +30,8 @@ export default defineComponent({
             type: String
         },
         customStyle: {
-            type: Object
+            type: Object as PropType<CSSProperties>,
+            default: () => ({})
         },
         inline: {
             type: Boolean
@@ -42,9 +43,9 @@ export default defineComponent({
         src: {
             type: String
         },
-        rounded: {
-            type: Boolean,
-            default: true
+        round: {
+            type: [Boolean, Number] as PropType<boolean | number>,
+            default: false
         },
         lighten: {
             type: Number,
@@ -76,18 +77,25 @@ export default defineComponent({
                 return props.color || lightenColor(background.value as string, props.lighten)
             }
         })
+        const wrapper = computed<CSSProperties>(() => ({
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }))
         const style = computed<CSSProperties>(() => {
             const u: CSSProperties = {
                 display: props.inline ? 'inline-flex' : 'flex',
                 width: `${props.size}px`,
                 height: `${props.size}px`,
-                borderRadius: props.rounded ? '50%' : 0,
+                borderRadius: props.round === true ? '50%' : Number(props.round) + 'px',
                 lineHeight: `${props.size + Math.floor(props.size / 20)}px`,
                 fontWeight: 'bold',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textAlign: 'center',
-                userSelect: 'none'
+                userSelect: 'none',
+                cursor: 'pointer'
             }
             const imgBackgroundAndFontStyle = {
                 background: `transparent url('${props.src}') no-repeat scroll 0% 0% / ${props.size}px ${props.size}px content-box border-box`
@@ -135,8 +143,10 @@ export default defineComponent({
         }
 
         return () => (
-            <div aria-hidden="true" class="u-avatar" style={{ ...style.value, ...props.customStyle }}>
-                {isImage.value ? <img style="display: none" src={props.src} /> : <span>{userInitial.value}</span>}
+            <div class="u-avatar" style={wrapper.value}>
+                <div aria-hidden="true" style={{ ...style.value, ...props.customStyle }}>
+                    {isImage.value ? <img style="display: none" src={props.src} /> : <span>{userInitial.value}</span>}
+                </div>
             </div>
         )
     }
