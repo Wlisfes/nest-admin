@@ -10,3 +10,14 @@ export function httpLogin(data: { account: string; password: string; code: strin
 export function httpUser() {
     return request<IUser>({ url: `/api/user/info`, method: 'GET' })
 }
+
+/**用户列表**/
+export function httpColumnUser(params: {
+    page: number
+    size: number
+    status?: number
+    primary?: string
+    keyword?: string
+}) {
+    return request<IUser>({ url: `/api/user/list-node`, method: 'GET', params })
+}

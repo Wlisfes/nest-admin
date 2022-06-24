@@ -5,11 +5,12 @@ export type IUser = IProvider & {
     uid: number
     account: number
     nickname: string
-    email: string | null
-    avatar: string | null
-    comment: string | null
-    mobile: number | string | null
+    email: string
+    avatar: string
+    comment: string
+    mobile: number
     password: string
     status: number
     role: Array<IRole>
+    list: Array<IUser>
 }

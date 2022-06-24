@@ -1,10 +1,43 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import type { IUser } from '@/api/pipe'
+import { defineComponent, ref, h } from 'vue'
 import { AppContainer } from '@/components/global'
+import { httpColumnUser } from '@/api/service'
+import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'User',
     setup() {
+        const page = ref<number>(1)
+        const size = ref<number>(10)
+        const total = ref<number>(0)
+        const loading = ref<boolean>(true)
+        const dataSource = ref<Array<IUser>>([])
+        const dataColumn = ref([
+            { title: '账号', key: 'account', minWidth: 120 },
+            { title: '头像', key: 'avatar', width: 100 },
+            { title: '昵称', key: 'nickname', width: 120 },
+            { title: '邮箱', key: 'email' },
+            { title: '手机号', key: 'mobile' },
+            { title: '注册时间', key: 'createTime' }
+        ])
+
+        const fecthColumnUser = async () => {
+            try {
+                loading.value = true
+                const { data } = await httpColumnUser({ page: page.value, size: size.value }).finally(() => {
+                    loading.value = false
+                })
+
+                total.value = data.total
+                dataSource.value = data.list
+            } catch (e) {}
+        }
+
+        initMounte(() => {
+            fecthColumnUser()
+        })
+
         return () => {
             return (
                 <AppContainer class="app-pipe" space="10px">
@@ -43,6 +76,23 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                     </n-form>
+                    <n-data-table
+                        style={{ flex: 1 }}
+                        bordered={false}
+                        flex-height={true}
+                        loading={loading.value}
+                        row-key={(row: IUser) => row.id}
+                        columns={dataColumn.value}
+                        data={dataSource.value}
+                        pagination={{
+                            page: page.value,
+                            pageSize: size.value,
+                            pageSizes: [10, 15, 25, 50],
+                            pageCount: total.value,
+                            showSizePicker: true,
+                            showQuickJumper: true
+                        }}
+                    ></n-data-table>
                 </AppContainer>
             )
         }
