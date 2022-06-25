@@ -1,0 +1,10 @@
+.n-tag > .n-tag__content,
+.n-button > .n-button__content {
+    padding-top: 1px;
+}
+
+.n-data-table.naive-customize {
+    .n-data-table-base-table-header .n-data-table-th {
+        height: 48px;
+    }
+}
