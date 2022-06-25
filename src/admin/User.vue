@@ -41,7 +41,7 @@ export default defineComponent({
             } catch (e) {}
         }
 
-        const useBaseColumn = (value: unknown, row: IUser, column: DataTableBaseColumn) => {
+        const columnNative = (value: unknown, row: IUser, column: DataTableBaseColumn) => {
             if (column.key === 'avatar') {
                 return <u-avatar src={value} username={row.nickname} size={40} round={4} align="start" />
             } else if (column.key === 'role') {
@@ -50,6 +50,7 @@ export default defineComponent({
                         {row.role.map(x => (
                             <n-tag
                                 key={x.id}
+                                size="small"
                                 type="success"
                                 v-slots={{ default: () => x.name }}
                                 style={{ cursor: 'pointer', height: '24px', userSelect: 'none' }}
@@ -62,6 +63,7 @@ export default defineComponent({
             } else if (column.key === 'command') {
                 return chunkColumn<IUser>({
                     row,
+                    native: ['edit', 'reset'],
                     onSelecter: key => {
                         console.log(key)
                     }
@@ -123,7 +125,7 @@ export default defineComponent({
                         row-key={(row: IUser) => row.id}
                         columns={dataColumn.value}
                         data={dataSource.value}
-                        render-cell={useBaseColumn}
+                        render-cell={columnNative}
                         pagination={{
                             page: page.value,
                             pageSize: size.value,

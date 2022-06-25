@@ -98,7 +98,7 @@ export const authRoutes: RouteColumn[] = [
                 path: '/admin/source/poster',
                 name: 'Poster',
                 meta: { title: '图床管理', icon: 'FileImageOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/Poster.vue')
             }
         ]
     },

@@ -45,7 +45,8 @@ import {
     WalletOutlined,
     TagOutlined,
     DashOutlined,
-    EditOutlined
+    EditOutlined,
+    DeleteOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -117,7 +118,8 @@ export const Icons = {
     WalletOutlined,
     TagOutlined,
     DashOutlined,
-    EditOutlined
+    EditOutlined,
+    DeleteOutlined
 }
 
 export function useCompute() {
