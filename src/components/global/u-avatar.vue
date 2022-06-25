@@ -17,40 +17,26 @@ const getInitials = (username: string) => {
 export default defineComponent({
     name: 'UAvatar',
     props: {
-        username: {
-            type: String
-        },
-        initials: {
-            type: String
-        },
-        backgroundColor: {
-            type: String
-        },
-        color: {
-            type: String
-        },
+        username: { type: String },
+        initials: { type: String },
+        backgroundColor: { type: String },
+        color: { type: String },
         customStyle: {
             type: Object as PropType<CSSProperties>,
             default: () => ({})
         },
-        inline: {
-            type: Boolean
-        },
-        size: {
-            type: Number,
-            default: 50
-        },
-        src: {
-            type: String
-        },
+        inline: { type: Boolean },
+        size: { type: Number, default: 50 },
+        src: { type: String },
         round: {
             type: [Boolean, Number] as PropType<boolean | number>,
             default: false
         },
-        lighten: {
-            type: Number,
-            default: 80
+        align: {
+            type: String as PropType<'start' | 'end' | 'center'>,
+            default: 'center'
         },
+        lighten: { type: Number, default: 80 },
         parser: {
             type: Function,
             default: getInitials,
@@ -80,7 +66,7 @@ export default defineComponent({
         const wrapper = computed<CSSProperties>(() => ({
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: props.align,
             justifyContent: 'center'
         }))
         const style = computed<CSSProperties>(() => {

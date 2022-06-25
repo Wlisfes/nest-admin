@@ -43,7 +43,9 @@ import {
     RadarChartOutlined,
     TrophyOutlined,
     WalletOutlined,
-    TagOutlined
+    TagOutlined,
+    DashOutlined,
+    EditOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -113,7 +115,9 @@ export const Icons = {
     RadarChartOutlined,
     TrophyOutlined,
     WalletOutlined,
-    TagOutlined
+    TagOutlined,
+    DashOutlined,
+    EditOutlined
 }
 
 export function useCompute() {
