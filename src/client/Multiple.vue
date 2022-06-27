@@ -5,13 +5,13 @@ import { AppContainer } from '@/components/global'
 import { httpClientArticles } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 import { router } from '@/router'
 
 export default defineComponent({
     name: 'Multiple',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const { instance, current, setCurrent } = useBatter()
         const page = ref<number>(1)
         const size = ref<number>(10)

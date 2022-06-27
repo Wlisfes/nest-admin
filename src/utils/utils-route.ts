@@ -2,10 +2,10 @@ import type { MenuOption } from 'naive-ui'
 import type { RouteColumn } from '@/router/routes/auth-routes'
 import type { IRole } from '@/api/pipe'
 import { h } from 'vue'
-import { Icons, useCompute } from '@/hooks/hook-icon'
+import { Icons, useRxicon } from '@/hooks/hook-icon'
 
 export function useToRoute(source: Array<RouteColumn>, role: Array<IRole>): Array<MenuOption> {
-    const { Icon, compute } = useCompute()
+    const { Icon, compute } = useRxicon()
     const response: Array<MenuOption> = []
     for (const node of source) {
         const option: MenuOption = { key: node.path, label: node.meta?.title, meta: node.meta || {} }

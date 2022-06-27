@@ -3,12 +3,12 @@ import { defineComponent, ref } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
 import { router } from '@/router'
 import { useUserStore } from '@/store/modules/user-store'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Login',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const user = useUserStore()
         const vcCode = ref<HTMLImageElement>()
         const formRef = ref<FormInst>()

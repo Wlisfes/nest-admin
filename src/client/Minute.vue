@@ -5,12 +5,12 @@ import { AppContainer } from '@/components/global'
 import { httpClientMinute } from '@/api/service'
 import { initMounte, moment } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
-import { Icons, useCompute } from '@/hooks/hook-icon'
+import { Icons, useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Minute',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const { instance, current, setCurrent } = useBatter()
         const page = ref<number>(1)
         const size = ref<number>(12)

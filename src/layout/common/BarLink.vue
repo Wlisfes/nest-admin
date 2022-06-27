@@ -1,12 +1,12 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'BarLink',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
 
         return () => (
             <Fragment>

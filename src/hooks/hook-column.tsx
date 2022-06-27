@@ -2,7 +2,7 @@ import type { DropdownOption } from 'naive-ui'
 import type { IProvider } from '@/api/pipe'
 import { NTag, NText, NButtonGroup, NButton, NPopover, NDivider, NDropdown } from 'naive-ui'
 import { h, ref, computed, CSSProperties } from 'vue'
-import { Icons, useCompute } from '@/hooks/hook-icon'
+import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
 
 type IChunkCter = 'edit' | 'reset' | 'disable' | 'enable' | 'delete'
@@ -15,7 +15,7 @@ type IChunk<T> = {
 
 export function useColumn() {
     const { vars } = useProvider()
-    const { Icon, compute } = useCompute()
+    const { Icon, compute } = useRxicon()
     const options = ref<Array<IOption | DropdownOption>>([
         { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
         { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },

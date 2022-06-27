@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted, ref, watch, nextTick, computed } from 'vue'
 import { useAppStore } from '@/store/modules/app-store'
-import { Icons, useCompute } from '@/hooks/hook-icon'
+import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { onReload, router } from '@/router'
 import { stopEvent } from '@/utils/utils-event'
 import BScroll, { BScrollInstance } from '@better-scroll/core'
@@ -15,7 +15,7 @@ type IOption = { label: string; key: string; icon: keyof typeof Icons; disabled:
 export default defineComponent({
     name: 'NavBetter',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const app = useAppStore()
         const wrapper = ref<HTMLElement>()
         const scope = ref<HTMLElement>()

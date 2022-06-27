@@ -2,7 +2,7 @@
 import { defineComponent, computed } from 'vue'
 import { useDialog } from 'naive-ui'
 import { useUserStore } from '@/store/modules/user-store'
-import { Icons, useCompute } from '@/hooks/hook-icon'
+import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { router } from '@/router'
 
 type IOption = { label: string; key: string; icon: keyof typeof Icons; color: string }
@@ -10,7 +10,7 @@ type IOption = { label: string; key: string; icon: keyof typeof Icons; color: st
 export default defineComponent({
     name: 'BarUser',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const user = useUserStore()
         const dialog = useDialog()
         const options = computed<Array<IOption>>(() => {

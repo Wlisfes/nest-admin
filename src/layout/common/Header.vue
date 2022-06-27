@@ -5,7 +5,7 @@ import { useAppStore } from '@/store/modules/app-store'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useUserStore } from '@/store/modules/user-store'
 import { useProvider } from '@/hooks/hook-provider'
-import { Icons, useCompute } from '@/hooks/hook-icon'
+import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { delToken } from '@/utils/utils-cookie'
 import { onReload, router } from '@/router'
 import { useAside } from '@/core/common/core-aside'
@@ -17,7 +17,7 @@ export default defineComponent({
     name: 'Header',
     setup() {
         const { inverted } = useProvider()
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const dialog = useDialog()
         const aside = useAside()
         const setup = useSetup()

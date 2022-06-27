@@ -6,12 +6,12 @@ import { AppContainer } from '@/components/global'
 import { httpClientArticle } from '@/api/service'
 import { initMounte } from '@/utils/utils-tool'
 import { NPreview } from '@/hooks/hook-editor'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Check',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const route = useRoute()
         const node = ref<IArticle>()
         const loading = ref<boolean>(true)

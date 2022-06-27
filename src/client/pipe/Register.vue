@@ -1,12 +1,12 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Register',
     setup() {
-        const { compute } = useCompute()
+        const { compute } = useRxicon()
         const loading = ref(false)
         const formRef = ref<FormInst>()
         const form = ref({ name: 'admin', password: '12345', code: '9527' })

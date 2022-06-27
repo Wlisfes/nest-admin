@@ -3,12 +3,12 @@ import { defineComponent, ref, computed } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useAppStore } from '@/store/modules/app-store'
 import { moment } from '@/utils/utils-tool'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'Index',
     setup() {
-        const { Icon, compute } = useCompute()
+        const { Icon, compute } = useRxicon()
         const app = useAppStore()
         const current = computed(() => app.banner[app.index] || null)
         const time = ref(moment().format('HH:mm:ss'))

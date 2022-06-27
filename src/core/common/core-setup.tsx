@@ -14,7 +14,7 @@ import {
 } from 'naive-ui'
 import { useDvcStore } from '@/store/modules/dvc-store'
 import { useProvider } from '@/hooks/hook-provider'
-import { useCompute } from '@/hooks/hook-icon'
+import { useRxicon } from '@/hooks/hook-icon'
 import { loadFile } from '@/utils/utils-tool'
 import { CoreNode } from '@/core/pipe/pipe-type'
 import css from '@/core/scss/core-setup.module.scss'
@@ -29,7 +29,7 @@ export function useSetup(node?: CoreNode | null) {
         name: 'Core-Setup',
         emits: ['close'],
         setup(props, { emit }) {
-            const { compute } = useCompute()
+            const { compute } = useRxicon()
             const { primaryVars, animate } = useProvider()
             const dvc = useDvcStore()
             const to = computed<string | HTMLElement>(() => node?.to || document.body)

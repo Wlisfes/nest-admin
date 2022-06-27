@@ -122,7 +122,7 @@ export const Icons = {
     DeleteOutlined
 }
 
-export function useCompute() {
+export function useRxicon() {
     const compute = (name: keyof typeof Icons): Component => {
         return h(Icons[name])
     }
