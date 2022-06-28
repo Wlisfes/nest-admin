@@ -62,15 +62,16 @@ export default defineComponent({
         const columnNative = (value: unknown, row: IPoster, column: DataTableBaseColumn) => {
             const BaseNative = {
                 check: () => (
-                    <n-image
-                        width={96}
-                        height={54}
-                        object-fit="cover"
-                        preview-src={row.url}
-                        show-toolbar-tooltip
-                        src={`${row.url}?x-oss-process=style/resize`}
-                        v-slots={{ placeholder: () => <n-skeleton width="96px" height="54px" /> }}
-                    />
+                    <u-scale max-width={96}>
+                        <n-image
+                            width="100%"
+                            object-fit="cover"
+                            preview-src={row.url}
+                            show-toolbar-tooltip
+                            src={`${row.url}?x-oss-process=style/resize`}
+                            v-slots={{ placeholder: () => <n-skeleton width="96px" height="54px" /> }}
+                        />
+                    </u-scale>
                 ),
                 url: () => (
                     <n-button secondary size="small" class="naive-customize">
