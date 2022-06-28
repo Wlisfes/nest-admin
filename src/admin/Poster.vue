@@ -4,18 +4,15 @@ import type { DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref, nextTick } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnPoster } from '@/api/service'
-import { initMounte } from '@/utils/utils-tool'
+import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
+import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Poster',
     setup() {
-        const { divineColumn, online, onlineColumn, chunkColumn, calcColumn } = useColumn()
-        const page = ref<number>(1)
-        const size = ref<number>(10)
-        const total = ref<number>(0)
-        const loading = ref<boolean>(true)
-        const dataSource = ref<Array<IPoster>>([])
+        const { page, size, total, loading, dataSource, setState } = useSource()
+        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
         const form = ref({ status: undefined, type: undefined })
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '图片预览', key: 'check', width: calcColumn(140, 1080) },
@@ -36,28 +33,30 @@ export default defineComponent({
         /**图床列表**/
         const fetchColumnPoster = async () => {
             try {
-                loading.value = true
+                setState({ loading: true })
                 const { status, type } = form.value
                 const { data } = await httpColumnPoster({
                     page: page.value,
                     size: size.value,
                     status,
                     type
-                }).finally(() => {
-                    loading.value = false
                 })
-
-                total.value = data.total
-                dataSource.value = data.list
-            } catch (e) {}
+                setState({
+                    total: data.total,
+                    dataSource: data.list || [],
+                    loading: false
+                })
+            } catch (e) {
+                setState({ loading: false })
+            }
         }
 
         const fetchReset = () => {
-            page.value = 1
-            size.value = 10
-            form.value.status = undefined
-            form.value.type = undefined
-            nextTick(() => fetchColumnPoster())
+            setState({ page: 1, size: 10 }).then(() => {
+                form.value.status = undefined
+                form.value.type = undefined
+                nextTick(() => fetchColumnPoster())
+            })
         }
 
         const columnNative = (value: unknown, row: IPoster, column: DataTableBaseColumn) => {

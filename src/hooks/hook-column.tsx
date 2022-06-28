@@ -12,8 +12,15 @@ type IChunk<T> = {
     native: Array<IChunkCter>
     onSelecter: (key: IChunkCter, row: T) => void
 }
+type IColumn<T> = {
+    page?: number
+    size?: number
+    total?: number
+    loading?: boolean
+    dataSource?: Array<T>
+}
 
-export function useColumn() {
+export function useColumn<R = any>(props?: IColumn<R>) {
     const { vars } = useProvider()
     const { Icon, compute } = useRxicon()
     const options = ref<Array<IOption | DropdownOption>>([
@@ -75,28 +82,39 @@ export function useColumn() {
 
     /**状态列**/
     const onlineColumn = (status: number) => {
-        if (status === 0) {
-            const { disableBackColor: color, disableTextColor: textColor, disableBorderColor: borderColor } = vars.value
-            return (
-                <NTag
-                    size="small"
-                    color={{ color, textColor, borderColor }}
-                    style={online.value}
-                    v-slots={{ default: () => '禁用' }}
-                ></NTag>
-            )
-        } else if (status === 1) {
-            const { enableBackColor: color, enableTextColor: textColor, enableBorderColor: borderColor } = vars.value
-            return (
-                <NTag
-                    size="small"
-                    color={{ color, textColor, borderColor }}
-                    style={online.value}
-                    v-slots={{ default: () => '启用' }}
-                ></NTag>
-            )
+        const BaseColumn = {
+            0: () => {
+                const { disableBackColor: color, disableTextColor, disableBorderColor } = vars.value
+                return (
+                    <NTag
+                        size="small"
+                        color={{ color, textColor: disableTextColor, borderColor: disableBorderColor }}
+                        style={online.value}
+                        v-slots={{ default: () => '禁用' }}
+                    ></NTag>
+                )
+            },
+            1: () => {
+                const { enableBackColor, enableTextColor, enableBorderColor } = vars.value
+                return (
+                    <NTag
+                        size="small"
+                        color={{ color: enableBackColor, textColor: enableTextColor, borderColor: enableBorderColor }}
+                        style={online.value}
+                        v-slots={{ default: () => '启用' }}
+                    ></NTag>
+                )
+            }
         }
+
+        return BaseColumn[status as keyof typeof BaseColumn]?.() ?? divineColumn(status)
     }
 
-    return { divineColumn, online, onlineColumn, chunkColumn, calcColumn }
+    return {
+        online,
+        divineColumn,
+        onlineColumn,
+        chunkColumn,
+        calcColumn
+    }
 }
