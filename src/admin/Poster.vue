@@ -31,24 +31,20 @@ export default defineComponent({
         ])
 
         /**图床列表**/
-        const fetchColumnPoster = async () => {
-            try {
-                setState({ loading: true })
-                const { status, type } = form.value
-                const { data } = await httpColumnPoster({
-                    page: page.value,
-                    size: size.value,
-                    status,
-                    type
-                })
-                setState({
-                    total: data.total,
-                    dataSource: data.list || [],
-                    loading: false
-                })
-            } catch (e) {
-                setState({ loading: false })
-            }
+        const fetchColumnPoster = () => {
+            setState({ loading: true }).then(async () => {
+                try {
+                    const { data } = await httpColumnPoster({
+                        page: page.value,
+                        size: size.value,
+                        status: form.value.status,
+                        type: form.value.type
+                    })
+                    setState({ total: data.total, dataSource: data.list || [], loading: false })
+                } catch (e) {
+                    setState({ loading: false })
+                }
+            })
         }
 
         const fetchReset = () => {
@@ -59,17 +55,22 @@ export default defineComponent({
             })
         }
 
+        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
+            setState(parameter).then(() => {
+                fetchColumnPoster()
+            })
+        }
+
         const columnNative = (value: unknown, row: IPoster, column: DataTableBaseColumn) => {
             const BaseNative = {
                 check: () => (
-                    <u-scale max-width={96}>
+                    <u-scale max-width={row.type === 1 ? 54 : 96} scale={row.type === 1 ? 1 : 16 / 9}>
                         <n-image
-                            width="100%"
                             object-fit="cover"
                             preview-src={row.url}
                             show-toolbar-tooltip
                             src={`${row.url}?x-oss-process=style/resize`}
-                            v-slots={{ placeholder: () => <n-skeleton width="96px" height="54px" /> }}
+                            v-slots={{ placeholder: () => <n-skeleton width="100%" height="100%" /> }}
                         />
                     </u-scale>
                 ),
@@ -130,7 +131,7 @@ export default defineComponent({
                             </n-form-item>
                         </div>
                         <n-form-item>
-                            <n-button type="info" secondary onClick={fetchColumnPoster}>
+                            <n-button type="info" secondary onClick={() => fetchUpdate({ page: 1, size: 10 })}>
                                 查 找
                             </n-button>
                         </n-form-item>
@@ -164,7 +165,9 @@ export default defineComponent({
                             itemCount: total.value,
                             pageSizes: [10, 20, 30, 40, 50],
                             showSizePicker: true,
-                            showQuickJumper: true
+                            showQuickJumper: true,
+                            onUpdatePage: (value: number) => fetchUpdate({ page: value }),
+                            onUpdatePageSize: (value: number) => fetchUpdate({ page: 1, size: value })
                         }}
                     ></n-data-table>
                 </AppContainer>
