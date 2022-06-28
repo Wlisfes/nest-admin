@@ -64,7 +64,7 @@ export default defineComponent({
         const columnNative = (value: unknown, row: IPoster, column: DataTableBaseColumn) => {
             const BaseNative = {
                 check: () => (
-                    <u-scale max-width={row.type === 1 ? 54 : 96} scale={row.type === 1 ? 1 : 16 / 9}>
+                    <u-scale max-width={row.type === 3 ? 96 : 54} scale={row.type === 3 ? 16 / 9 : 1}>
                         <n-image
                             object-fit="cover"
                             preview-src={row.url}
