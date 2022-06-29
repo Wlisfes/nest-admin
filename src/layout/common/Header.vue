@@ -25,9 +25,6 @@ export default defineComponent({
         const app = useAppStore()
         const dvc = useDvcStore()
         const user = useUserStore()
-        const avatar = computed(() => {
-            return user.avatar || new URL('/src/assets/resource/mini-logo.png', import.meta.url).href
-        })
 
         const onTrigger = () => {
             if (app.device === 'MOBILE') {
@@ -124,13 +121,7 @@ export default defineComponent({
                         trigger="click"
                         onSelect={onSelecter}
                     >
-                        {{
-                            default: () => (
-                                <div class="vnode-trigger">
-                                    <n-avatar round size={36} src={avatar.value} />
-                                </div>
-                            )
-                        }}
+                        <u-avatar src={user.avatar} username={user.nickname} size={36} round />
                     </n-dropdown>
                     <div class="vnode-trigger" onClick={() => setup.init(true)}>
                         <n-icon size={20} component={compute('SettingOutlined')}></n-icon>
