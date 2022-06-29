@@ -6,6 +6,15 @@ export function httpLogin(data: { account: string; password: string; code: strin
     return request<{ token: string }>({ url: `/api/user/login`, method: 'POST', data })
 }
 
+/**注册用户**/
+export function httpRegister(params: { nickname: string; password: string; code: string; email: string }) {
+    return request<IUser>({
+        url: `/api/user/register`,
+        method: 'POST',
+        data: params
+    })
+}
+
 /**用户信息**/
 export function httpUser() {
     return request<IUser>({ url: `/api/user/info`, method: 'GET' })

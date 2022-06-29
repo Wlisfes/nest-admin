@@ -1,6 +1,6 @@
 import type { IUser, IRole } from '@/api/pipe'
 import { defineStore } from 'pinia'
-import { httpLogin, httpUser } from '@/api/service'
+import { httpLogin, httpUser, httpRegister } from '@/api/service'
 import { setToken, getToken, delToken } from '@/utils/utils-cookie'
 import { useAppStore } from '@/store/modules/app-store'
 
@@ -30,6 +30,17 @@ export const useUserStore = defineStore({
         async login(props: { account: string; password: string; code: string }) {
             try {
                 return await httpLogin({ ...props }).then(async ({ data: { token } }) => {
+                    this.token = token
+                    return await setToken(token)
+                })
+            } catch (e: unknown) {
+                return Promise.reject(e)
+            }
+        },
+        /**注册**/
+        async register(props: { nickname: string; password: string; code: string; email: string }) {
+            try {
+                return await httpRegister({ ...props }).then(async ({ data: { token } }) => {
                     this.token = token
                     return await setToken(token)
                 })

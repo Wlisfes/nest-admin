@@ -11,6 +11,7 @@ export type IUser = IProvider & {
     mobile: number
     password: string
     status: number
+    token: string
     role: Array<IRole>
     list: Array<IUser>
 }

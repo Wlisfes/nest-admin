@@ -13,7 +13,7 @@ type ICompute = {
 }
 
 export function useCompute(props?: ICompute) {
-    const { login } = useUserStore()
+    const { login, register } = useUserStore()
     const state = reactive<Required<ICompute>>({
         account: props?.account ?? '',
         password: props?.password ?? '',
@@ -67,6 +67,7 @@ export function useCompute(props?: ICompute) {
         state,
         setState,
         onReload,
-        login
+        login,
+        register
     }
 }
