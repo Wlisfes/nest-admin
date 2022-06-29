@@ -1,44 +1,28 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
-import { FormInst, FormRules } from 'naive-ui'
+import { defineComponent } from 'vue'
 import { router } from '@/router'
-import { useUserStore } from '@/store/modules/user-store'
 import { useRxicon } from '@/hooks/hook-icon'
+import { useCompute } from '@/hooks/hook-compute'
 
 export default defineComponent({
     name: 'Login',
     setup() {
         const { compute } = useRxicon()
-        const user = useUserStore()
-        const vcCode = ref<HTMLImageElement>()
-        const formRef = ref<FormInst>()
-        const loading = ref(false)
-        const form = ref({ account: '', password: '', code: '' })
-        const rules: FormRules = {
-            account: [{ required: true, message: '请输入账号', trigger: 'change' }],
-            password: [
-                { required: true, message: '请输入密码', trigger: 'change' },
-                { min: 6, message: '密码不能少于6位', trigger: 'change' }
-            ],
-            code: [{ required: true, message: '请输入验证码', trigger: 'change' }]
-        }
-
-        const onReloadCursor = () => {
-            if (vcCode.value) {
-                vcCode.value.src = `${import.meta.env.VITE_API_BASE}/api/user/code?t=${Date.now()}`
-            }
-        }
+        const { codeURL, formRef, rules, state, setState, onReload, login } = useCompute()
 
         const onSubmit = async () => {
             try {
-                const error = await formRef.value?.validate()
-                if (!error) {
-                    loading.value = true
-                    await user.login({ ...form.value })
+                await formRef.value?.validate()
+                await setState({ loading: true })
+                await login({
+                    account: state.account,
+                    password: state.password,
+                    code: state.code
+                }).then(() => {
                     router.replace('/')
-                }
+                })
             } catch (e) {
-                loading.value = false
+                setState({ loading: false }).then(onReload)
             }
         }
 
@@ -46,10 +30,10 @@ export default defineComponent({
             return (
                 <div>
                     <h2>登 录</h2>
-                    <n-form ref={formRef} model={form.value} rules={rules} label-placement="left">
+                    <n-form ref={formRef} model={state} rules={rules.value} label-placement="left">
                         <n-form-item path="account">
                             <n-input
-                                v-model:value={form.value.account}
+                                v-model:value={state.account}
                                 size="large"
                                 placeholder="账号"
                                 input-props={{ autocomplete: 'off' }}
@@ -59,7 +43,7 @@ export default defineComponent({
                         </n-form-item>
                         <n-form-item path="password">
                             <n-input
-                                v-model:value={form.value.password}
+                                v-model:value={state.password}
                                 maxlength={16}
                                 size="large"
                                 type="password"
@@ -72,7 +56,7 @@ export default defineComponent({
                         </n-form-item>
                         <n-form-item path="code">
                             <n-input
-                                v-model:value={form.value.code}
+                                v-model:value={state.code}
                                 size="large"
                                 maxlength={4}
                                 placeholder="验证码"
@@ -80,12 +64,7 @@ export default defineComponent({
                             >
                                 {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
                             </n-input>
-                            <img
-                                class="vc-code"
-                                ref={vcCode}
-                                src={`${import.meta.env.VITE_API_BASE}/api/user/code`}
-                                onClick={onReloadCursor}
-                            />
+                            <img class="vc-code" src={codeURL.value} onClick={onReload} />
                         </n-form-item>
                         <n-form-item>
                             <n-button
@@ -93,7 +72,7 @@ export default defineComponent({
                                 type="info"
                                 size="large"
                                 round
-                                loading={loading.value}
+                                loading={state.loading}
                                 onClick={onSubmit}
                             >
                                 提 交
