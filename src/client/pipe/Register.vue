@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { router } from '@/router'
+import { httpSendEmail } from '@/api/service'
 
 export default defineComponent({
     name: 'Register',
@@ -11,10 +12,13 @@ export default defineComponent({
         const { formRef, rules, state, isEmail, setState, startDuration, register } = useCompute()
 
         const fetchEmail = () => {
-            setState({ sending: true }).then(() => {
-                setTimeout(() => {
+            setState({ sending: true }).then(async () => {
+                try {
+                    await httpSendEmail({ email: state.email })
                     setState({ sending: false }).then(() => startDuration(60))
-                }, 3000)
+                } catch (e) {
+                    setState({ sending: false })
+                }
             })
         }
 
@@ -41,7 +45,12 @@ export default defineComponent({
                     <h2>注 册</h2>
                     <n-form ref={formRef} model={state} rules={rules.value} label-placement="left">
                         <n-form-item path="nickname">
-                            <n-input v-model:value={state.nickname} size="medium" placeholder="用户昵称">
+                            <n-input
+                                v-model:value={state.nickname}
+                                size="medium"
+                                placeholder="用户昵称"
+                                input-props={{ autocomplete: 'off' }}
+                            >
                                 {{ prefix: () => <n-icon component={compute('UserOutlined')}></n-icon> }}
                             </n-input>
                         </n-form-item>
@@ -50,14 +59,20 @@ export default defineComponent({
                                 v-model:value={state.password}
                                 size="medium"
                                 type="password"
-                                show-password-on="mousedown"
                                 placeholder="密码"
+                                show-password-on="mousedown"
+                                input-props={{ autocomplete: 'new-password' }}
                             >
                                 {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="email">
-                            <n-input v-model:value={state.email} size="medium" placeholder="邮箱">
+                            <n-input
+                                v-model:value={state.email}
+                                size="medium"
+                                placeholder="邮箱"
+                                input-props={{ autocomplete: 'off' }}
+                            >
                                 {{ prefix: () => <n-icon component={compute('MailOutlined')}></n-icon> }}
                             </n-input>
                         </n-form-item>
@@ -65,7 +80,7 @@ export default defineComponent({
                             <n-input
                                 v-model:value={state.code}
                                 size="medium"
-                                maxlength={4}
+                                maxlength={6}
                                 placeholder="验证码"
                                 input-props={{ autocomplete: 'off' }}
                             >

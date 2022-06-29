@@ -15,6 +15,15 @@ export function httpRegister(params: { nickname: string; password: string; code:
     })
 }
 
+/**邮箱注册验证码**/
+export function httpSendEmail(params: { email: string }) {
+    return request<IUser>({
+        url: `/api/nodemailer/register-code`,
+        method: 'POST',
+        data: params
+    })
+}
+
 /**用户信息**/
 export function httpUser() {
     return request<IUser>({ url: `/api/user/info`, method: 'GET' })

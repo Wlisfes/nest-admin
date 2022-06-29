@@ -116,14 +116,7 @@ export default defineComponent({
                 height: 40px;
                 width: 70%;
                 margin: 0 15%;
-            }
-            :deep(.vc-code) {
-                width: 100px;
-                height: 34px;
-                display: block;
-                cursor: pointer;
-                object-fit: cover;
-                margin-left: 10px;
+                font-size: 16px;
             }
         }
 

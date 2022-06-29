@@ -1,4 +1,4 @@
-import { reactive, ref, toRefs, nextTick, computed } from 'vue'
+import { reactive, ref, toRefs, nextTick, computed, onMounted } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
 import { useUserStore } from '@/store/modules/user-store'
 import { initMounte } from '@/utils/utils-tool'
@@ -79,7 +79,7 @@ export function useCompute(props?: ICompute) {
         }
     }
 
-    initMounte(() => {
+    onMounted(() => {
         onRefresh()
     })
 
