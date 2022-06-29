@@ -8,7 +8,7 @@ export default defineComponent({
     name: 'Login',
     setup() {
         const { compute } = useRxicon()
-        const { codeURL, formRef, rules, state, setState, onReload, login } = useCompute()
+        const { codeURL, formRef, rules, state, setState, onRefresh, login } = useCompute()
 
         const onSubmit = async () => {
             try {
@@ -22,7 +22,7 @@ export default defineComponent({
                     router.replace('/')
                 })
             } catch (e) {
-                setState({ loading: false }).then(onReload)
+                setState({ loading: false }).then(onRefresh)
             }
         }
 
@@ -34,7 +34,7 @@ export default defineComponent({
                         <n-form-item path="account">
                             <n-input
                                 v-model:value={state.account}
-                                size="large"
+                                size="medium"
                                 placeholder="账号"
                                 input-props={{ autocomplete: 'off' }}
                             >
@@ -45,7 +45,7 @@ export default defineComponent({
                             <n-input
                                 v-model:value={state.password}
                                 maxlength={16}
-                                size="large"
+                                size="medium"
                                 type="password"
                                 show-password-on="mousedown"
                                 input-props={{ autocomplete: 'new-password' }}
@@ -57,20 +57,20 @@ export default defineComponent({
                         <n-form-item path="code">
                             <n-input
                                 v-model:value={state.code}
-                                size="large"
+                                size="medium"
                                 maxlength={4}
                                 placeholder="验证码"
                                 input-props={{ autocomplete: 'off' }}
                             >
                                 {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
                             </n-input>
-                            <img class="vc-code" src={codeURL.value} onClick={onReload} />
+                            <img class="vc-code" src={codeURL.value} onClick={onRefresh} />
                         </n-form-item>
-                        <n-form-item>
+                        <n-form-item show-feedback={false}>
                             <n-button
                                 class="antd-submit"
                                 type="info"
-                                size="large"
+                                size="medium"
                                 round
                                 loading={state.loading}
                                 onClick={onSubmit}

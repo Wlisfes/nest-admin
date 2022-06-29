@@ -119,7 +119,7 @@ export default defineComponent({
             }
             :deep(.vc-code) {
                 width: 100px;
-                height: 40px;
+                height: 34px;
                 display: block;
                 cursor: pointer;
                 object-fit: cover;

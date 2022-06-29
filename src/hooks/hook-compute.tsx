@@ -1,4 +1,4 @@
-import { reactive, ref, toRefs, nextTick, onMounted } from 'vue'
+import { reactive, ref, toRefs, nextTick, computed } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
 import { useUserStore } from '@/store/modules/user-store'
 import { initMounte } from '@/utils/utils-tool'
@@ -10,6 +10,8 @@ type ICompute = {
     nickname?: string
     email?: string
     loading?: boolean
+    duration?: number
+    sending?: boolean
 }
 
 export function useCompute(props?: ICompute) {
@@ -20,7 +22,9 @@ export function useCompute(props?: ICompute) {
         code: props?.code ?? '',
         nickname: props?.nickname ?? '',
         email: props?.email ?? '',
-        loading: props?.loading ?? false
+        loading: props?.loading ?? false,
+        duration: props?.duration ?? 0,
+        sending: props?.sending ?? false
     })
 
     const codeURL = ref<string>('')
@@ -39,6 +43,12 @@ export function useCompute(props?: ICompute) {
         ]
     })
 
+    const isEmail = computed<boolean>(() => {
+        return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            state.email
+        )
+    })
+
     const setState = (parameter: ICompute, handler?: (e: typeof state) => void) => {
         return new Promise(resolve => {
             for (const key in parameter) {
@@ -51,12 +61,26 @@ export function useCompute(props?: ICompute) {
         })
     }
 
-    const onReload = () => {
+    const onRefresh = () => {
         codeURL.value = `${import.meta.env.VITE_API_BASE}/api/user/code?t=${Date.now()}`
     }
 
+    const startDuration = (value: number) => {
+        if (state.duration === 0) {
+            setState({ duration: value }).then(() => {
+                const interval = setInterval(() => {
+                    if (state.duration > 0) {
+                        state.duration--
+                    } else {
+                        interval && clearInterval(interval)
+                    }
+                }, 1000)
+            })
+        }
+    }
+
     initMounte(() => {
-        onReload()
+        onRefresh()
     })
 
     return {
@@ -65,9 +89,11 @@ export function useCompute(props?: ICompute) {
         formRef,
         rules,
         state,
+        isEmail,
         setState,
-        onReload,
+        onRefresh,
         login,
-        register
+        register,
+        startDuration
     }
 }
