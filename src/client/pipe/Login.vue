@@ -65,11 +65,12 @@ export default defineComponent({
                                 {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
                             </n-input>
                             <u-scale max-width={100} scale={100 / 34} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-                                <n-image preview-disabled src={codeURL.value} onClick={onRefresh}>
+                                {codeURL.value ? (
+                                    <n-image preview-disabled src={codeURL.value} onClick={onRefresh}></n-image>
+                                ) : (
                                     <n-skeleton width="100%" height="100%" />
-                                </n-image>
+                                )}
                             </u-scale>
-                            {/**<img class="vc-code" src={codeURL.value} onClick={onRefresh} />**/}
                         </n-form-item>
                         <n-form-item show-feedback={false}>
                             <n-button
