@@ -71,7 +71,13 @@ export default defineComponent({
                     trigger="click"
                     onSelect={onSelecter}
                 >
-                    <u-avatar src={user.avatar} username={user.nickname} size={36} round />
+                    {user.avatar || user.nickname ? (
+                        <u-avatar src={user.avatar} username={user.nickname} size={36} round />
+                    ) : (
+                        <n-avatar round size={36} style={{ cursor: 'pointer' }}>
+                            <n-icon size={20} component={compute('UserOutlined')}></n-icon>
+                        </n-avatar>
+                    )}
                 </n-dropdown>
             </div>
         )
