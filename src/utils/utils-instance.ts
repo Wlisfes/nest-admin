@@ -1,13 +1,13 @@
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { Observer } from '@/utils/utils-observer'
 import { useAppStore } from '@/store/modules/app-store'
 
-type ClientEvent = {
+type ClientObserver = {
     resize: { width: number; device: string; collapse: boolean }
 }
 
-const client = new (class Client {
-    public observer = new Observer<ClientEvent>()
+const client = new (class {
+    public observer = new Observer<ClientObserver>()
     public store: any = null
 
     public async listener() {
@@ -46,11 +46,11 @@ export function useClient() {
 
 /***************************************************************************************/
 type IScroll = { distance: number; spin: boolean }
-type InstanceEvent = {
+type InstanceObserver = {
     scroll: IScroll
 }
 const instance = new (class {
-    public observer = new Observer<InstanceEvent>()
+    public observer = new Observer<InstanceObserver>()
 
     /**滚动事件**/
     public onScrollbar(node: IScroll) {
