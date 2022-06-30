@@ -8,12 +8,18 @@ import { useState } from '@/hooks/hook-state'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
 
+type IParams = { status: number | null; type: number | null }
+
 export default defineComponent({
     name: 'Poster',
     setup() {
-        const { page, size, total, loading, dataSource, setState } = useState()
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
-        const form = ref({ status: undefined, type: undefined })
+        const { state, setState } = useState<IPoster, IParams>({
+            params: {
+                status: null,
+                type: null
+            }
+        })
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '图片预览', key: 'check', width: calcColumn(140, 1080) },
             { title: '图片类型', key: 'type', width: calcColumn(120, 1080) },
@@ -34,12 +40,8 @@ export default defineComponent({
         const fetchColumnPoster = () => {
             setState({ loading: true }).then(async () => {
                 try {
-                    const { data } = await httpColumnPoster({
-                        page: page.value,
-                        size: size.value,
-                        status: form.value.status,
-                        type: form.value.type
-                    })
+                    const { page, size, status, type } = state
+                    const { data } = await httpColumnPoster({ page, size, status, type })
                     setState({ total: data.total, dataSource: data.list || [], loading: false })
                 } catch (e) {
                     setState({ loading: false })
@@ -48,9 +50,7 @@ export default defineComponent({
         }
 
         const fetchReset = () => {
-            setState({ page: 1, size: 10 }).then(() => {
-                form.value.status = undefined
-                form.value.type = undefined
+            setState({ page: 1, size: 10, status: null, type: null }).then(() => {
                 nextTick(() => fetchColumnPoster())
             })
         }
@@ -109,11 +109,11 @@ export default defineComponent({
         return () => {
             return (
                 <AppContainer class="app-pipe" space="12px">
-                    <n-form class="is-customize" model={form.value} inline show-label={false} show-feedback={false}>
+                    <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
                         <div class="app-inline space-660">
                             <n-form-item>
                                 <n-select
-                                    v-model:value={form.value.type}
+                                    v-model:value={state.type}
                                     clearable
                                     options={typeSource.value}
                                     placeholder="图片类型"
@@ -122,7 +122,7 @@ export default defineComponent({
                             </n-form-item>
                             <n-form-item>
                                 <n-select
-                                    v-model:value={form.value.status}
+                                    v-model:value={state.status}
                                     clearable
                                     options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
                                     placeholder="图片状态"
@@ -154,15 +154,15 @@ export default defineComponent({
                         bordered={false}
                         remote={true}
                         flex-height={true}
-                        loading={loading.value}
+                        loading={state.loading}
                         row-key={(row: IPoster) => row.id}
                         columns={dataColumn.value}
-                        data={dataSource.value}
+                        data={state.dataSource}
                         render-cell={columnNative}
                         pagination={{
-                            page: page.value,
-                            pageSize: size.value,
-                            itemCount: total.value,
+                            page: state.page,
+                            pageSize: state.size,
+                            itemCount: state.total,
                             pageSizes: [10, 20, 30, 40, 50],
                             showSizePicker: true,
                             showQuickJumper: true,
