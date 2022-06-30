@@ -33,9 +33,14 @@ export function httpUser() {
 export function httpColumnUser(params: {
     page: number
     size: number
-    status?: number
-    primary?: string
-    keyword?: string
+    status?: number | null
+    primary?: string | null
+    keyword?: string | null
 }) {
     return request<IUser>({ url: `/api/user/list-node`, method: 'GET', params })
+}
+
+/**修改用户状态**/
+export function httpCutoverUser(params: { uid: number }) {
+    return request<IUser>({ url: `/api/user/cutover`, method: 'PUT', data: params })
 }

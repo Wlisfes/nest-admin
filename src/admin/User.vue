@@ -1,21 +1,32 @@
 <script lang="tsx">
-import type { IUser } from '@/api/pipe'
-import type { DataTableBaseColumn } from 'naive-ui'
+import type { IUser, IRole } from '@/api/pipe'
+import { useDialog, useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnUser } from '@/api/service'
-import { initMounte } from '@/utils/utils-tool'
+import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api/service'
+import { useState } from '@/hooks/hook-state'
 import { useColumn } from '@/hooks/hook-column'
+import { initMounte } from '@/utils/utils-tool'
+
+type IParams = {
+    status: number | null
+    primary: string | null
+    keyword: string | null
+    roles: Array<IRole>
+}
 
 export default defineComponent({
     name: 'User',
     setup() {
-        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn()
-        const page = ref<number>(1)
-        const size = ref<number>(10)
-        const total = ref<number>(0)
-        const loading = ref<boolean>(true)
-        const dataSource = ref<Array<IUser>>([])
+        const dialog = useDialog()
+        const notice = useNotification()
+        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn()
+        const { state, setState } = useState<IUser, IParams>({
+            status: null,
+            primary: null,
+            keyword: null,
+            roles: []
+        })
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '账号', key: 'account', width: calcColumn(100, 1080) },
             { title: '头像', key: 'avatar', width: calcColumn(80, 1080) },
@@ -29,63 +40,114 @@ export default defineComponent({
         ])
 
         /**用户列表**/
-        const fecthColumnUser = async () => {
-            try {
-                loading.value = true
-                const { data } = await httpColumnUser({ page: page.value, size: size.value }).finally(() => {
-                    loading.value = false
-                })
+        const fetchColumnUser = (handler?: Function) => {
+            setState({ loading: true }).then(async () => {
+                try {
+                    const { page, size, status, primary, keyword } = state
+                    const { data } = await httpColumnUser({ page, size, status, primary, keyword })
+                    setState({
+                        total: data.total,
+                        dataSource: data.list,
+                        loading: false
+                    }).then(() => handler?.())
+                } catch (e) {
+                    setState({ loading: false })
+                }
+            })
+        }
 
-                total.value = data.total
-                dataSource.value = data.list
+        /**角色列表**/
+        const fetchColumnRole = async () => {
+            try {
+                const { data } = await httpColumnRole({ page: 1, size: 100 })
+                setState({ roles: data.list })
             } catch (e) {}
         }
 
+        /**修改用户状态**/
+        const fetchCutoverPoster = (uid: number) => {
+            setState({ loading: true }).then(() => {
+                try {
+                    httpCutoverUser({ uid }).then(({ data }) => {
+                        fetchColumnUser(() => {
+                            notice.success({ content: data.message, duration: 2000 })
+                        })
+                    })
+                } catch (e) {
+                    setState({ loading: false })
+                }
+            })
+        }
+
+        const fetchReset = () => {
+            setState({ page: 1, size: 10, status: null, primary: null, keyword: null }).then(() => {
+                fetchColumnUser()
+            })
+        }
+
+        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
+            setState(parameter).then(() => {
+                fetchColumnUser()
+            })
+        }
+
+        const onSelecter = (key: string, row: IUser) => {
+            switch (key) {
+                case 'edit':
+                    break
+                case 'reset':
+                    break
+                case 'enable':
+                case 'disable':
+                    fetchCutoverPoster(row.uid)
+                    break
+            }
+        }
+
         const columnNative = (value: unknown, row: IUser, column: DataTableBaseColumn) => {
-            if (column.key === 'avatar') {
-                return <u-avatar src={value} username={row.nickname} size={40} round={4} align="start" />
-            } else if (column.key === 'role') {
-                return (
+            const BaseNative = {
+                avatar: () => (
+                    <u-scale max-width={40} scale={1}>
+                        <u-avatar src={row.avatar} username={row.nickname} size={40} round={4} align="start" />
+                    </u-scale>
+                ),
+                role: () => (
                     <n-space size={5}>
                         {row.role.map(x => (
-                            <n-tag
-                                key={x.id}
-                                size="small"
-                                type="success"
-                                v-slots={{ default: () => x.name }}
-                                style={{ cursor: 'pointer', height: '24px', userSelect: 'none' }}
-                            />
+                            <n-tag key={x.id} size="small" type="success" style={online.value}>
+                                {{ default: () => x.name }}
+                            </n-tag>
                         ))}
                     </n-space>
-                )
-            } else if (column.key === 'status') {
-                return onlineColumn(row.status)
-            } else if (column.key === 'command') {
-                return chunkColumn<IUser>({
-                    row,
-                    native: ['edit', 'reset'],
-                    onSelecter: key => {
-                        console.log(key)
-                    }
-                })
+                ),
+                status: () => onlineColumn(row.status),
+                command: () => chunkColumn<IUser>({ row, native: ['edit', 'reset'], onSelecter })
             }
-            return divineColumn(value)
+            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
         }
 
         initMounte(() => {
-            fecthColumnUser()
+            fetchColumnUser()
+            fetchColumnRole()
         })
 
         return () => {
             return (
                 <AppContainer class="app-pipe" space="12px">
-                    <n-form class="is-customize" inline show-label={false} show-feedback={false}>
+                    <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
                         <div class="app-inline space-660">
                             <n-form-item>
-                                <n-select placeholder="用户角色" style={{ width: '150px' }} />
+                                <n-select
+                                    v-model:value={state.primary}
+                                    clearable
+                                    options={state.roles.map(x => ({ id: x.id, label: x.name, value: x.primary }))}
+                                    placeholder="用户角色"
+                                    style={{ width: '150px' }}
+                                />
                             </n-form-item>
                             <n-form-item>
                                 <n-select
+                                    v-model:value={state.status}
                                     clearable
                                     options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
                                     placeholder="用户状态"
@@ -95,16 +157,21 @@ export default defineComponent({
                         </div>
                         <div class="app-inline space-580">
                             <n-form-item>
-                                <n-input placeholder="关键字" style={{ width: '260px' }} />
+                                <n-input
+                                    v-model:value={state.keyword}
+                                    clearable
+                                    placeholder="关键字"
+                                    style={{ width: '260px' }}
+                                />
                             </n-form-item>
                         </div>
                         <n-form-item>
-                            <n-button type="info" secondary>
+                            <n-button type="info" secondary onClick={() => fetchUpdate({ page: 1, size: 10 })}>
                                 查 找
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="warning" secondary>
+                            <n-button type="warning" secondary onClick={fetchReset}>
                                 重 置
                             </n-button>
                         </n-form-item>
@@ -121,18 +188,20 @@ export default defineComponent({
                         scroll-x={1080}
                         bordered={false}
                         flex-height={true}
-                        loading={loading.value}
+                        loading={state.loading}
                         row-key={(row: IUser) => row.id}
                         columns={dataColumn.value}
-                        data={dataSource.value}
+                        data={state.dataSource}
                         render-cell={columnNative}
                         pagination={{
-                            page: page.value,
-                            pageSize: size.value,
+                            page: state.page,
+                            pageSize: state.size,
                             pageSizes: [10, 20, 30, 40, 50],
-                            pageCount: total.value,
+                            pageCount: state.total,
                             showSizePicker: true,
-                            showQuickJumper: true
+                            showQuickJumper: true,
+                            onUpdatePage: (value: number) => fetchUpdate({ page: value }),
+                            onUpdatePageSize: (value: number) => fetchUpdate({ page: 1, size: value })
                         }}
                     ></n-data-table>
                 </AppContainer>

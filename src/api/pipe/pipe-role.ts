@@ -9,4 +9,5 @@ export type IRole = IProvider & {
     status: number
     comment: string
     action: string[]
+    list: Array<IRole>
 }
