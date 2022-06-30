@@ -1,9 +1,9 @@
 <script lang="tsx">
 import type { IPoster } from '@/api/pipe'
-import type { DataTableBaseColumn } from 'naive-ui'
+import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
 import { defineComponent, ref, nextTick } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnPoster } from '@/api/service'
+import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
@@ -13,13 +13,16 @@ type IParams = { status: number | null; type: number | null }
 export default defineComponent({
     name: 'Poster',
     setup() {
+        const dialog = useDialog()
+        const notice = useNotification()
+        const { state, setState } = useState<IPoster, IParams>({ status: null, type: null })
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
-        const { state, setState } = useState<IPoster, IParams>({
-            params: {
-                status: null,
-                type: null
-            }
-        })
+        const typeOptions = ref([
+            { label: 'avatar', value: 1, type: 'error' },
+            { label: 'upload', value: 2, type: 'success' },
+            { label: 'cover', value: 3, type: 'info' },
+            { label: 'photo', value: 4, type: 'warning' }
+        ])
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '图片预览', key: 'check', width: calcColumn(140, 1080) },
             { title: '图片类型', key: 'type', width: calcColumn(120, 1080) },
@@ -29,22 +32,72 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080) }
         ])
-        const typeSource = ref([
-            { label: 'avatar', value: 1, type: 'error' },
-            { label: 'upload', value: 2, type: 'success' },
-            { label: 'cover', value: 3, type: 'info' },
-            { label: 'photo', value: 4, type: 'warning' }
-        ])
 
         /**图床列表**/
-        const fetchColumnPoster = () => {
+        const fetchColumnPoster = (handler?: Function) => {
             setState({ loading: true }).then(async () => {
                 try {
                     const { page, size, status, type } = state
                     const { data } = await httpColumnPoster({ page, size, status, type })
-                    setState({ total: data.total, dataSource: data.list || [], loading: false })
+                    setState({
+                        total: data.total,
+                        dataSource: data.list || [],
+                        loading: false
+                    }).then(() => handler?.())
                 } catch (e) {
                     setState({ loading: false })
+                }
+            })
+        }
+
+        /**修改图床状态**/
+        const fetchCutoverPoster = (id: number) => {
+            setState({ loading: true }).then(() => {
+                try {
+                    httpCutoverPoster({ id }).then(({ data }) => {
+                        fetchColumnPoster(() => {
+                            notice.success({ content: data.message, duration: 2000 })
+                        })
+                    })
+                } catch (e) {
+                    setState({ loading: false })
+                }
+            })
+        }
+
+        /**删除图床**/
+        const fetchDeletePoster = (id: number) => {
+            const e = dialog.warning({
+                title: '确定要删除吗？',
+                positiveText: '确定',
+                negativeText: '取消',
+                negativeButtonProps: { type: 'success', size: 'medium', ghost: false, class: 'naive-customize' } as BU,
+                positiveButtonProps: { type: 'error', size: 'medium', class: 'naive-customize' } as BU,
+                style: {
+                    minHeight: '160px',
+                    padding: '24px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    margin: '100px auto auto'
+                },
+                closable: false,
+                onPositiveClick: () => {
+                    return new Promise(resolve => {
+                        try {
+                            e.loading = true
+                            httpDeletePoster({ id }).then(({ data }) => {
+                                setState({ loading: true }).then(() => {
+                                    resolve(true)
+                                    fetchColumnPoster(() => {
+                                        notice.success({ content: data.message, duration: 2000 })
+                                    })
+                                })
+                            })
+                        } catch (e) {
+                            resolve(true)
+                        }
+                    })
                 }
             })
         }
@@ -59,6 +112,14 @@ export default defineComponent({
             setState(parameter).then(() => {
                 fetchColumnPoster()
             })
+        }
+
+        const onSelecter = (key: string, row: IPoster) => {
+            if (key === 'delete') {
+                fetchDeletePoster(row.id)
+            } else {
+                fetchCutoverPoster(row.id)
+            }
         }
 
         const columnNative = (value: unknown, row: IPoster, column: DataTableBaseColumn) => {
@@ -80,7 +141,7 @@ export default defineComponent({
                     </n-button>
                 ),
                 type: () => {
-                    const u = typeSource.value.find(x => x.value === row.type)
+                    const u = typeOptions.value.find(x => x.value === row.type)
                     return (
                         <n-tag bordered={false} type={u?.type} size="small" style={online.value}>
                             {{ default: () => u?.label?.replace(/^\S/, s => s.toUpperCase()) }}
@@ -88,15 +149,7 @@ export default defineComponent({
                     )
                 },
                 status: () => onlineColumn(row.status),
-                command: () => {
-                    return chunkColumn<IPoster>({
-                        row,
-                        native: ['delete'],
-                        onSelecter: key => {
-                            console.log(key)
-                        }
-                    })
-                }
+                command: () => chunkColumn<IPoster>({ row, native: ['delete'], onSelecter })
             }
 
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
@@ -115,7 +168,7 @@ export default defineComponent({
                                 <n-select
                                     v-model:value={state.type}
                                     clearable
-                                    options={typeSource.value}
+                                    options={typeOptions.value}
                                     placeholder="图片类型"
                                     style={{ width: '150px' }}
                                 />

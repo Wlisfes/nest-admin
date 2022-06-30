@@ -8,11 +8,10 @@ type IState<T> = {
     dataSource?: Array<T>
 }
 
-export function useState<T, R extends Object>(data?: { props?: IState<T>; params?: R }) {
-    const { props, params } = data ?? {}
+export function useState<T, R extends Object>(props?: IState<T> & R) {
     const state = reactive<Required<IState<T> & R>>(
         Object.assign({
-            ...params,
+            ...props,
             page: props?.page ?? 1,
             size: props?.size ?? 10,
             total: props?.total ?? 0,
