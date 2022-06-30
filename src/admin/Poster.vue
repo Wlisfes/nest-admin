@@ -4,14 +4,14 @@ import type { DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref, nextTick } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnPoster } from '@/api/service'
-import { useSource } from '@/hooks/hook-source'
+import { useState } from '@/hooks/hook-state'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Poster',
     setup() {
-        const { page, size, total, loading, dataSource, setState } = useSource()
+        const { page, size, total, loading, dataSource, setState } = useState()
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
         const form = ref({ status: undefined, type: undefined })
         const dataColumn = ref<Array<DataTableBaseColumn>>([
