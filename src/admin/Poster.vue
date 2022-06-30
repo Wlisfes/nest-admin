@@ -136,9 +136,9 @@ export default defineComponent({
                     </u-scale>
                 ),
                 url: () => (
-                    <n-button secondary size="small" class="naive-customize">
-                        复制图片地址
-                    </n-button>
+                    <n-tag bordered={false} type="info" size="small" class="naive-customize" style={online.value}>
+                        {{ default: () => '复制图片地址' }}
+                    </n-tag>
                 ),
                 type: () => {
                     const u = typeOptions.value.find(x => x.value === row.type)
