@@ -9,7 +9,7 @@ type IState<T> = {
 }
 
 export function useState<T, R extends Object>(props?: IState<T> & R) {
-    const state = reactive<Required<IState<T> & R>>(
+    const state = reactive<IState<T> & R>(
         Object.assign({
             ...props,
             page: props?.page ?? 1,
