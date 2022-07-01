@@ -1,14 +1,14 @@
 import { reactive, toRefs, nextTick } from 'vue'
 
 type IState<T> = {
-    page?: number
-    size?: number
-    total?: number
-    loading?: boolean
-    dataSource?: Array<T>
+    page: number
+    size: number
+    total: number
+    loading: boolean
+    dataSource: Array<T>
 }
 
-export function useState<T, R extends Object>(props?: IState<T> & R) {
+export function useState<T, R extends Object>(props?: Partial<IState<T> & R>) {
     const state = reactive<IState<T> & R>(
         Object.assign({
             ...props,
@@ -20,7 +20,7 @@ export function useState<T, R extends Object>(props?: IState<T> & R) {
         })
     )
 
-    const setState = (parameter: IState<T> & Partial<R>, handler?: (e: typeof state) => void) => {
+    const setState = (parameter: Partial<IState<T> & R>, handler?: (e: typeof state) => void) => {
         return new Promise(resolve => {
             for (const key in parameter) {
                 state[key as keyof IState<T> & R] = parameter[key as keyof IState<T> & R] as never
