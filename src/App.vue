@@ -1,9 +1,8 @@
 <script lang="tsx">
-import { defineComponent, onMounted, onUnmounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted, Fragment } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAppStore } from '@/store/modules/app-store'
 import { useClient } from '@/utils/utils-instance'
-import { AppProvider } from '@/components/global'
 import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
@@ -19,9 +18,9 @@ export default defineComponent({
         })
 
         return () => (
-            <AppProvider>
+            <Fragment>
                 <RouterView></RouterView>
-            </AppProvider>
+            </Fragment>
         )
     }
 })
