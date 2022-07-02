@@ -1,86 +1,19 @@
 <script lang="tsx">
 import type { IUser, IRole } from '@/api/pipe'
 import { useDialog, useNotification, type DataTableBaseColumn } from 'naive-ui'
-import { defineComponent, ref, createVNode, render, onMounted } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
-import { useForm } from '@/hooks/hook-form'
 import { useColumn } from '@/hooks/hook-column'
-import { useCompute } from '@/hooks/hook-compute'
-import { useRxicon } from '@/hooks/hook-icon'
 import { initMounte } from '@/utils/utils-tool'
+import { onResetUser } from '@/admin/render'
 
 type IUserQuery = {
     status: number | null
     primary: string | null
     keyword: string | null
     roles: Array<IRole>
-}
-
-const onResetUser = () => {
-    const el = document.createElement('div')
-    const vm = createVNode({
-        setup() {
-            const { compute } = useRxicon()
-            const { formRef, rules } = useCompute()
-            const { state, setState } = useForm({
-                visible: false,
-                password: '',
-                loading: false
-            })
-
-            const onSubmit = async () => {
-                try {
-                    await formRef.value?.validate()
-                    await setState({ loading: true })
-                } catch (e) {
-                    setState({ loading: false })
-                }
-            }
-
-            onMounted(() => {
-                setState({ visible: true })
-            })
-
-            return () => (
-                <n-modal
-                    v-model:show={state.visible}
-                    closable={true}
-                    auto-focus={false}
-                    to={el}
-                    transform-origin="center"
-                    title="重置密码"
-                    preset="dialog"
-                    style={{ margin: '100px auto auto' }}
-                    onAfterLeave={() => document.body.removeChild(el)}
-                >
-                    <n-form ref={formRef} model={state} rules={rules} style={{ margin: '24px 0' }}>
-                        <n-form-item label="密码" path="password">
-                            <n-input
-                                v-model:value={state.password}
-                                size="medium"
-                                type="password"
-                                placeholder="密码"
-                                show-password-on="mousedown"
-                                input-props={{ autocomplete: 'new-password' }}
-                            >
-                                {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
-                            </n-input>
-                        </n-form-item>
-                    </n-form>
-                    <n-space justify="end">
-                        <n-button onClick={() => setState({ visible: false })}>取消</n-button>
-                        <n-button type="info" onClick={onSubmit}>
-                            确定
-                        </n-button>
-                    </n-space>
-                </n-modal>
-            )
-        }
-    })
-    render(vm, el)
-    document.body.appendChild(el)
 }
 
 export default defineComponent({
