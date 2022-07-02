@@ -1,13 +1,13 @@
 <script lang="tsx">
 import type { IUser, IRole } from '@/api/pipe'
-import { useDialog, useNotification, type DataTableBaseColumn } from 'naive-ui'
+import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
+import { fetchResetUser } from '@/components/render'
 import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
-import { onResetUser } from '@/admin/render'
 
 type IUserQuery = {
     status: number | null
@@ -19,7 +19,6 @@ type IUserQuery = {
 export default defineComponent({
     name: 'User',
     setup() {
-        const dialog = useDialog()
         const notice = useNotification()
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn()
         const { state, setState } = useState<IUser, IUserQuery>({
@@ -66,7 +65,7 @@ export default defineComponent({
         }
 
         /**修改用户状态**/
-        const fetchCutoverPoster = (uid: number) => {
+        const fetchCutoverPoster = ({ uid }: IUser) => {
             setState({ loading: true }).then(() => {
                 try {
                     httpCutoverUser({ uid }).then(({ data }) => {
@@ -93,17 +92,16 @@ export default defineComponent({
         }
 
         const onSelecter = (key: string, row: IUser) => {
-            switch (key) {
-                case 'edit':
-                    break
-                case 'reset':
-                    onResetUser()
-                    break
-                case 'enable':
-                case 'disable':
-                    fetchCutoverPoster(row.uid)
-                    break
+            const handler = {
+                edit: () => {},
+                reset: () => {
+                    fetchResetUser(row, data => notice.success({ content: data.message, duration: 2000 }))
+                },
+                enable: () => fetchCutoverPoster(row),
+                disable: () => fetchCutoverPoster(row)
             }
+
+            handler[key as keyof typeof handler]?.()
         }
 
         const columnNative = (value: unknown, row: IUser, column: DataTableBaseColumn) => {

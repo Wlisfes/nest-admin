@@ -8,20 +8,12 @@ export function httpLogin(data: { account: string; password: string; code: strin
 
 /**注册用户**/
 export function httpRegister(params: { nickname: string; password: string; code: string; email: string }) {
-    return request<IUser>({
-        url: `/api/user/register`,
-        method: 'POST',
-        data: params
-    })
+    return request<IUser>({ url: `/api/user/register`, method: 'POST', data: params })
 }
 
 /**邮箱注册验证码**/
 export function httpSendEmail(params: { email: string }) {
-    return request<IUser>({
-        url: `/api/nodemailer/register-code`,
-        method: 'POST',
-        data: params
-    })
+    return request<IUser>({ url: `/api/nodemailer/register-code`, method: 'POST', data: params })
 }
 
 /**用户信息**/
@@ -43,4 +35,9 @@ export function httpColumnUser(params: {
 /**修改用户状态**/
 export function httpCutoverUser(params: { uid: number }) {
     return request<IUser>({ url: `/api/user/cutover`, method: 'PUT', data: params })
+}
+
+/**重置用户密码**/
+export function httpUpdatePwsUser(params: { uid: number; password: string }) {
+    return request<IUser>({ url: `/api/user/update-reset`, method: 'PUT', data: params })
 }
