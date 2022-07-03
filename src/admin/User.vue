@@ -3,7 +3,7 @@ import type { IUser, IRole } from '@/api/pipe'
 import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { fetchResetUser } from '@/components/render'
+import { fetchResetUser, fetchUser } from '@/components/render'
 import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
 import { useColumn } from '@/hooks/hook-column'
@@ -79,6 +79,14 @@ export default defineComponent({
             })
         }
 
+        const fetchCreate = () => {
+            fetchUser({ key: 'create', roles: state.roles }, data => {
+                fetchColumnUser(() => {
+                    notice.success({ content: data.message, duration: 2000 })
+                })
+            })
+        }
+
         const fetchReset = () => {
             setState({ page: 1, size: 10, status: null, primary: null, keyword: null }).then(() => {
                 fetchColumnUser()
@@ -93,7 +101,13 @@ export default defineComponent({
 
         const onSelecter = (key: string, row: IUser) => {
             const handler = {
-                edit: () => {},
+                edit: () => {
+                    fetchUser({ key: 'edit', roles: state.roles, uid: row.uid }, data => {
+                        fetchColumnUser(() => {
+                            notice.success({ content: data.message, duration: 2000 })
+                        })
+                    })
+                },
                 reset: () => {
                     fetchResetUser(row, data => notice.success({ content: data.message, duration: 2000 }))
                 },
@@ -176,7 +190,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="success" secondary>
+                            <n-button type="success" secondary onClick={fetchCreate}>
                                 新 增
                             </n-button>
                         </n-form-item>

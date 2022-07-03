@@ -21,6 +21,11 @@ export function httpUser() {
     return request<IUser>({ url: `/api/user/info`, method: 'GET' })
 }
 
+/**用户信息**/
+export function httpOneUser(params: { uid: number }) {
+    return request<IUser>({ url: `/api/user/uid-info`, method: 'GET', params })
+}
+
 /**用户列表**/
 export function httpColumnUser(params: {
     page: number
@@ -40,4 +45,18 @@ export function httpCutoverUser(params: { uid: number }) {
 /**重置用户密码**/
 export function httpUpdatePwsUser(params: { uid: number; password: string }) {
     return request<IUser>({ url: `/api/user/update-reset`, method: 'PUT', data: params })
+}
+
+/**修改用户信息**/
+export function httpUpdateUser(params: {
+    uid: number
+    nickname: string
+    status: number
+    role: Array<number>
+    email?: string | null
+    avatar?: string | null
+    mobile?: string | null
+    comment?: string | null
+}) {
+    return request<IUser>({ url: `/api/user/update`, method: 'PUT', data: params })
 }
