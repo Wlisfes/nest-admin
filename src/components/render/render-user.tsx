@@ -7,7 +7,7 @@ import {
     NForm,
     NFormItem,
     NInput,
-    NInputNumber,
+    NSpin,
     NGrid,
     NGridItem,
     NSelect,
@@ -119,7 +119,6 @@ export const fetchUser = (
 ) => {
     const { el, mounte, unmount } = createComponent({
         setup() {
-            const { Icon, compute } = useRxicon()
             const formRef = ref<FormInst>()
             const rules: FormRules = {
                 nickname: [{ required: true, message: '请输入角色昵称', trigger: 'blur' }],
@@ -144,6 +143,7 @@ export const fetchUser = (
                 loading: false
             })
             const style = computed(() => ({ margin: '100px auto auto', width: '95%', maxWidth: '880px' }))
+            const title = computed(() => (key === 'create' ? '新增用户' : '编辑用户'))
 
             /**用户信息**/
             const fetchOneUser = () => {
@@ -162,7 +162,6 @@ export const fetchUser = (
                             loading: false
                         })
                     } catch (e) {
-                        console.log(e)
                         setState({ loading: false })
                     }
                 })
@@ -198,7 +197,6 @@ export const fetchUser = (
                         })
                     }
                 } catch (e) {
-                    console.log(state)
                     setState({ loading: false })
                 }
             }
@@ -211,75 +209,82 @@ export const fetchUser = (
                     show-icon={false}
                     to={el}
                     style={style.value}
+                    title={title.value}
                     transform-origin="center"
-                    title="重置密码"
                     preset="dialog"
                     onAfterLeave={unmount}
                 >
-                    <NForm
-                        ref={formRef}
-                        model={state}
-                        rules={rules}
-                        disabled={state.loading}
-                        label-placement="left"
-                        label-width={85}
-                        style={{ margin: '24px 0' }}
-                    >
-                        <NFormItem label="头像">
-                            <UScale max-width={100} scale={1}>
-                                <UAvatar src={state.avatar} username={state.nickname} size={100} round={6}></UAvatar>
-                            </UScale>
-                        </NFormItem>
-                        <NGrid cols={2}>
-                            <NGridItem span="580:1 1080:2">
-                                <NFormItem label="昵称" path="nickname">
-                                    <NInput v-model:value={state.nickname} placeholder="昵称"></NInput>
-                                </NFormItem>
-                            </NGridItem>
-                            <NGridItem span="580:1 1080:2">
-                                <NFormItem label="账号" path="account">
-                                    <NInput v-model:value={state.account} disabled placeholder="账号"></NInput>
-                                </NFormItem>
-                            </NGridItem>
-                        </NGrid>
-                        <NGrid cols={2}>
-                            <NGridItem>
-                                <NFormItem label="邮箱">
-                                    <NInput v-model:value={state.email} placeholder="邮箱"></NInput>
-                                </NFormItem>
-                            </NGridItem>
-                            <NGridItem>
-                                <NFormItem label="手机号">
-                                    <NInput v-model:value={state.mobile} placeholder="手机号"></NInput>
-                                </NFormItem>
-                            </NGridItem>
-                        </NGrid>
-                        <NGrid cols={2}>
-                            <NGridItem>
-                                <NFormItem label="角色" path="role">
-                                    <NSelect
-                                        v-model:value={state.role}
-                                        clearable
-                                        multiple
-                                        max-tag-count={2}
-                                        options={roles.map(x => ({ id: x.id, label: x.name, value: x.id }))}
-                                        placeholder="用户角色"
-                                    ></NSelect>
-                                </NFormItem>
-                            </NGridItem>
-                        </NGrid>
-                        <NFormItem label="备注">
-                            <NInput type="textarea" placeholder="可以清除" clearable></NInput>
-                        </NFormItem>
-                        <NFormItem label="状态" required>
-                            <NRadioGroup v-model:value={state.status}>
-                                <NSpace>
-                                    <NRadio value={1}>启用</NRadio>
-                                    <NRadio value={0}>禁用</NRadio>
-                                </NSpace>
-                            </NRadioGroup>
-                        </NFormItem>
-                    </NForm>
+                    <NSpin show={state.loading}>
+                        <NForm
+                            ref={formRef}
+                            model={state}
+                            rules={rules}
+                            disabled={state.loading}
+                            label-placement="left"
+                            label-width={85}
+                            style={{ margin: '24px 0' }}
+                        >
+                            <NFormItem label="头像">
+                                <UScale max-width={100} scale={1}>
+                                    <UAvatar
+                                        src={state.avatar}
+                                        username={state.nickname}
+                                        size={100}
+                                        round={6}
+                                    ></UAvatar>
+                                </UScale>
+                            </NFormItem>
+                            <NGrid cols={2}>
+                                <NGridItem span="580:1 1080:2">
+                                    <NFormItem label="昵称" path="nickname">
+                                        <NInput v-model:value={state.nickname} placeholder="昵称"></NInput>
+                                    </NFormItem>
+                                </NGridItem>
+                                <NGridItem span="580:1 1080:2">
+                                    <NFormItem label="账号" path="account">
+                                        <NInput v-model:value={state.account} disabled placeholder="账号"></NInput>
+                                    </NFormItem>
+                                </NGridItem>
+                            </NGrid>
+                            <NGrid cols={2}>
+                                <NGridItem>
+                                    <NFormItem label="邮箱">
+                                        <NInput v-model:value={state.email} placeholder="邮箱"></NInput>
+                                    </NFormItem>
+                                </NGridItem>
+                                <NGridItem>
+                                    <NFormItem label="手机号">
+                                        <NInput v-model:value={state.mobile} placeholder="手机号"></NInput>
+                                    </NFormItem>
+                                </NGridItem>
+                            </NGrid>
+                            <NGrid cols={2}>
+                                <NGridItem>
+                                    <NFormItem label="角色" path="role">
+                                        <NSelect
+                                            v-model:value={state.role}
+                                            clearable
+                                            multiple
+                                            max-tag-count={2}
+                                            options={roles.map(x => ({ id: x.id, label: x.name, value: x.id }))}
+                                            placeholder="用户角色"
+                                        ></NSelect>
+                                    </NFormItem>
+                                </NGridItem>
+                            </NGrid>
+                            <NFormItem label="备注">
+                                <NInput type="textarea" placeholder="可以清除" clearable></NInput>
+                            </NFormItem>
+                            <NFormItem label="状态" required>
+                                <NRadioGroup v-model:value={state.status}>
+                                    <NSpace>
+                                        <NRadio value={1}>启用</NRadio>
+                                        <NRadio value={0}>禁用</NRadio>
+                                    </NSpace>
+                                </NRadioGroup>
+                            </NFormItem>
+                        </NForm>
+                    </NSpin>
                     <NSpace justify="end">
                         <NButton onClick={() => setState({ visible: false })}>取消</NButton>
                         <NButton type="info" loading={state.loading} onClick={onSubmit}>
