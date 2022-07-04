@@ -7,6 +7,7 @@ import {
     NForm,
     NFormItem,
     NInput,
+    NInputNumber,
     NGrid,
     NGridItem,
     NSelect,
@@ -14,7 +15,7 @@ import {
     NRadio
 } from 'naive-ui'
 import { onMounted, computed, ref } from 'vue'
-import { UScale } from '@/components/global'
+import { UScale, UAvatar } from '@/components/global'
 import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
 import { useForm } from '@/hooks/hook-form'
 import { useCompute } from '@/hooks/hook-compute'
@@ -101,15 +102,15 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
 }
 
 type IUserForm = {
-    nickname: string | null
-    password: string | null
-    avatar: string | null
-    account: string | number | null
-    email: string | null
+    nickname: string
+    password: string
+    avatar: string
+    account: string | number
+    email: string
     role: Array<number>
-    mobile: string | number | null
-    comment: string | null
-    status: number | null
+    mobile: string
+    comment: string
+    status: number
     loading: boolean
 }
 export const fetchUser = (
@@ -126,23 +127,17 @@ export const fetchUser = (
                     { required: true, message: '请输入密码', trigger: 'change' },
                     { min: 6, message: '密码不能少于6位', trigger: 'change' }
                 ],
-                role: [
-                    {
-                        required: true,
-                        validator: (rule: any, value: Array<number>) => value.length > 0,
-                        message: '请选择角色',
-                        trigger: 'blur'
-                    }
-                ]
+                role: [{ required: true, type: 'array', message: '请选择角色', trigger: 'blur' }],
+                status: [{ required: true, type: 'number', message: '请选择状态', trigger: 'blur' }]
             }
             const { state, setState } = useForm<IUserForm>({
                 nickname: '',
                 password: '',
                 avatar: '',
-                account: null,
-                email: null,
+                account: '',
+                email: '',
                 role: [],
-                mobile: null,
+                mobile: '',
                 status: 1,
                 comment: '',
                 visible: false,
@@ -158,9 +153,9 @@ export const fetchUser = (
                         setState({
                             avatar: data.avatar ?? '',
                             nickname: data.nickname ?? '',
-                            account: String(data.account || '') ?? '',
                             email: data.email ?? '',
-                            mobile: String(data.mobile || '') ?? '',
+                            account: String(data.account ?? ''),
+                            mobile: String(data.mobile ?? ''),
                             comment: data.comment ?? '',
                             role: data.role.map(x => x.id),
                             status: data.status,
@@ -190,9 +185,9 @@ export const fetchUser = (
                         const { nickname, status, role, email, avatar, mobile, comment } = state
                         const { data } = await httpUpdateUser({
                             uid: uid as number,
-                            nickname: nickname as string,
-                            status: status as number,
-                            mobile: mobile as string,
+                            mobile,
+                            nickname,
+                            status,
                             role,
                             email,
                             avatar,
@@ -231,7 +226,9 @@ export const fetchUser = (
                         style={{ margin: '24px 0' }}
                     >
                         <NFormItem label="头像">
-                            <UScale max-width={100} scale={1}></UScale>
+                            <UScale max-width={100} scale={1}>
+                                <UAvatar src={state.avatar} username={state.nickname} size={100} round={6}></UAvatar>
+                            </UScale>
                         </NFormItem>
                         <NGrid cols={2}>
                             <NGridItem span="580:1 1080:2">
