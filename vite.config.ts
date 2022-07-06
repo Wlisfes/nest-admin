@@ -20,7 +20,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
             Components({
                 dts: true,
                 dirs: ['src/components'],
-                resolvers: [NaiveUiResolver()]
+                resolvers: [NaiveUiResolver()],
+                include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/]
             })
         ],
         resolve: {
