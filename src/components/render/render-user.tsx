@@ -1,19 +1,5 @@
 import type { IRole, IUser } from '@/api/pipe'
 import type { FormRules, FormInst } from 'naive-ui'
-import {
-    NModal,
-    NSpace,
-    NButton,
-    NForm,
-    NFormItem,
-    NInput,
-    NSpin,
-    NGrid,
-    NGridItem,
-    NSelect,
-    NRadioGroup,
-    NRadio
-} from 'naive-ui'
 import { onMounted, computed, ref } from 'vue'
 import { UScale, UAvatar } from '@/components/global'
 import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
@@ -53,7 +39,7 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
             }
 
             return () => (
-                <NModal
+                <n-modal
                     v-model:show={state.visible}
                     closable={true}
                     auto-focus={false}
@@ -64,15 +50,15 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
                     style={{ margin: '100px auto auto' }}
                     onAfterLeave={unmount}
                 >
-                    <NForm
+                    <n-form
                         ref={formRef}
                         model={state}
                         rules={rules.value}
                         disabled={state.loading}
                         style={{ margin: '24px 0' }}
                     >
-                        <NFormItem label="密码" path="password">
-                            <NInput
+                        <n-formItem label="密码" path="password">
+                            <n-input
                                 v-model:value={state.password}
                                 size="medium"
                                 type="password"
@@ -81,16 +67,16 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
                                 input-props={{ autocomplete: 'new-password' }}
                             >
                                 {{ prefix: () => <Icon component={compute('LockOutlined')} /> }}
-                            </NInput>
-                        </NFormItem>
-                    </NForm>
-                    <NSpace justify="end">
-                        <NButton onClick={() => setState({ visible: false })}>取消</NButton>
-                        <NButton type="info" loading={state.loading} onClick={onSubmit}>
+                            </n-input>
+                        </n-formItem>
+                    </n-form>
+                    <n-space justify="end">
+                        <n-button onClick={() => setState({ visible: false })}>取消</n-button>
+                        <n-button type="info" loading={state.loading} onClick={onSubmit}>
                             确定
-                        </NButton>
-                    </NSpace>
-                </NModal>
+                        </n-button>
+                    </n-space>
+                </n-modal>
             )
         }
     })
@@ -202,7 +188,7 @@ export const fetchUser = (
             }
 
             return () => (
-                <NModal
+                <n-modal
                     v-model:show={state.visible}
                     closable={true}
                     auto-focus={false}
@@ -214,8 +200,8 @@ export const fetchUser = (
                     preset="dialog"
                     onAfterLeave={unmount}
                 >
-                    <NSpin show={state.loading}>
-                        <NForm
+                    <n-spin show={state.loading}>
+                        <n-form
                             ref={formRef}
                             model={state}
                             rules={rules}
@@ -224,7 +210,7 @@ export const fetchUser = (
                             label-width={85}
                             style={{ margin: '24px 0' }}
                         >
-                            <NFormItem label="头像">
+                            <n-formItem label="头像">
                                 <UScale max-width={100} scale={1}>
                                     <UAvatar
                                         src={state.avatar}
@@ -233,65 +219,65 @@ export const fetchUser = (
                                         round={6}
                                     ></UAvatar>
                                 </UScale>
-                            </NFormItem>
-                            <NGrid cols={2}>
-                                <NGridItem span="580:1 1080:2">
-                                    <NFormItem label="昵称" path="nickname">
-                                        <NInput v-model:value={state.nickname} placeholder="昵称"></NInput>
-                                    </NFormItem>
-                                </NGridItem>
-                                <NGridItem span="580:1 1080:2">
-                                    <NFormItem label="账号" path="account">
-                                        <NInput v-model:value={state.account} disabled placeholder="账号"></NInput>
-                                    </NFormItem>
-                                </NGridItem>
-                            </NGrid>
-                            <NGrid cols={2}>
-                                <NGridItem>
-                                    <NFormItem label="邮箱">
-                                        <NInput v-model:value={state.email} placeholder="邮箱"></NInput>
-                                    </NFormItem>
-                                </NGridItem>
-                                <NGridItem>
-                                    <NFormItem label="手机号">
-                                        <NInput v-model:value={state.mobile} placeholder="手机号"></NInput>
-                                    </NFormItem>
-                                </NGridItem>
-                            </NGrid>
-                            <NGrid cols={2}>
-                                <NGridItem>
-                                    <NFormItem label="角色" path="role">
-                                        <NSelect
+                            </n-formItem>
+                            <n-grid cols={2}>
+                                <n-grid-item span="580:1 1080:2">
+                                    <n-formItem label="昵称" path="nickname">
+                                        <n-input v-model:value={state.nickname} placeholder="昵称"></n-input>
+                                    </n-formItem>
+                                </n-grid-item>
+                                <n-grid-item span="580:1 1080:2">
+                                    <n-formItem label="账号" path="account">
+                                        <n-input v-model:value={state.account} disabled placeholder="账号"></n-input>
+                                    </n-formItem>
+                                </n-grid-item>
+                            </n-grid>
+                            <n-grid cols={2}>
+                                <n-grid-item>
+                                    <n-formItem label="邮箱">
+                                        <n-input v-model:value={state.email} placeholder="邮箱"></n-input>
+                                    </n-formItem>
+                                </n-grid-item>
+                                <n-grid-item>
+                                    <n-formItem label="手机号">
+                                        <n-input v-model:value={state.mobile} placeholder="手机号"></n-input>
+                                    </n-formItem>
+                                </n-grid-item>
+                            </n-grid>
+                            <n-grid cols={2}>
+                                <n-grid-item>
+                                    <n-formItem label="角色" path="role">
+                                        <n-select
                                             v-model:value={state.role}
                                             clearable
                                             multiple
                                             max-tag-count={2}
                                             options={roles.map(x => ({ id: x.id, label: x.name, value: x.id }))}
                                             placeholder="用户角色"
-                                        ></NSelect>
-                                    </NFormItem>
-                                </NGridItem>
-                            </NGrid>
-                            <NFormItem label="备注">
-                                <NInput type="textarea" placeholder="可以清除" clearable></NInput>
-                            </NFormItem>
-                            <NFormItem label="状态" required>
-                                <NRadioGroup v-model:value={state.status}>
-                                    <NSpace>
-                                        <NRadio value={1}>启用</NRadio>
-                                        <NRadio value={0}>禁用</NRadio>
-                                    </NSpace>
-                                </NRadioGroup>
-                            </NFormItem>
-                        </NForm>
-                    </NSpin>
-                    <NSpace justify="end">
-                        <NButton onClick={() => setState({ visible: false })}>取消</NButton>
-                        <NButton type="info" loading={state.loading} onClick={onSubmit}>
+                                        ></n-select>
+                                    </n-formItem>
+                                </n-grid-item>
+                            </n-grid>
+                            <n-formItem label="备注">
+                                <n-input type="textarea" placeholder="可以清除" clearable></n-input>
+                            </n-formItem>
+                            <n-formItem label="状态" required>
+                                <n-radio-group v-model:value={state.status}>
+                                    <n-space>
+                                        <n-radio value={1}>启用</n-radio>
+                                        <n-radio value={0}>禁用</n-radio>
+                                    </n-space>
+                                </n-radio-group>
+                            </n-formItem>
+                        </n-form>
+                    </n-spin>
+                    <n-space justify="end">
+                        <n-button onClick={() => setState({ visible: false })}>取消</n-button>
+                        <n-button type="info" loading={state.loading} onClick={onSubmit}>
                             确定
-                        </NButton>
-                    </NSpace>
-                </NModal>
+                        </n-button>
+                    </n-space>
+                </n-modal>
             )
         }
     })
