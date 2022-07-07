@@ -8,6 +8,7 @@ import { createComponent } from '@/utils/utils-app'
 
 export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => {
     const { el, mounte, unmount } = createComponent({
+        name: 'FetchResetUser',
         setup() {
             const { Icon, compute } = useRxicon()
             const { state, setState } = useState({ visible: false, password: '', loading: false })
@@ -96,11 +97,14 @@ type IUserForm = {
     loading: boolean
     visible: boolean
 }
-export const fetchUser = (
-    { key, roles, uid }: { key: 'create' | 'edit'; roles: Array<IRole>; uid?: number | null },
-    handler?: (e: IUser) => void
-) => {
+type IFetchUser = {
+    key: 'create' | 'edit'
+    roles: Array<IRole>
+    uid?: number | null
+}
+export const fetchUser = ({ key, roles, uid }: IFetchUser, handler?: (e: IUser) => void) => {
     const { el, mounte, unmount } = createComponent({
+        name: 'FetchUser',
         setup() {
             const formRef = ref<FormInst>()
             const rules: FormRules = {
