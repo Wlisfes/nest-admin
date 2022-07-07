@@ -5,7 +5,7 @@ import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { fetchResetUser, fetchUser } from '@/components/render'
 import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api/service'
-import { useState } from '@/hooks/hook-state'
+import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
 
@@ -21,7 +21,7 @@ export default defineComponent({
     setup() {
         const notice = useNotification()
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn()
-        const { state, setState } = useState<IUser, IUserQuery>({
+        const { state, setState } = useSource<IUser, IUserQuery>({
             status: null,
             primary: null,
             keyword: null,

@@ -4,7 +4,7 @@ import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps 
 import { defineComponent, ref, nextTick } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api/service'
-import { useState } from '@/hooks/hook-state'
+import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
 
@@ -15,7 +15,7 @@ export default defineComponent({
     setup() {
         const dialog = useDialog()
         const notice = useNotification()
-        const { state, setState } = useState<IPoster, IParams>({ status: null, type: null })
+        const { state, setState } = useSource<IPoster, IParams>({ status: null, type: null })
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
         const typeOptions = ref([
             { label: 'avatar', value: 1, type: 'error' },
