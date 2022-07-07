@@ -6,8 +6,8 @@ import { useDvcStore } from '@/store/modules/dvc-store'
 import { useUserStore } from '@/store/modules/user-store'
 import { useProvider } from '@/hooks/hook-provider'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
-import { delToken } from '@/utils/utils-cookie'
 import { onReload, router } from '@/router'
+import { fetchSider } from '@/components/core'
 import { useAside } from '@/core/common/core-aside'
 import { useSetup } from '@/core/common/core-setup'
 
@@ -28,7 +28,8 @@ export default defineComponent({
 
         const onTrigger = () => {
             if (app.device === 'MOBILE') {
-                aside.init(true)
+                // aside.init(true)
+                fetchSider()
             } else {
                 app.setCollapse(!app.collapse)
             }
