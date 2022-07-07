@@ -1,29 +1,12 @@
-import { reactive, toRefs, nextTick } from 'vue'
+import { reactive, toRefs, nextTick, type UnwrapNestedRefs } from 'vue'
 
-type IState<T> = {
-    page: number
-    size: number
-    total: number
-    loading: boolean
-    dataSource: Array<T>
-}
+export function useState<T extends Object>(props?: Partial<T>) {
+    const state = reactive<T>(Object.assign({ ...props }))
 
-export function useState<T, R extends Object>(props?: Partial<IState<T> & R>) {
-    const state = reactive<IState<T> & R>(
-        Object.assign({
-            ...props,
-            page: props?.page ?? 1,
-            size: props?.size ?? 10,
-            total: props?.total ?? 0,
-            loading: props?.loading ?? true,
-            dataSource: props?.dataSource ?? []
-        })
-    )
-
-    const setState = (parameter: Partial<IState<T> & R>, handler?: (e: typeof state) => void) => {
+    const setState = (parameter: Partial<T>, handler?: (e: typeof state) => void) => {
         return new Promise(resolve => {
             for (const key in parameter) {
-                state[key as keyof IState<T> & R] = parameter[key as keyof IState<T> & R] as never
+                state[key as keyof UnwrapNestedRefs<T>] = parameter[key as keyof T] as never
             }
             nextTick(() => {
                 handler?.(state)
