@@ -3,7 +3,7 @@ import type { FormRules, FormInst } from 'naive-ui'
 import { onMounted, computed, ref } from 'vue'
 import { UScale, UAvatar } from '@/components/global'
 import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
-import { useForm } from '@/hooks/hook-form'
+import { useState } from '@/hooks/hook-state'
 import { useCompute } from '@/hooks/hook-compute'
 import { useRxicon } from '@/hooks/hook-icon'
 import { createComponent } from '@/utils/utils-app'
@@ -13,7 +13,7 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
         setup() {
             const { Icon, compute } = useRxicon()
             const { formRef, rules } = useCompute()
-            const { state, setState } = useForm({
+            const { state, setState } = useState({
                 visible: false,
                 password: '',
                 loading: false
@@ -98,6 +98,7 @@ type IUserForm = {
     comment: string
     status: number
     loading: boolean
+    visible: boolean
 }
 export const fetchUser = (
     { key, roles, uid }: { key: 'create' | 'edit'; roles: Array<IRole>; uid?: number | null },
@@ -115,7 +116,7 @@ export const fetchUser = (
                 role: [{ required: true, type: 'array', message: '请选择角色', trigger: 'blur' }],
                 status: [{ required: true, type: 'number', message: '请选择状态', trigger: 'blur' }]
             }
-            const { state, setState } = useForm<IUserForm>({
+            const { state, setState } = useState<IUserForm>({
                 nickname: '',
                 password: '',
                 avatar: '',
