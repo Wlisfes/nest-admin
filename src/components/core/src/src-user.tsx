@@ -1,10 +1,8 @@
 import type { IRole, IUser } from '@/api/pipe'
 import type { FormRules, FormInst } from 'naive-ui'
 import { onMounted, computed, ref } from 'vue'
-import { UScale, UAvatar } from '@/components/global'
 import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
-import { useCompute } from '@/hooks/hook-compute'
 import { useRxicon } from '@/hooks/hook-icon'
 import { createComponent } from '@/utils/utils-app'
 
@@ -12,30 +10,28 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
     const { el, mounte, unmount } = createComponent({
         setup() {
             const { Icon, compute } = useRxicon()
-            const { formRef, rules } = useCompute()
-            const { state, setState } = useState({
-                visible: false,
-                password: '',
-                loading: false
-            })
+            const { state, setState } = useState({ visible: false, password: '', loading: false })
+            const formRef = ref<FormInst>()
+            const rules: FormRules = {
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'change' },
+                    { min: 6, message: '密码不能少于6位', trigger: 'change' }
+                ]
+            }
 
             onMounted(() => setState({ visible: true }))
 
-            const onSubmit = () => {
-                formRef.value?.validate(error => {
-                    if (!error) {
-                        setState({ loading: true }).then(async () => {
-                            try {
-                                const { data } = await httpUpdatePwsUser({ uid, password: state.password })
-                                setState({ visible: false, loading: false }).then(() => {
-                                    handler?.(data)
-                                })
-                            } catch (e) {
-                                setState({ loading: false })
-                            }
-                        })
-                    }
-                })
+            const onSubmit = async () => {
+                try {
+                    await formRef.value?.validate()
+                    await setState({ loading: true })
+                    const { data } = await httpUpdatePwsUser({ uid, password: state.password })
+                    setState({ visible: false, loading: false }).then(() => {
+                        handler?.(data)
+                    })
+                } catch (e) {
+                    setState({ loading: false })
+                }
             }
 
             return () => (
@@ -53,11 +49,11 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
                     <n-form
                         ref={formRef}
                         model={state}
-                        rules={rules.value}
+                        rules={rules}
                         disabled={state.loading}
                         style={{ margin: '24px 0' }}
                     >
-                        <n-formItem label="密码" path="password">
+                        <n-form-item label="密码" path="password">
                             <n-input
                                 v-model:value={state.password}
                                 size="medium"
@@ -68,7 +64,7 @@ export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => 
                             >
                                 {{ prefix: () => <Icon component={compute('LockOutlined')} /> }}
                             </n-input>
-                        </n-formItem>
+                        </n-form-item>
                     </n-form>
                     <n-space justify="end">
                         <n-button onClick={() => setState({ visible: false })}>取消</n-button>
@@ -211,43 +207,43 @@ export const fetchUser = (
                             label-width={85}
                             style={{ margin: '24px 0' }}
                         >
-                            <n-formItem label="头像">
-                                <UScale max-width={100} scale={1}>
-                                    <UAvatar
+                            <n-form-item label="头像">
+                                <u-scale max-width={100} scale={1}>
+                                    <u-avatar
                                         src={state.avatar}
                                         username={state.nickname}
                                         size={100}
                                         round={6}
-                                    ></UAvatar>
-                                </UScale>
-                            </n-formItem>
-                            <n-grid cols={2}>
-                                <n-grid-item span="580:1 1080:2">
-                                    <n-formItem label="昵称" path="nickname">
+                                    ></u-avatar>
+                                </u-scale>
+                            </n-form-item>
+                            <n-grid cols={2} item-responsive>
+                                <n-grid-item span="0:2 540:1 880:1">
+                                    <n-form-item label="昵称" path="nickname">
                                         <n-input v-model:value={state.nickname} placeholder="昵称"></n-input>
-                                    </n-formItem>
+                                    </n-form-item>
                                 </n-grid-item>
-                                <n-grid-item span="580:1 1080:2">
-                                    <n-formItem label="账号" path="account">
+                                <n-grid-item span="0:2 540:1 880:1">
+                                    <n-form-item label="账号" path="account">
                                         <n-input v-model:value={state.account} disabled placeholder="账号"></n-input>
-                                    </n-formItem>
+                                    </n-form-item>
                                 </n-grid-item>
                             </n-grid>
-                            <n-grid cols={2}>
-                                <n-grid-item>
-                                    <n-formItem label="邮箱">
+                            <n-grid cols={2} item-responsive>
+                                <n-grid-item span="0:2 540:1 880:1">
+                                    <n-form-item label="邮箱">
                                         <n-input v-model:value={state.email} placeholder="邮箱"></n-input>
-                                    </n-formItem>
+                                    </n-form-item>
                                 </n-grid-item>
-                                <n-grid-item>
-                                    <n-formItem label="手机号">
+                                <n-grid-item span="0:2 540:1 880:1">
+                                    <n-form-item label="手机号">
                                         <n-input v-model:value={state.mobile} placeholder="手机号"></n-input>
-                                    </n-formItem>
+                                    </n-form-item>
                                 </n-grid-item>
                             </n-grid>
-                            <n-grid cols={2}>
-                                <n-grid-item>
-                                    <n-formItem label="角色" path="role">
+                            <n-grid cols={2} item-responsive>
+                                <n-grid-item span="0:2 540:1 880:1">
+                                    <n-form-item label="角色" path="role">
                                         <n-select
                                             v-model:value={state.role}
                                             clearable
@@ -256,20 +252,20 @@ export const fetchUser = (
                                             options={roles.map(x => ({ id: x.id, label: x.name, value: x.id }))}
                                             placeholder="用户角色"
                                         ></n-select>
-                                    </n-formItem>
+                                    </n-form-item>
                                 </n-grid-item>
                             </n-grid>
-                            <n-formItem label="备注">
+                            <n-form-item label="备注">
                                 <n-input type="textarea" placeholder="可以清除" clearable></n-input>
-                            </n-formItem>
-                            <n-formItem label="状态" required>
+                            </n-form-item>
+                            <n-form-item label="状态" required>
                                 <n-radio-group v-model:value={state.status}>
                                     <n-space>
                                         <n-radio value={1}>启用</n-radio>
                                         <n-radio value={0}>禁用</n-radio>
                                     </n-space>
                                 </n-radio-group>
-                            </n-formItem>
+                            </n-form-item>
                         </n-form>
                     </n-spin>
                     <n-space justify="end">
