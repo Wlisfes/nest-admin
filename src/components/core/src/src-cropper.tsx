@@ -27,7 +27,7 @@ export function fetchCropper(props?: ICropper) {
 
             /**初始化裁剪实例**/
             const initCropper = async () => {
-                if (!instance.value && state.cover) {
+                if (!instance.value && imageRef.value) {
                     instance.value = new Cropper(imageRef.value as HTMLImageElement, {
                         aspectRatio: 1,
                         initialAspectRatio: 1,
@@ -35,6 +35,8 @@ export function fetchCropper(props?: ICropper) {
                         dragMode: 'move',
                         ready: () => setState({ loading: false })
                     })
+                } else if (instance.value) {
+                    instance.value.replace(state.cover)
                 }
                 return instance.value
             }
@@ -77,9 +79,17 @@ export function fetchCropper(props?: ICropper) {
                         <n-button type="warning">
                             {{ icon: () => <Icon component={compute('DownloadOutlined')} /> }}
                         </n-button>
-                        <n-button type="info">
-                            {{ icon: () => <Icon component={compute('ScissorOutlined')} /> }}
-                        </n-button>
+                        <n-upload
+                            accept="image/jpeg,image/png,image/jpg"
+                            default-upload={false}
+                            show-file-list={false}
+                            show-remove-button={false}
+                            on-before-upload={onBeforeUpload}
+                        >
+                            <n-button type="info">
+                                {{ icon: () => <Icon component={compute('ScissorOutlined')} /> }}
+                            </n-button>
+                        </n-upload>
                         <n-upload
                             accept="image/jpeg,image/png,image/jpg"
                             default-upload={false}
