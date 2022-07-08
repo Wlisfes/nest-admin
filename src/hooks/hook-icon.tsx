@@ -47,7 +47,10 @@ import {
     DashOutlined,
     EditOutlined,
     DeleteOutlined,
-    MailOutlined
+    MailOutlined,
+    DownloadOutlined,
+    ScissorOutlined,
+    UploadOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -121,7 +124,10 @@ export const Icons = {
     DashOutlined,
     EditOutlined,
     DeleteOutlined,
-    MailOutlined
+    MailOutlined,
+    DownloadOutlined,
+    ScissorOutlined,
+    UploadOutlined
 }
 
 export function useRxicon() {

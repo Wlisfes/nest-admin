@@ -5,8 +5,9 @@ import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
 import { createComponent } from '@/utils/utils-app'
+import { fetchCropper } from '@/components/core'
 
-export const fetchResetUser = ({ uid }: IUser, handler?: (e: IUser) => void) => {
+export function fetchResetUser({ uid }: IUser, handler?: (e: IUser) => void) {
     const { el, mounte, unmount } = createComponent({
         name: 'FetchResetUser',
         setup() {
@@ -102,7 +103,7 @@ type IFetchUser = {
     roles: Array<IRole>
     uid?: number | null
 }
-export const fetchUser = ({ key, roles, uid }: IFetchUser, handler?: (e: IUser) => void) => {
+export function fetchUser({ key, roles, uid }: IFetchUser, handler?: (e: IUser) => void) {
     const { el, mounte, unmount } = createComponent({
         name: 'FetchUser',
         setup() {
@@ -152,6 +153,10 @@ export const fetchUser = ({ key, roles, uid }: IFetchUser, handler?: (e: IUser) 
                         setState({ loading: false })
                     }
                 })
+            }
+
+            const onCropper = () => {
+                fetchCropper({ cover: state.avatar })
             }
 
             onMounted(() => {
@@ -212,7 +217,7 @@ export const fetchUser = ({ key, roles, uid }: IFetchUser, handler?: (e: IUser) 
                             style={{ margin: '24px 0' }}
                         >
                             <n-form-item label="头像">
-                                <u-scale max-width={100} scale={1}>
+                                <u-scale max-width={100} scale={1} onClick={onCropper}>
                                     <u-avatar
                                         src={state.avatar}
                                         username={state.nickname}
