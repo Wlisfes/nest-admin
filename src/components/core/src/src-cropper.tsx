@@ -2,6 +2,8 @@ import type { UploadFileInfo } from 'naive-ui'
 import { onMounted, ref, computed } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
+import { httpCreateOSS } from '@/api/service'
+import { useOssModule } from '@/utils/utils-aliyun'
 import { createComponent } from '@/utils/utils-app'
 import Cropper from 'cropperjs'
 import css from '@/components/core/scss/src-cropper.module.scss'
@@ -9,6 +11,7 @@ import 'cropperjs/dist/cropper.min.css'
 
 type ICropper = {
     cover?: string
+    handler?: (props: { name: string; url: string }) => void
 }
 
 export function fetchCropper(props?: ICropper) {
@@ -18,6 +21,7 @@ export function fetchCropper(props?: ICropper) {
             const { Icon, compute } = useRxicon()
             const { state, setState } = useState({
                 cover: props?.cover ?? '',
+                name: props?.cover ?? '',
                 visible: false,
                 loading: false
             })
@@ -45,10 +49,32 @@ export function fetchCropper(props?: ICropper) {
             const onBeforeUpload = async ({ file }: { file: UploadFileInfo }) => {
                 await setState({
                     loading: true,
+                    name: file.name,
                     cover: URL.createObjectURL(file.file as File)
                 })
                 await initCropper()
                 return false
+            }
+
+            const onSubmit = () => {
+                instance.value?.getCroppedCanvas().toBlob(async blob => {
+                    try {
+                        const { data } = await httpCreateOSS()
+                        const { upload } = useOssModule(data)
+
+                        const response = await upload({ file: blob as File, name: state.name })
+                        console.log(response)
+
+                        setState({ visible: false }).then(() => {
+                            props?.handler?.({
+                                name: '',
+                                url: ''
+                            })
+                        })
+                    } catch (e) {
+                        setState({ visible: false })
+                    }
+                }, 'image/jpg')
             }
 
             onMounted(() => {
@@ -76,7 +102,7 @@ export function fetchCropper(props?: ICropper) {
                         </u-scale>
                     </n-spin>
                     <n-space justify="end" style={{ marginTop: '24px' }}>
-                        <n-button type="warning">
+                        <n-button type="warning" disabled={state.loading}>
                             {{ icon: () => <Icon component={compute('DownloadOutlined')} /> }}
                         </n-button>
                         <n-upload
@@ -84,6 +110,7 @@ export function fetchCropper(props?: ICropper) {
                             default-upload={false}
                             show-file-list={false}
                             show-remove-button={false}
+                            disabled={state.loading}
                             on-before-upload={onBeforeUpload}
                         >
                             <n-button type="info">
@@ -95,6 +122,7 @@ export function fetchCropper(props?: ICropper) {
                             default-upload={false}
                             show-file-list={false}
                             show-remove-button={false}
+                            disabled={state.loading}
                             on-before-upload={onBeforeUpload}
                         >
                             <n-button type="success">
@@ -102,7 +130,7 @@ export function fetchCropper(props?: ICropper) {
                             </n-button>
                         </n-upload>
                         <n-button onClick={() => setState({ visible: false })}>取消</n-button>
-                        <n-button type="info" disabled={state.loading}>
+                        <n-button type="info" disabled={state.loading || !state.cover} onClick={onSubmit}>
                             确定
                         </n-button>
                     </n-space>
