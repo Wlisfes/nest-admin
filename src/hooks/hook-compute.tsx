@@ -80,7 +80,7 @@ export function useCompute(props?: ICompute) {
     }
 
     onMounted(() => {
-        setTimeout(onRefresh, 10)
+        setTimeout(onRefresh, 500)
     })
 
     return {
