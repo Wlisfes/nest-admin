@@ -22,7 +22,6 @@ export function useOssModule(option: OssOption) {
     })
 
     const fileRename = (fileName: string): string => {
-        console.log(fileName)
         const name = fileName.split('.').pop()?.toLowerCase() || 'jpg'
         return `${moment().format('YYYY-MM-DD')}/${Date.now()}.${name}`
     }

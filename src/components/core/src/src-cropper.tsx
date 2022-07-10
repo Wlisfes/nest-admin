@@ -2,16 +2,24 @@ import type { UploadFileInfo } from 'naive-ui'
 import { onMounted, ref, computed } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
-import { httpCreateOSS } from '@/api/service'
+import { httpCreateOSS, httpCreatePoster } from '@/api/service'
 import { useOssModule } from '@/utils/utils-aliyun'
 import { createComponent } from '@/utils/utils-app'
 import Cropper from 'cropperjs'
 import css from '@/components/core/scss/src-cropper.module.scss'
 import 'cropperjs/dist/cropper.min.css'
 
+enum Path {
+    avatar = 1,
+    upload = 2,
+    cover = 3,
+    photo = 4
+}
+
 type ICropper = {
+    type?: Path
     cover?: string
-    handler?: (props: { name: string; url: string }) => void
+    handler?: (props: { id: number; type: Path; name: string; url: string }) => void
 }
 
 export function fetchCropper(props?: ICropper) {
@@ -45,8 +53,8 @@ export function fetchCropper(props?: ICropper) {
                 return instance.value
             }
 
-            /**上传拦截**/
-            const onBeforeUpload = async ({ file }: { file: UploadFileInfo }) => {
+            /**裁剪上传拦截**/
+            const onCropperUpload = async ({ file }: { file: UploadFileInfo }) => {
                 await setState({
                     loading: true,
                     name: file.name,
@@ -56,25 +64,48 @@ export function fetchCropper(props?: ICropper) {
                 return false
             }
 
-            const onSubmit = () => {
-                instance.value?.getCroppedCanvas().toBlob(async blob => {
-                    try {
-                        const { data } = await httpCreateOSS()
-                        const { upload } = useOssModule(data)
+            /**即时上传拦截**/
+            const onImmediateUpload = async ({ file }: { file: UploadFileInfo }) => {
+                await setState({
+                    loading: true,
+                    name: file.name,
+                    cover: URL.createObjectURL(file.file as File)
+                })
+                await fetchUpload(file.file as File)
+                return false
+            }
 
-                        const response = await upload({ file: blob as File, name: state.name })
-                        console.log(response)
-
-                        setState({ visible: false }).then(() => {
-                            props?.handler?.({
-                                name: '',
-                                url: ''
-                            })
+            /**上传OSS实例**/
+            const fetchUpload = async (file: File) => {
+                try {
+                    const { data } = await httpCreateOSS()
+                    const { upload } = useOssModule(data)
+                    const response = await upload({ file, name: state.name })
+                    const result = await httpCreatePoster({
+                        type: props?.type ?? 1,
+                        path: response.name,
+                        url: `${data.path}/${response.name}`
+                    })
+                    setState({ visible: false }).then(() => {
+                        props?.handler?.({
+                            id: result.data.id,
+                            type: result.data.type,
+                            name: response.name,
+                            url: `${data.path}/${response.name}`
                         })
-                    } catch (e) {
-                        setState({ visible: false })
-                    }
-                }, 'image/jpg')
+                    })
+                } catch (e) {
+                    setState({ visible: false })
+                }
+            }
+
+            /**确定裁剪上传**/
+            const onSubmit = () => {
+                setState({ loading: true }).then(() => {
+                    instance.value?.getCroppedCanvas().toBlob(async blob => {
+                        await fetchUpload(blob as File)
+                    }, 'image/jpg')
+                })
             }
 
             onMounted(() => {
@@ -111,7 +142,7 @@ export function fetchCropper(props?: ICropper) {
                             show-file-list={false}
                             show-remove-button={false}
                             disabled={state.loading}
-                            on-before-upload={onBeforeUpload}
+                            on-before-upload={onCropperUpload}
                         >
                             <n-button type="info">
                                 {{ icon: () => <Icon component={compute('ScissorOutlined')} /> }}
@@ -123,14 +154,19 @@ export function fetchCropper(props?: ICropper) {
                             show-file-list={false}
                             show-remove-button={false}
                             disabled={state.loading}
-                            on-before-upload={onBeforeUpload}
+                            on-before-upload={onImmediateUpload}
                         >
                             <n-button type="success">
                                 {{ icon: () => <Icon component={compute('UploadOutlined')} /> }}
                             </n-button>
                         </n-upload>
                         <n-button onClick={() => setState({ visible: false })}>取消</n-button>
-                        <n-button type="info" disabled={state.loading || !state.cover} onClick={onSubmit}>
+                        <n-button
+                            type="info"
+                            loading={state.loading}
+                            disabled={state.loading || !state.cover}
+                            onClick={onSubmit}
+                        >
                             确定
                         </n-button>
                     </n-space>

@@ -15,3 +15,8 @@ export function httpCutoverPoster(params: { id: number }) {
 export function httpDeletePoster(params: { id: number }) {
     return request<IPoster>({ url: `/api/poster/del`, method: 'DELETE', params })
 }
+
+/**创建图床**/
+export function httpCreatePoster(params: { type: number; url: string; path: string }) {
+    return request<IPoster>({ url: `/api/poster/create`, method: 'POST', data: params })
+}
