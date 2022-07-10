@@ -80,9 +80,11 @@ export default defineComponent({
         }
 
         const fetchCreate = () => {
-            fetchUser({ key: 'create', roles: state.roles }, data => {
-                fetchColumnUser(() => {
-                    notice.success({ content: data.message, duration: 2000 })
+            fetchUser({ key: 'create', roles: state.roles }).then(({ observer }) => {
+                const done = observer.on('submit', data => {
+                    fetchColumnUser(() => {
+                        notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
+                    })
                 })
             })
         }
@@ -102,14 +104,20 @@ export default defineComponent({
         const onSelecter = (key: string, row: IUser) => {
             const handler = {
                 edit: () => {
-                    fetchUser({ key: 'edit', roles: state.roles, uid: row.uid }, data => {
-                        fetchColumnUser(() => {
-                            notice.success({ content: data.message, duration: 2000 })
+                    fetchUser({ key: 'edit', roles: state.roles, uid: row.uid }).then(({ observer }) => {
+                        const done = observer.on('submit', data => {
+                            fetchColumnUser(() => {
+                                notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
+                            })
                         })
                     })
                 },
                 reset: () => {
-                    fetchResetUser(row, data => notice.success({ content: data.message, duration: 2000 }))
+                    fetchResetUser(row).then(({ observer }) => {
+                        const done = observer.on('submit', data => {
+                            notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
+                        })
+                    })
                 },
                 enable: () => fetchCutoverPoster(row),
                 disable: () => fetchCutoverPoster(row)

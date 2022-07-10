@@ -4,10 +4,12 @@ import { onMounted, computed, ref } from 'vue'
 import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
 import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
+import { Observer } from '@/utils/utils-observer'
 import { createComponent } from '@/utils/utils-app'
 import { fetchCropper } from '@/components/core'
 
-export function fetchResetUser({ uid }: IUser, handler?: (e: IUser) => void) {
+export async function fetchResetUser({ uid }: IUser) {
+    const observer = new Observer<{ submit: IUser }>()
     const { el, mounte, unmount } = createComponent({
         name: 'FetchResetUser',
         setup() {
@@ -29,7 +31,7 @@ export function fetchResetUser({ uid }: IUser, handler?: (e: IUser) => void) {
                     await setState({ loading: true })
                     const { data } = await httpUpdatePwsUser({ uid, password: state.password })
                     setState({ visible: false, loading: false }).then(() => {
-                        handler?.(data)
+                        observer.emit('submit', data)
                     })
                 } catch (e) {
                     setState({ loading: false })
@@ -79,10 +81,11 @@ export function fetchResetUser({ uid }: IUser, handler?: (e: IUser) => void) {
         }
     })
 
-    //挂载组件
     mounte().catch(e => {
         console.log(e)
     })
+
+    return { observer }
 }
 
 type IUserForm = {
@@ -103,7 +106,8 @@ type IFetchUser = {
     roles: Array<IRole>
     uid?: number | null
 }
-export function fetchUser({ key, roles, uid }: IFetchUser, handler?: (e: IUser) => void) {
+export async function fetchUser({ key, roles, uid }: IFetchUser) {
+    const observer = new Observer<{ submit: IUser }>()
     const { el, mounte, unmount } = createComponent({
         name: 'FetchUser',
         setup() {
@@ -189,7 +193,7 @@ export function fetchUser({ key, roles, uid }: IFetchUser, handler?: (e: IUser) 
                             comment
                         })
                         setState({ visible: false, loading: false }).then(() => {
-                            handler?.(data)
+                            observer.emit('submit', data)
                         })
                     }
                 } catch (e) {
@@ -295,4 +299,6 @@ export function fetchUser({ key, roles, uid }: IFetchUser, handler?: (e: IUser) 
     mounte().catch(e => {
         console.log(e)
     })
+
+    return { observer }
 }
