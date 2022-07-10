@@ -4,25 +4,20 @@ import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
 import { httpCreateOSS, httpCreatePoster } from '@/api/service'
 import { useOssModule } from '@/utils/utils-aliyun'
+import { Observer } from '@/utils/utils-observer'
 import { createComponent } from '@/utils/utils-app'
 import Cropper from 'cropperjs'
 import css from '@/components/core/scss/src-cropper.module.scss'
 import 'cropperjs/dist/cropper.min.css'
 
-enum Path {
-    avatar = 1,
-    upload = 2,
-    cover = 3,
-    photo = 4
+type TEnum = 1 | 2 | 3 | 4
+type ICropper = { scale?: number; type?: TEnum; cover?: string }
+type IObserver = {
+    upload: { id: number; type: TEnum; name: string; url: string }
 }
 
-type ICropper = {
-    type?: Path
-    cover?: string
-    handler?: (props: { id: number; type: Path; name: string; url: string }) => void
-}
-
-export function fetchCropper(props?: ICropper) {
+export async function fetchCropper(props?: ICropper) {
+    const observer = new Observer<IObserver>()
     const { el, mounte, unmount } = createComponent({
         name: 'FetchCropper',
         setup() {
@@ -41,7 +36,7 @@ export function fetchCropper(props?: ICropper) {
             const initCropper = async () => {
                 if (!instance.value && imageRef.value) {
                     instance.value = new Cropper(imageRef.value as HTMLImageElement, {
-                        aspectRatio: 1,
+                        aspectRatio: props?.scale ?? 1,
                         initialAspectRatio: 1,
                         viewMode: 1,
                         dragMode: 'move',
@@ -87,9 +82,9 @@ export function fetchCropper(props?: ICropper) {
                         url: `${data.path}/${response.name}`
                     })
                     setState({ visible: false }).then(() => {
-                        props?.handler?.({
+                        observer.emit('upload', {
                             id: result.data.id,
-                            type: result.data.type,
+                            type: props?.type ?? 1,
                             name: response.name,
                             url: `${data.path}/${response.name}`
                         })
@@ -178,4 +173,6 @@ export function fetchCropper(props?: ICropper) {
     mounte().catch(e => {
         console.log(e)
     })
+
+    return { observer }
 }

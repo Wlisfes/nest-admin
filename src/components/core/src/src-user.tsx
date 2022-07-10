@@ -156,10 +156,10 @@ export function fetchUser({ key, roles, uid }: IFetchUser, handler?: (e: IUser) 
             }
 
             const onCropper = () => {
-                fetchCropper({
-                    cover: state.avatar,
-                    type: 1,
-                    handler: node => setState({ avatar: node.url })
+                fetchCropper({ cover: state.avatar, type: 1 }).then(({ observer }) => {
+                    const done = observer.on('upload', node => {
+                        setState({ avatar: node?.url }).then(() => done())
+                    })
                 })
             }
 
