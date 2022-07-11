@@ -136,7 +136,7 @@ export const authRoutes: RouteColumn[] = [
                 path: '/admin/system/chunk',
                 name: 'Chunk',
                 meta: { title: '版本资源', icon: 'CloudUploadOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/Chunk.vue')
             },
             {
                 path: '/admin/system/logger',
