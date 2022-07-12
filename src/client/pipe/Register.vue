@@ -4,6 +4,7 @@ import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { router } from '@/router'
 import { httpSendEmail } from '@/api/service'
+import { useEnter } from '@/utils/utils-event'
 
 export default defineComponent({
     name: 'Register',
@@ -50,6 +51,7 @@ export default defineComponent({
                                 size="medium"
                                 placeholder="用户昵称"
                                 input-props={{ autocomplete: 'off' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('UserOutlined')}></n-icon> }}
                             </n-input>
@@ -62,6 +64,7 @@ export default defineComponent({
                                 placeholder="密码"
                                 show-password-on="mousedown"
                                 input-props={{ autocomplete: 'new-password' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
                             </n-input>
@@ -72,6 +75,7 @@ export default defineComponent({
                                 size="medium"
                                 placeholder="邮箱"
                                 input-props={{ autocomplete: 'off' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('MailOutlined')}></n-icon> }}
                             </n-input>
@@ -83,6 +87,7 @@ export default defineComponent({
                                 maxlength={6}
                                 placeholder="验证码"
                                 input-props={{ autocomplete: 'off' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
                             </n-input>

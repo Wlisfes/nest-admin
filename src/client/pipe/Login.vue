@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { router } from '@/router'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
+import { useEnter } from '@/utils/utils-event'
 
 export default defineComponent({
     name: 'Login',
@@ -37,6 +38,7 @@ export default defineComponent({
                                 size="medium"
                                 placeholder="账号"
                                 input-props={{ autocomplete: 'off' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('UserOutlined')}></n-icon> }}
                             </n-input>
@@ -50,6 +52,7 @@ export default defineComponent({
                                 show-password-on="mousedown"
                                 input-props={{ autocomplete: 'new-password' }}
                                 placeholder="密码"
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
                             </n-input>
@@ -61,6 +64,7 @@ export default defineComponent({
                                 maxlength={4}
                                 placeholder="验证码"
                                 input-props={{ autocomplete: 'off' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
                             </n-input>
