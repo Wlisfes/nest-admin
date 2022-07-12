@@ -12,14 +12,13 @@ export default defineComponent({
     name: 'Chunk',
     setup() {
         const { state, setState } = useSource<IChunk, { status: number | null }>({ status: null })
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IChunk>()
+        const { online, divineColumn, calcColumn } = useColumn<IChunk>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '资源名称', key: 'name', width: calcColumn(140, 1080), ellipsis: { tooltip: true } },
-            { title: '资源地址', key: 'url', width: calcColumn(200, 1080), ellipsis: { tooltip: true } },
-            { title: '资源版本号', key: 'version', width: calcColumn(160, 1080), ellipsis: { tooltip: true } },
-            { title: '状态', key: 'status', ellipsis: { tooltip: true } },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080) }
+            { title: '资源名称', key: 'name', ellipsis: { tooltip: true } },
+            { title: '资源地址', key: 'url', width: calcColumn(240, 1080) },
+            { title: '资源版本号', key: 'version', width: calcColumn(160, 1080) },
+            { title: '状态', key: 'status', width: calcColumn(160, 1080) },
+            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) }
         ])
 
         /**资源列表**/
@@ -38,9 +37,42 @@ export default defineComponent({
             })
         }
 
+        const fetchReset = () => {
+            setState({ page: 1, size: 10, status: null }).then(() => {
+                fetchColumnChunk()
+            })
+        }
+
+        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
+            setState(parameter).then(() => {
+                fetchColumnChunk()
+            })
+        }
+
         const columnNative = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
             const BaseNative = {
-                status: () => onlineColumn(row.status)
+                status: () => {
+                    return row.status === 1 ? (
+                        <n-tag size="small" type="success" style={online.value}>
+                            {{ default: () => '当前版本' }}
+                        </n-tag>
+                    ) : (
+                        <n-tag size="small" type="warning" style={online.value}>
+                            {{ default: () => '历史版本' }}
+                        </n-tag>
+                    )
+                },
+                url: () => (
+                    <n-tag
+                        bordered={false}
+                        type="info"
+                        size="small"
+                        class="naive-customize"
+                        style={{ margin: '5px 0', ...online.value }}
+                    >
+                        {{ default: () => '复制地址' }}
+                    </n-tag>
+                )
             }
 
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
@@ -66,12 +98,12 @@ export default defineComponent({
                             </n-form-item>
                         </div>
                         <n-form-item>
-                            <n-button type="info" secondary>
+                            <n-button type="info" secondary onClick={() => fetchUpdate({ page: 1, size: 10 })}>
                                 查 找
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="warning" secondary>
+                            <n-button type="warning" secondary onClik={fetchReset}>
                                 重 置
                             </n-button>
                         </n-form-item>
@@ -100,9 +132,9 @@ export default defineComponent({
                             itemCount: state.total,
                             pageSizes: [10, 20, 30, 40, 50],
                             showSizePicker: true,
-                            showQuickJumper: true
-                            // onUpdatePage: (value: number) => fetchUpdate({ page: value }),
-                            // onUpdatePageSize: (value: number) => fetchUpdate({ page: 1, size: value })
+                            showQuickJumper: true,
+                            onUpdatePage: (value: number) => fetchUpdate({ page: value }),
+                            onUpdatePageSize: (value: number) => fetchUpdate({ page: 1, size: value })
                         }}
                     ></n-data-table>
                 </AppContainer>
