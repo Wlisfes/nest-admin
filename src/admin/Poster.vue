@@ -6,6 +6,7 @@ import { AppContainer } from '@/components/global'
 import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api/service'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
+import { useClipboard } from '@/hooks/hook-super'
 import { initMounte } from '@/utils/utils-tool'
 
 type IParams = { status: number | null; type: number | null }
@@ -15,6 +16,7 @@ export default defineComponent({
     setup() {
         const dialog = useDialog()
         const notice = useNotification()
+        const { onRoter } = useClipboard()
         const { state, setState } = useSource<IPoster, IParams>({ status: null, type: null })
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
         const typeOptions = ref([
@@ -136,7 +138,14 @@ export default defineComponent({
                     </u-scale>
                 ),
                 url: () => (
-                    <n-tag bordered={false} type="info" size="small" class="naive-customize" style={online.value}>
+                    <n-tag
+                        bordered={false}
+                        type="info"
+                        size="small"
+                        class="naive-customize"
+                        style={online.value}
+                        onClick={() => onRoter(row.url)}
+                    >
                         {{ default: () => '复制图片地址' }}
                     </n-tag>
                 ),

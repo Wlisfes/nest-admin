@@ -1,16 +1,18 @@
 <script lang="tsx">
 import type { IChunk } from '@/api/pipe'
-import { useNotification, type DataTableBaseColumn } from 'naive-ui'
+import type { DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnChunk } from '@/api/service'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
+import { useClipboard } from '@/hooks/hook-super'
 import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Chunk',
     setup() {
+        const { onRoter } = useClipboard()
         const { state, setState } = useSource<IChunk, { status: number | null }>({ status: null })
         const { online, divineColumn, calcColumn } = useColumn<IChunk>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
@@ -69,6 +71,7 @@ export default defineComponent({
                         size="small"
                         class="naive-customize"
                         style={{ margin: '8px 0', ...online.value }}
+                        onClick={() => onRoter(row.url)}
                     >
                         {{ default: () => '复制地址' }}
                     </n-tag>
