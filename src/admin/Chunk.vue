@@ -68,7 +68,7 @@ export default defineComponent({
                         type="info"
                         size="small"
                         class="naive-customize"
-                        style={{ margin: '5px 0', ...online.value }}
+                        style={{ margin: '8px 0', ...online.value }}
                     >
                         {{ default: () => '复制地址' }}
                     </n-tag>
