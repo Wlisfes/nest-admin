@@ -6,11 +6,15 @@ export function useClipboard(option?: ClipboardOptions<undefined>) {
     const notice = window.$notification
     const { text, copy, copied, isSupported } = useHookClipboard({ ...option, source })
 
-    const onRoter = (value: string) => {
-        source.value = value
-        copy().then(() => {
-            notice.success({ content: '复制成功', duration: 2000 })
-        })
+    const onRoter = async (value: string) => {
+        try {
+            source.value = value
+            return await copy().then(() => {
+                return notice.success({ content: '复制成功', duration: 2000 })
+            })
+        } catch (e) {
+            return notice.error({ content: '复制失败', duration: 2000 })
+        }
     }
 
     return { text, copied, isSupported, onRoter }
