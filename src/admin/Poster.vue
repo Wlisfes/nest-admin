@@ -16,7 +16,7 @@ export default defineComponent({
     setup() {
         const dialog = useDialog()
         const notice = useNotification()
-        const { onRoter } = useClipboard()
+        const { onCater } = useClipboard()
         const { state, setState } = useSource<IPoster, IParams>({ status: null, type: null })
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
         const typeOptions = ref([
@@ -144,7 +144,7 @@ export default defineComponent({
                         size="small"
                         class="naive-customize"
                         style={online.value}
-                        onClick={() => onRoter(row.url)}
+                        onClick={() => onCater(row.url)}
                     >
                         {{ default: () => '复制图片地址' }}
                     </n-tag>
