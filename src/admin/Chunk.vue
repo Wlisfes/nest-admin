@@ -7,6 +7,7 @@ import { httpColumnChunk } from '@/api/service'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'
+import { fetchChunk } from '@/components/core'
 import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
@@ -37,6 +38,10 @@ export default defineComponent({
                     setState({ loading: false })
                 }
             })
+        }
+
+        const fetchCreate = () => {
+            fetchChunk().then(({ observer }) => {})
         }
 
         const fetchReset = () => {
@@ -111,7 +116,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="success" secondary>
+                            <n-button type="success" secondary onClick={fetchCreate}>
                                 新 增
                             </n-button>
                         </n-form-item>
