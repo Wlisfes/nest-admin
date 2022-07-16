@@ -21,9 +21,12 @@ export function useOssModule(option: OssOption) {
         refreshSTSTokenInterval: option.refreshSTSTokenInterval || 300000
     })
 
+    const suffix = (fileName: string, def: string = 'jpg'): string => {
+        return fileName.split('.').pop()?.toLowerCase() || def
+    }
+
     const fileRename = (fileName: string): string => {
-        const name = fileName.split('.').pop()?.toLowerCase() || 'jpg'
-        return `${moment().format('YYYY-MM-DD')}/${Date.now()}.${name}`
+        return `${moment().format('YYYY-MM-DD')}/${Date.now()}.${suffix(fileName)}`
     }
 
     const upload = ({ file, name }: { file: File; name: string }): Promise<OSS.PutObjectResult> => {
