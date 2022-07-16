@@ -1,13 +1,22 @@
 import type { UploadFileInfo, FormInst, FormRules } from 'naive-ui'
+import type { IChunk } from '@/api/pipe'
 import { onMounted, ref, computed } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
-import { httpCreateOSS } from '@/api/service'
+import { httpCreateOSS, httpCreateChunk } from '@/api/service'
 import { useOssModule } from '@/utils/utils-aliyun'
 import { Observer } from '@/utils/utils-observer'
 import { createComponent } from '@/utils/utils-app'
 
-type IObserver = {}
+type IObserver = { submit: IChunk }
+type IState = {
+    visible: boolean
+    loading: boolean
+    version: number | null
+    file: File | null
+    name: string
+}
+
 export async function fetchChunk() {
     const observer = new Observer<IObserver>()
     const { el, mounte, unmount } = createComponent({
@@ -15,28 +24,66 @@ export async function fetchChunk() {
         setup() {
             const formRef = ref<FormInst>()
             const rules: FormRules = {
-                version: [{ required: true, type: 'number', message: '请输入资源版本号', trigger: 'blur' }],
-                name: [{ required: true, message: '请上传资源文件', trigger: 'blur' }]
+                version: [{ required: true, type: 'number', message: '请输入资源版本号', trigger: 'change' }],
+                name: [{ required: true, message: '请上传资源文件', trigger: 'change' }]
             }
             const { Icon, compute } = useRxicon()
-            const { state, setState } = useState({
+            const { state, setState } = useState<IState>({
                 visible: false,
                 loading: false,
                 version: null,
+                file: null,
                 name: ''
             })
             const style = computed(() => ({ margin: '100px auto auto', width: '95%', maxWidth: '640px' }))
+            const fileList = computed(() => {
+                if (state.file) {
+                    return [{ id: Date.now(), name: state.file?.name, status: 'finished' }]
+                }
+                return []
+            })
 
             /**上传拦截**/
             const onBeforeUpload = async ({ file }: { file: UploadFileInfo }) => {
-                // await setState({
-                //     loading: true,
-                //     name: file.name,
-                //     cover: URL.createObjectURL(file.file as File)
-                // })
-                // await fetchUpload(file.file as File)
-                console.log(file)
+                await setState({ name: file.name, file: file.file })
+                console.log(fileList.value)
                 return false
+            }
+
+            /**上传OSS实例**/
+            const fetchUpload = async (file: File) => {
+                try {
+                    const { data } = await httpCreateOSS()
+                    const { client, suffix } = useOssModule(data)
+                    const key = `cloud/root/app-chunk${state.version}-${Date.now()}.${suffix(state.name)}`
+                    const response = await client.put(key, file)
+                    return {
+                        url: `${data.path}/${response.name}`,
+                        path: response.name
+                    }
+                } catch (e) {
+                    throw e
+                }
+            }
+
+            /**提交上传**/
+            const onSubmit = async () => {
+                try {
+                    await formRef.value?.validate()
+                    await setState({ loading: true })
+                    const { url, path } = await fetchUpload(state.file as File)
+                    const { data } = await httpCreateChunk({
+                        url,
+                        path,
+                        name: state.name,
+                        version: state.version ?? 1
+                    })
+                    setState({ visible: false, loading: false }).then(() => {
+                        observer.emit('submit', data)
+                    })
+                } catch (e) {
+                    setState({ loading: false })
+                }
             }
 
             onMounted(() => setState({ visible: true }))
@@ -72,9 +119,9 @@ export async function fetchChunk() {
                                 <n-upload
                                     accept=".js,.css,.html"
                                     default-upload={false}
-                                    show-file-list={false}
                                     show-remove-button={false}
                                     disabled={state.loading}
+                                    file-list={fileList.value}
                                     on-before-upload={onBeforeUpload}
                                 >
                                     <n-button dashed style={{ width: '100px', height: '100px' }}>
@@ -86,7 +133,7 @@ export async function fetchChunk() {
                     </n-spin>
                     <n-space justify="end">
                         <n-button onClick={() => setState({ visible: false })}>取消</n-button>
-                        <n-button type="info" loading={state.loading}>
+                        <n-button type="info" loading={state.loading} onClick={onSubmit}>
                             确定
                         </n-button>
                     </n-space>

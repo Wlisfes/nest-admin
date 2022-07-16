@@ -41,7 +41,7 @@ export function useOssModule(option: OssOption) {
         })
     }
 
-    return { client, fileRename, upload }
+    return { client, suffix, fileRename, upload }
 }
 
 export interface OnDemanOption {

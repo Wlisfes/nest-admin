@@ -1,6 +1,6 @@
 <script lang="tsx">
 import type { IChunk } from '@/api/pipe'
-import type { DataTableBaseColumn } from 'naive-ui'
+import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnChunk } from '@/api/service'
@@ -13,6 +13,7 @@ import { initMounte } from '@/utils/utils-tool'
 export default defineComponent({
     name: 'Chunk',
     setup() {
+        const notice = useNotification()
         const { onCater } = useClipboard()
         const { state, setState } = useSource<IChunk, { status: number | null }>({ status: null })
         const { online, divineColumn, calcColumn } = useColumn<IChunk>()
@@ -41,7 +42,13 @@ export default defineComponent({
         }
 
         const fetchCreate = () => {
-            fetchChunk().then(({ observer }) => {})
+            fetchChunk().then(({ observer }) => {
+                const done = observer.on('submit', data => {
+                    fetchColumnChunk(() => {
+                        notice.success({ content: (data as IChunk).message, duration: 2000, onAfterEnter: done })
+                    })
+                })
+            })
         }
 
         const fetchReset = () => {

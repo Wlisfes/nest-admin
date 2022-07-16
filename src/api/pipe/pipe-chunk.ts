@@ -8,4 +8,5 @@ export type IChunk = IProvider & {
     version: number
     status: number
     user: IUser
+    list: Array<IChunk>
 }
