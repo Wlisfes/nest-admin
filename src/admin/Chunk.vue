@@ -106,8 +106,8 @@ export default defineComponent({
                                 <n-select
                                     v-model:value={state.status}
                                     clearable
-                                    options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
-                                    placeholder="图片状态"
+                                    options={['已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
+                                    placeholder="资源状态"
                                     style={{ width: '150px' }}
                                 />
                             </n-form-item>
