@@ -142,7 +142,7 @@ export const authRoutes: RouteColumn[] = [
                 path: '/admin/system/logger',
                 name: 'Logger',
                 meta: { title: '接口日志', icon: 'CarryOutOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/Logger.vue')
             },
             {
                 path: '/admin/system/update',
