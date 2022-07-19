@@ -16,7 +16,7 @@ export default defineComponent({
         const notice = useNotification()
         const { onCater } = useClipboard()
         const { state, setState } = useSource<ILogger, { status: number | null }>({ status: null })
-        const { online, divineColumn, onlineColumn, calcColumn } = useColumn<ILogger>()
+        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ILogger>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '序号', key: 'id', width: calcColumn(80, 1080) },
             { title: '来源ip', key: 'ip', width: calcColumn(130, 1080) },
@@ -59,21 +59,12 @@ export default defineComponent({
 
         const columnNative = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
             const BaseNative = {
-                type: () => {
-                    return row.type === 1 ? onlineColumn(1, 'success') : onlineColumn(0, 'error')
-                },
-                url: () => (
-                    <n-tag
-                        bordered={false}
-                        type="info"
-                        size="small"
-                        class="naive-customize"
-                        style={{ margin: '8px 0', ...online.value }}
-                        onClick={() => onCater(row.url)}
-                    >
-                        {{ default: () => '复制地址' }}
-                    </n-tag>
-                )
+                type: () => (
+                    <div style={{ margin: '8px 0' }}>
+                        {row.type === 1 ? onlineColumn(1, 'success') : onlineColumn(0, 'error')}
+                    </div>
+                ),
+                command: () => chunkColumn<IUser>({ row, native: ['edit', 'reset'] })
             }
 
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
