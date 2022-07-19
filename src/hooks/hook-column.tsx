@@ -81,33 +81,33 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**状态列**/
-    const onlineColumn = (status: number) => {
+    const onlineColumn = (status: number, t?: unknown) => {
         const BaseColumn = {
-            0: () => {
+            0: (text?: unknown) => {
                 const { disableBackColor: color, disableTextColor, disableBorderColor } = vars.value
                 return (
                     <NTag
                         size="small"
                         color={{ color, textColor: disableTextColor, borderColor: disableBorderColor }}
                         style={online.value}
-                        v-slots={{ default: () => '禁用' }}
+                        v-slots={{ default: () => text ?? '禁用' }}
                     ></NTag>
                 )
             },
-            1: () => {
+            1: (text?: unknown) => {
                 const { enableBackColor, enableTextColor, enableBorderColor } = vars.value
                 return (
                     <NTag
                         size="small"
                         color={{ color: enableBackColor, textColor: enableTextColor, borderColor: enableBorderColor }}
                         style={online.value}
-                        v-slots={{ default: () => '启用' }}
+                        v-slots={{ default: () => text ?? '启用' }}
                     ></NTag>
                 )
             }
         }
 
-        return BaseColumn[status as keyof typeof BaseColumn]?.() ?? divineColumn(status)
+        return BaseColumn[status as keyof typeof BaseColumn]?.(t) ?? divineColumn(status)
     }
 
     return {

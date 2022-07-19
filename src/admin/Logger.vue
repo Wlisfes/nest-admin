@@ -16,13 +16,13 @@ export default defineComponent({
         const notice = useNotification()
         const { onCater } = useClipboard()
         const { state, setState } = useSource<ILogger, { status: number | null }>({ status: null })
-        const { online, divineColumn, calcColumn } = useColumn<ILogger>()
+        const { online, divineColumn, onlineColumn, calcColumn } = useColumn<ILogger>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '序号', key: 'id', width: calcColumn(80, 1080) },
             { title: '来源ip', key: 'ip', width: calcColumn(130, 1080) },
-            { title: '请求地址', key: 'path', width: calcColumn(160, 1080) },
+            { title: '请求地址', key: 'path', ellipsis: true, width: calcColumn(200, 1080) },
             { title: '请求类型', key: 'method', width: calcColumn(80, 1080) },
-            { title: '请求状态', key: 'type', width: calcColumn(100, 1080) },
+            { title: '请求状态', key: 'type', align: 'center', width: calcColumn(100, 1080) },
             { title: '状态码', key: 'code', width: calcColumn(80, 1080) },
             { title: '状态描述', key: 'message', width: calcColumn(160, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
@@ -59,16 +59,8 @@ export default defineComponent({
 
         const columnNative = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
             const BaseNative = {
-                status: () => {
-                    return row.status === 1 ? (
-                        <n-tag size="small" type="success" style={online.value}>
-                            {{ default: () => '当前版本' }}
-                        </n-tag>
-                    ) : (
-                        <n-tag size="small" type="warning" style={online.value}>
-                            {{ default: () => '历史版本' }}
-                        </n-tag>
-                    )
+                type: () => {
+                    return row.type === 1 ? onlineColumn(1, 'success') : onlineColumn(0, 'error')
                 },
                 url: () => (
                     <n-tag
