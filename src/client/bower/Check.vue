@@ -1,9 +1,8 @@
 <script lang="tsx">
-import type { IArticle } from '@/api/pipe'
 import { defineComponent, ref, nextTick, onUnmounted, Fragment } from 'vue'
 import { useRoute } from 'vue-router'
 import { AppContainer } from '@/components/global'
-import { httpClientArticle } from '@/api/service'
+import { httpClientArticle } from '@/api'
 import { initMounte } from '@/utils/utils-tool'
 import { NPreview } from '@/hooks/hook-editor'
 import { useRxicon } from '@/hooks/hook-icon'

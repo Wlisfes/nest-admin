@@ -1,8 +1,7 @@
 <script lang="tsx">
-import type { ICloud } from '@/api/pipe'
 import { defineComponent, ref, nextTick, onUnmounted, onActivated, onDeactivated } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpClientClouds } from '@/api/service'
+import { httpClientClouds } from '@/api'
 import { initMounte } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
 import { useRxicon } from '@/hooks/hook-icon'

@@ -1,9 +1,8 @@
 <script lang="tsx">
-import type { ILogger } from '@/api/pipe'
 import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnLogger } from '@/api/service'
+import { httpColumnLogger } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'

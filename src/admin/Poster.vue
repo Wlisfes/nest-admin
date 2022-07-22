@@ -1,9 +1,8 @@
 <script lang="tsx">
-import type { IPoster } from '@/api/pipe'
 import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
 import { defineComponent, ref, nextTick } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api/service'
+import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'

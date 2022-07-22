@@ -1,10 +1,9 @@
 <script lang="tsx">
-import type { IUser, IRole } from '@/api/pipe'
 import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { fetchResetUser, fetchUser } from '@/components/core'
-import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api/service'
+import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'

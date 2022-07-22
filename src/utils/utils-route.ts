@@ -1,6 +1,5 @@
 import type { MenuOption } from 'naive-ui'
 import type { RouteColumn } from '@/router/routes/auth-routes'
-import type { IRole } from '@/api/pipe'
 import { h } from 'vue'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
 

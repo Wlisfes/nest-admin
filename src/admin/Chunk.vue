@@ -1,9 +1,8 @@
 <script lang="tsx">
-import type { IChunk } from '@/api/pipe'
 import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnChunk } from '@/api/service'
+import { httpColumnChunk } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'

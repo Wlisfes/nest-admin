@@ -1,8 +1,7 @@
 <script lang="tsx">
-import type { IPartner, IPoster } from '@/api/pipe'
 import { defineComponent, ref, nextTick, onUnmounted, onActivated, onDeactivated } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpClientPartner } from '@/api/service'
+import { httpClientPartner } from '@/api'
 import { initMounte } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
 import { NPreview } from '@/hooks/hook-editor'

@@ -1,8 +1,7 @@
 <script lang="tsx">
-import type { IMinute } from '@/api/pipe'
 import { defineComponent, ref, nextTick, onUnmounted, onActivated, onDeactivated } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpClientMinute } from '@/api/service'
+import { httpClientMinute } from '@/api'
 import { initMounte, moment } from '@/utils/utils-tool'
 import { useBatter } from '@/utils/utils-instance'
 import { Icons, useRxicon } from '@/hooks/hook-icon'

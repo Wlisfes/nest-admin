@@ -1,5 +1,4 @@
 import type { RouteRecordRaw, RouteMeta } from 'vue-router'
-import type { IPrimary } from '@/api/pipe'
 const Layout = () => import('@/layout/Layout.vue')
 const Parent = () => import('@/layout/Parent.vue')
 

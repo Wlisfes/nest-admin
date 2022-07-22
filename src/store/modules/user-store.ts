@@ -1,6 +1,5 @@
-import type { IUser, IRole } from '@/api/pipe'
 import { defineStore } from 'pinia'
-import { httpLogin, httpUser, httpRegister } from '@/api/service'
+import { httpLogin, httpUser, httpRegister } from '@/api'
 import { setToken, getToken, delToken } from '@/utils/utils-cookie'
 import { useAppStore } from '@/store/modules/app-store'
 

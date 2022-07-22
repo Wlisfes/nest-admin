@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { router } from '@/router'
-import { httpSendEmail } from '@/api/service'
+import { httpSendEmail } from '@/api'
 import { useEnter } from '@/utils/utils-event'
 
 export default defineComponent({

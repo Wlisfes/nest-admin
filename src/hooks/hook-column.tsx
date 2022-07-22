@@ -1,5 +1,4 @@
 import type { DropdownOption } from 'naive-ui'
-import type { IProvider } from '@/api/pipe'
 import { NTag, NText, NButtonGroup, NButton, NPopover, NDivider, NDropdown } from 'naive-ui'
 import { h, ref, computed, CSSProperties } from 'vue'
 import { Icons, useRxicon } from '@/hooks/hook-icon'

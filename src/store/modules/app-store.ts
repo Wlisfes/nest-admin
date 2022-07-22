@@ -1,7 +1,6 @@
 import type { MenuOption } from 'naive-ui'
-import type { IBanner, IRole } from '@/api/pipe'
 import { defineStore } from 'pinia'
-import { httpWallpaper } from '@/api/service'
+import { httpWallpaper } from '@/api'
 import { bfs, useToRoute } from '@/utils/utils-route'
 import { loadCover } from '@/utils/utils-tool'
 import { authRoutes } from '@/router/routes/auth-routes'

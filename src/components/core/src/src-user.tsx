@@ -1,7 +1,6 @@
-import type { IRole, IUser } from '@/api/pipe'
 import type { FormRules, FormInst } from 'naive-ui'
 import { onMounted, computed, ref } from 'vue'
-import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api/service'
+import { httpUpdatePwsUser, httpOneUser, httpUpdateUser } from '@/api'
 import { useState } from '@/hooks/hook-state'
 import { useRxicon } from '@/hooks/hook-icon'
 import { Observer } from '@/utils/utils-observer'
