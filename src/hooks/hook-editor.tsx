@@ -28,6 +28,26 @@ export const NPreview = defineComponent({
                     boxShadow={false}
                     editable={false}
                     transition={false}
+                    externalLink={{
+                        markdown_css: () => {
+                            return `https://cdn.jsdelivr.net/npm/mavon-editor@2.10.4/dist/markdown/github-markdown.min.css`
+                        },
+                        hljs_js: () => {
+                            return `https://cdn.jsdelivr.net/npm/mavon-editor@2.10.4/dist/highlightjs/highlight.min.js`
+                        },
+                        hljs_css: (css: string) => {
+                            return `https://cdn.jsdelivr.net/npm/mavon-editor@2.10.4/dist/highlightjs/styles/${css}.min.css`
+                        },
+                        hljs_lang: (lang: string) => {
+                            return `https://cdn.jsdelivr.net/npm/mavon-editor@2.10.4/dist/highlightjs/languages/${lang}.min.js`
+                        },
+                        katex_css: () => {
+                            return `https://cdn.jsdelivr.net/npm/mavon-editor@2.10.4/dist/katex/katex.min.css`
+                        },
+                        katex_js: () => {
+                            return `https://cdn.jsdelivr.net/npm/mavon-editor@2.10.4/dist/katex/katex.min.js`
+                        }
+                    }}
                     tabSize={4}
                     defaultOpen="preview"
                     codeStyle="atom-one-dark"
