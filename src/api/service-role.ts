@@ -1,4 +1,3 @@
-import type { IRole } from '@/api/pipe'
 import { request } from '@/utils/utils-request'
 
 /**角色列表**/

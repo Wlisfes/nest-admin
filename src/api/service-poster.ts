@@ -1,4 +1,3 @@
-import type { IPoster } from '@/api/pipe'
 import { request } from '@/utils/utils-request'
 
 /**图床列表**/

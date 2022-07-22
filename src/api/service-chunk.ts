@@ -1,4 +1,3 @@
-import type { IChunk } from '@/api/pipe'
 import { request } from '@/utils/utils-request'
 
 /**版本资源列表**/

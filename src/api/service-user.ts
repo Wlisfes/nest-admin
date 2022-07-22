@@ -1,4 +1,3 @@
-import type { IUser } from '@/api/pipe'
 import { request } from '@/utils/utils-request'
 
 /**登录**/

@@ -1,4 +1,3 @@
-import type { ILogger } from '@/api/pipe'
 import { request } from '@/utils/utils-request'
 
 /**Logger列表**/

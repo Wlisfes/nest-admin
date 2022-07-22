@@ -1,4 +1,3 @@
-import type { IDeman, IDemanFile, IOss } from '@/api/pipe'
 import { request } from '@/utils/utils-request'
 
 /**获取播放信息**/
