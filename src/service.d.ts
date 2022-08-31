@@ -252,3 +252,12 @@ interface ILogger extends IProvider {
     user: IUser
     list: Array<ILogger>
 }
+
+/*---------------------------------------------------------------------------*/
+interface IAction extends IProvider {
+    id: number
+    name: string
+    primary: 'create' | 'update' | 'delete' | 'params' | 'list'
+    comment: string
+    list: Array<IAction>
+}
