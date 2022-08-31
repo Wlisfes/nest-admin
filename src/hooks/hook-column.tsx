@@ -104,7 +104,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
                 )
             }
         }
-        console.log(status)
+
         return BaseColumn[status as keyof typeof BaseColumn]?.(t) ?? divineColumn(status)
     }
 

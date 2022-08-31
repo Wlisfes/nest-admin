@@ -114,10 +114,10 @@ export const authRoutes: RouteColumn[] = [
                 component: () => import('@/admin/Home.vue')
             },
             {
-                path: '/admin/system/middle',
-                name: 'Middle',
+                path: '/admin/system/power',
+                name: 'Power',
                 meta: { title: '权限键', icon: 'KeyOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/Power.vue')
             },
             {
                 path: '/admin/system/role',
