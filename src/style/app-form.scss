@@ -2,12 +2,13 @@
     flex-wrap: wrap;
     padding-bottom: 4px;
     .n-form-item {
+        margin-right: 12px;
         margin-bottom: 8px;
     }
     .app-inline {
         display: flex;
         .n-form-item {
-            margin-right: 18px;
+            margin-right: 12px;
         }
         &.space-660 {
             @media (max-width: 660px) {

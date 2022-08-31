@@ -39,7 +39,7 @@ export default defineComponent({
             return (
                 <AppContainer class="app-pipe" space="12px">
                     <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
-                        <div class="app-inline space-580">
+                        <div class="app-inline space-660">
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.status}
@@ -51,7 +51,7 @@ export default defineComponent({
                                 />
                             </n-form-item>
                         </div>
-                        <div class="app-inline space-580">
+                        <div class="app-inline space-660">
                             <n-form-item>
                                 <n-input
                                     v-model:value={state.name}

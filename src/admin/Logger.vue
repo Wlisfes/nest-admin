@@ -69,6 +69,11 @@ export default defineComponent({
                                 重 置
                             </n-button>
                         </n-form-item>
+                        <n-form-item>
+                            <n-button tertiary onClick={() => fetchUpdate()}>
+                                刷 新
+                            </n-button>
+                        </n-form-item>
                     </n-form>
                     <n-data-table
                         class="naive-customize"
