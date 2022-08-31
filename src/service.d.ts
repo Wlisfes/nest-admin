@@ -261,3 +261,14 @@ interface IAction extends IProvider {
     comment: string
     list: Array<IAction>
 }
+
+/*---------------------------------------------------------------------------*/
+interface IGuard extends IProvider {
+    id: number
+    primary: string
+    name: string
+    comment: string
+    status: number
+    action: Array<IAction>
+    list: Array<IGuard>
+}

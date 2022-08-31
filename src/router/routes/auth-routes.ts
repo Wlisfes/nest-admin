@@ -105,13 +105,13 @@ export const authRoutes: RouteColumn[] = [
         path: '/admin/system',
         meta: { title: '系统管理', icon: 'SettingOutlined', login: true, role: ['admin', 'dev'] },
         component: Layout,
-        redirect: '/admin/system/permission',
+        redirect: '/admin/system/guard',
         children: [
             {
-                path: '/admin/system/permission',
-                name: 'Permission',
+                path: '/admin/system/guard',
+                name: 'Guard',
                 meta: { title: '权限守卫', icon: 'SecurityScanOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/Guard.vue')
             },
             {
                 path: '/admin/system/power',
