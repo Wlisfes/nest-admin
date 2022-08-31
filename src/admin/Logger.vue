@@ -1,21 +1,16 @@
 <script lang="tsx">
-import { useNotification, type DataTableBaseColumn } from 'naive-ui'
+import { type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnLogger } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
-import { useClipboard } from '@/hooks/hook-super'
-import { fetchChunk } from '@/components/core'
 import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Logger',
     setup() {
-        const notice = useNotification()
-        const { onCater } = useClipboard()
-        const { state, setState } = useSource<ILogger, { status: number | null }>({ status: null })
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ILogger>()
+        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ILogger>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '序号', key: 'id', width: calcColumn(80, 1080) },
             { title: '来源ip', key: 'ip', width: calcColumn(130, 1080) },
@@ -25,53 +20,25 @@ export default defineComponent({
             { title: '状态码', key: 'code', width: calcColumn(80, 1080) },
             { title: '状态描述', key: 'message', width: calcColumn(160, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080) }
+            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
+        const { state, fetchSource, fetchUpdate } = useSource<ILogger, Object>({
+            init: ({ page, size }) => httpColumnLogger({ page, size })
+        })
 
-        /**Logger列表**/
-        const fetchColumnLogger = (handler?: Function) => {
-            setState({ loading: true }).then(async () => {
-                try {
-                    const { data } = await httpColumnLogger({ page: state.page, size: state.size })
-                    setState({
-                        total: data.total,
-                        dataSource: data.list || [],
-                        loading: false
-                    }).then(() => handler?.())
-                } catch (e) {
-                    setState({ loading: false })
-                }
-            })
-        }
+        initMounte(() => fetchSource())
 
-        const fetchReset = () => {
-            setState({ page: 1, size: 10, status: null }).then(() => {
-                fetchColumnLogger()
-            })
-        }
-
-        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
-            setState(parameter).then(() => {
-                fetchColumnLogger()
-            })
-        }
-
-        const columnNative = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: ILogger, column: DataTableBaseColumn) => {
             const BaseNative = {
                 type: () => (
                     <div style={{ margin: '8px 0' }}>
                         {row.type === 1 ? onlineColumn(1, 'success') : onlineColumn(0, 'error')}
                     </div>
                 ),
-                command: () => chunkColumn<IUser>({ row, native: ['edit', 'reset'] })
+                command: () => chunkColumn({ row, native: ['edit'] })
             }
-
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
         }
-
-        initMounte(() => {
-            fetchColumnLogger()
-        })
 
         return () => {
             return (
@@ -94,7 +61,11 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="warning" secondary onClik={fetchReset}>
+                            <n-button
+                                type="warning"
+                                secondary
+                                onClik={() => fetchUpdate({ page: 1, size: 10, status: null })}
+                            >
                                 重 置
                             </n-button>
                         </n-form-item>
@@ -111,7 +82,7 @@ export default defineComponent({
                         row-key={(row: IChunk) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
-                        render-cell={columnNative}
+                        render-cell={render}
                         pagination={{
                             page: state.page,
                             pageSize: state.size,

@@ -1,5 +1,4 @@
-import type { DropdownOption } from 'naive-ui'
-import { NTag, NText, NButtonGroup, NButton, NPopover, NDivider, NDropdown } from 'naive-ui'
+import { type DropdownOption, NTag, NText, NButtonGroup, NButton, NDivider, NDropdown } from 'naive-ui'
 import { h, ref, computed, CSSProperties } from 'vue'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
@@ -9,7 +8,7 @@ type IOption = { label: string; key: IChunkCter; icon: keyof typeof Icons; color
 type IChunk<T> = {
     row: IProvider & T
     native: Array<IChunkCter>
-    onSelecter: (key: IChunkCter, row: T) => void
+    onSelecter?: (key: IChunkCter, row: T) => void
 }
 type IColumn<T> = {
     page?: number
@@ -50,17 +49,17 @@ export function useColumn<R = any>(props?: IColumn<R>) {
                     render-label={(u: IOption) => {
                         return h(NText, { style: { color: u.color } }, { default: () => u.label })
                     }}
-                    onSelect={key => onSelecter(key, row)}
+                    onSelect={key => onSelecter?.(key, row)}
                 >
                     {{ default: () => h(NButton, { type: 'info', text: true }, { default: () => '操作' }) }}
                 </NDropdown>
                 <NDivider vertical />
                 {row.status === 0 ? (
-                    <NButton text text-color={vars.value.enableTextColor} onClick={e => onSelecter('enable', row)}>
+                    <NButton text text-color={vars.value.enableTextColor} onClick={e => onSelecter?.('enable', row)}>
                         {{ default: () => '启用' }}
                     </NButton>
                 ) : row.status === 1 ? (
-                    <NButton text text-color={vars.value.disableTextColor} onClick={e => onSelecter('disable', row)}>
+                    <NButton text text-color={vars.value.disableTextColor} onClick={e => onSelecter?.('disable', row)}>
                         {{ default: () => '禁用' }}
                     </NButton>
                 ) : null}
@@ -80,7 +79,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**状态列**/
-    const onlineColumn = (status: number, t?: unknown) => {
+    const onlineColumn = (status: number, t?: unknown, style?: CSSProperties) => {
         const BaseColumn = {
             0: (text?: unknown) => {
                 const { disableBackColor: color, disableTextColor, disableBorderColor } = vars.value
@@ -88,7 +87,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
                     <NTag
                         size="small"
                         color={{ color, textColor: disableTextColor, borderColor: disableBorderColor }}
-                        style={online.value}
+                        style={{ ...online.value, ...style }}
                         v-slots={{ default: () => text ?? '禁用' }}
                     ></NTag>
                 )
@@ -99,13 +98,13 @@ export function useColumn<R = any>(props?: IColumn<R>) {
                     <NTag
                         size="small"
                         color={{ color: enableBackColor, textColor: enableTextColor, borderColor: enableBorderColor }}
-                        style={online.value}
+                        style={{ ...online.value, ...style }}
                         v-slots={{ default: () => text ?? '启用' }}
                     ></NTag>
                 )
             }
         }
-
+        console.log(status)
         return BaseColumn[status as keyof typeof BaseColumn]?.(t) ?? divineColumn(status)
     }
 

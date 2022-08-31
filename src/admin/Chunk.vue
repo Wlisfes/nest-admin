@@ -14,7 +14,6 @@ export default defineComponent({
     setup() {
         const notice = useNotification()
         const { onCater } = useClipboard()
-        const { state, setState } = useSource<IChunk, { status: number | null }>({ status: null })
         const { online, divineColumn, calcColumn } = useColumn<IChunk>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '资源名称', key: 'name', ellipsis: { tooltip: true } },
@@ -23,46 +22,23 @@ export default defineComponent({
             { title: '状态', key: 'status', width: calcColumn(160, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) }
         ])
+        const { state, fetchSource, fetchUpdate } = useSource<IChunk, Object>({
+            init: ({ page, size }) => httpColumnChunk({ page, size })
+        })
 
-        /**资源列表**/
-        const fetchColumnChunk = (handler?: Function) => {
-            setState({ loading: true }).then(async () => {
-                try {
-                    const { data } = await httpColumnChunk({ page: state.page, size: state.size })
-                    setState({
-                        total: data.total,
-                        dataSource: data.list || [],
-                        loading: false
-                    }).then(() => handler?.())
-                } catch (e) {
-                    setState({ loading: false })
-                }
-            })
-        }
+        initMounte(() => fetchSource())
 
         const fetchCreate = () => {
             fetchChunk().then(({ observer }) => {
                 const done = observer.on('submit', data => {
-                    fetchColumnChunk(() => {
+                    fetchSource(() => {
                         notice.success({ content: (data as IChunk).message, duration: 2000, onAfterEnter: done })
                     })
                 })
             })
         }
 
-        const fetchReset = () => {
-            setState({ page: 1, size: 10, status: null }).then(() => {
-                fetchColumnChunk()
-            })
-        }
-
-        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
-            setState(parameter).then(() => {
-                fetchColumnChunk()
-            })
-        }
-
-        const columnNative = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
             const BaseNative = {
                 status: () => {
                     return row.status === 1 ? (
@@ -92,10 +68,6 @@ export default defineComponent({
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
         }
 
-        initMounte(() => {
-            fetchColumnChunk()
-        })
-
         return () => {
             return (
                 <AppContainer class="app-pipe" space="12px">
@@ -105,9 +77,13 @@ export default defineComponent({
                                 <n-select
                                     v-model:value={state.status}
                                     clearable
-                                    options={['已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
+                                    options={[
+                                        { label: '当前版本', value: 1 },
+                                        { label: '历史版本', value: 2 }
+                                    ]}
                                     placeholder="资源状态"
                                     style={{ width: '150px' }}
+                                    onUpdateValue={() => fetchUpdate()}
                                 />
                             </n-form-item>
                         </div>
@@ -117,7 +93,11 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="warning" secondary onClik={fetchReset}>
+                            <n-button
+                                type="warning"
+                                secondary
+                                onClik={() => fetchUpdate({ page: 1, size: 10, status: null })}
+                            >
                                 重 置
                             </n-button>
                         </n-form-item>
@@ -139,7 +119,7 @@ export default defineComponent({
                         row-key={(row: IChunk) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
-                        render-cell={columnNative}
+                        render-cell={render}
                         pagination={{
                             page: state.page,
                             pageSize: state.size,

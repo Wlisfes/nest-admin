@@ -7,25 +7,13 @@ import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { initMounte } from '@/utils/utils-tool'
-
-type IUserQuery = {
-    status: number | null
-    primary: string | null
-    keyword: string | null
-    roles: Array<IRole>
-}
+type IUserQuery = { primary: string | null; keyword: string | null; roles: Array<IRole> }
 
 export default defineComponent({
     name: 'User',
     setup() {
         const notice = useNotification()
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn()
-        const { state, setState } = useSource<IUser, IUserQuery>({
-            status: null,
-            primary: null,
-            keyword: null,
-            roles: []
-        })
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '账号', key: 'account', width: calcColumn(100, 1080) },
             { title: '头像', key: 'avatar', width: calcColumn(80, 1080) },
@@ -37,23 +25,14 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-
-        /**用户列表**/
-        const fetchColumnUser = (handler?: Function) => {
-            setState({ loading: true }).then(async () => {
-                try {
-                    const { page, size, status, primary, keyword } = state
-                    const { data } = await httpColumnUser({ page, size, status, primary, keyword })
-                    setState({
-                        total: data.total,
-                        dataSource: data.list,
-                        loading: false
-                    }).then(() => handler?.())
-                } catch (e) {
-                    setState({ loading: false })
+        const { state, setState, fetchSource, fetchUpdate } = useSource<IUser, IUserQuery>(
+            {
+                init: ({ page, size, status, primary, keyword }) => {
+                    return httpColumnUser({ page, size, status, primary, keyword })
                 }
-            })
-        }
+            },
+            { primary: null, keyword: null, roles: [] }
+        )
 
         /**角色列表**/
         const fetchColumnRole = async () => {
@@ -63,12 +42,17 @@ export default defineComponent({
             } catch (e) {}
         }
 
+        initMounte(() => {
+            fetchSource()
+            fetchColumnRole()
+        })
+
         /**修改用户状态**/
         const fetchCutoverPoster = ({ uid }: IUser) => {
             setState({ loading: true }).then(() => {
                 try {
                     httpCutoverUser({ uid }).then(({ data }) => {
-                        fetchColumnUser(() => {
+                        fetchSource(() => {
                             notice.success({ content: data.message, duration: 2000 })
                         })
                     })
@@ -81,22 +65,16 @@ export default defineComponent({
         const fetchCreate = () => {
             fetchUser({ key: 'create', roles: state.roles }).then(({ observer }) => {
                 const done = observer.on('submit', data => {
-                    fetchColumnUser(() => {
+                    fetchSource(() => {
                         notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
                     })
                 })
             })
         }
 
-        const fetchReset = () => {
+        const fetchReset1 = () => {
             setState({ page: 1, size: 10, status: null, primary: null, keyword: null }).then(() => {
-                fetchColumnUser()
-            })
-        }
-
-        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
-            setState(parameter).then(() => {
-                fetchColumnUser()
+                fetchSource()
             })
         }
 
@@ -105,7 +83,7 @@ export default defineComponent({
                 edit: () => {
                     fetchUser({ key: 'edit', roles: state.roles, uid: row.uid }).then(({ observer }) => {
                         const done = observer.on('submit', data => {
-                            fetchColumnUser(() => {
+                            fetchSource(() => {
                                 notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
                             })
                         })
@@ -125,7 +103,7 @@ export default defineComponent({
             handler[key as keyof typeof handler]?.()
         }
 
-        const columnNative = (value: unknown, row: IUser, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: IUser, column: DataTableBaseColumn) => {
             const BaseNative = {
                 avatar: () => (
                     <u-scale max-width={40} scale={1}>
@@ -146,11 +124,6 @@ export default defineComponent({
             }
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
         }
-
-        initMounte(() => {
-            fetchColumnUser()
-            fetchColumnRole()
-        })
 
         return () => {
             return (
@@ -192,7 +165,13 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="warning" secondary onClick={fetchReset}>
+                            <n-button
+                                type="warning"
+                                secondary
+                                onClick={() => {
+                                    fetchUpdate({ page: 1, size: 10, status: null, primary: null, keyword: null })
+                                }}
+                            >
                                 重 置
                             </n-button>
                         </n-form-item>
@@ -213,7 +192,7 @@ export default defineComponent({
                         row-key={(row: IUser) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
-                        render-cell={columnNative}
+                        render-cell={render}
                         pagination={{
                             page: state.page,
                             pageSize: state.size,
