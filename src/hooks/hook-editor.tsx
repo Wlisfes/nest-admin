@@ -18,7 +18,7 @@ export const NPreview = defineComponent({
 
         return () => (
             <Fragment>
-                <ImagePreview show-toolbar-tooltip ref={preview} clsPrefix="editor"></ImagePreview>
+                {/* <ImagePreview show-toolbar-tooltip ref={preview} clsPrefix="editor"></ImagePreview> */}
                 <mavon-editor
                     class="app-preview"
                     subfield={false}
