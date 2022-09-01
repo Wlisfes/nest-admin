@@ -3,12 +3,12 @@ import { h, ref, computed, CSSProperties } from 'vue'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
 
-type IChunkCter = 'edit' | 'reset' | 'disable' | 'enable' | 'delete'
-type IOption = { label: string; key: IChunkCter; icon: keyof typeof Icons; color: string }
-type IChunk<T> = {
+type IKCommand = 'edit' | 'reset' | 'disable' | 'enable' | 'delete'
+type IOption = { label: string; key: IKCommand; icon: keyof typeof Icons; color: string }
+type ICommand<T> = {
     row: IProvider & T
-    native: Array<IChunkCter>
-    onSelecter?: (key: IChunkCter, row: T) => void
+    native: Array<IKCommand>
+    onSelecter?: (key: IKCommand, row: T) => void
 }
 type IColumn<T> = {
     page?: number
@@ -34,7 +34,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**操作列**/
-    const chunkColumn = <T,>({ row, native, onSelecter }: IChunk<T>) => {
+    const chunkColumn = <T,>({ row, native, onSelecter }: ICommand<T>) => {
         const nativeOption = computed(() => {
             return native.map(key => options.value.find(x => key === x.key))
         })
