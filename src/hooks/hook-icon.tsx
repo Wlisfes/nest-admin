@@ -51,7 +51,9 @@ import {
     DownloadOutlined,
     ScissorOutlined,
     UploadOutlined,
-    FileAddOutlined
+    FileAddOutlined,
+    VideoCameraAddOutlined,
+    PlaySquareOutlined
 } from '@vicons/antd'
 
 export const Icons = {
@@ -129,7 +131,9 @@ export const Icons = {
     DownloadOutlined,
     ScissorOutlined,
     UploadOutlined,
-    FileAddOutlined
+    FileAddOutlined,
+    VideoCameraAddOutlined,
+    PlaySquareOutlined
 }
 
 export function useRxicon() {

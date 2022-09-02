@@ -71,18 +71,24 @@ export const authRoutes: RouteColumn[] = [
         path: '/admin/cloud',
         meta: { title: '云点播', icon: 'CloudOutlined', login: true },
         component: Layout,
-        redirect: '/admin/cloud/media',
+        redirect: '/admin/cloud/dinner',
         children: [
+            {
+                path: '/admin/cloud/dinner',
+                name: 'Dinner',
+                meta: { title: '番剧管理', icon: 'PlaySquareOutlined', route: true, login: true },
+                component: () => import('@/admin/cloud/Media.vue')
+            },
             {
                 path: '/admin/cloud/media',
                 name: 'Media',
-                meta: { title: '媒体管理', icon: 'VideoCameraOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                meta: { title: '短片管理', icon: 'VideoCameraOutlined', route: true, login: true },
+                component: () => import('@/admin/cloud/Media.vue')
             },
             {
                 path: '/admin/cloud/source',
                 name: 'CloudSource',
-                meta: { title: '媒体分类', icon: 'InstagramOutlined', route: true, login: true },
+                meta: { title: '点播分类', icon: 'InstagramOutlined', route: true, login: true },
                 component: () => import('@/admin/Home.vue')
             }
         ]
