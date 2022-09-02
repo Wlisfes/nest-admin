@@ -3,10 +3,10 @@ import { defineComponent } from 'vue'
 import { AppContainer } from '@/components/global'
 
 export default defineComponent({
-    name: 'Console',
+    name: 'Record',
     setup() {
         return () => {
-            return <AppContainer>Console</AppContainer>
+            return <AppContainer>Record</AppContainer>
         }
     }
 })
