@@ -1,4 +1,5 @@
 import { reactive, toRefs, nextTick, type UnwrapNestedRefs } from 'vue'
+import { initMounte } from '@/utils/utils-tool'
 
 interface ISource<T> {
     page: number
@@ -8,7 +9,8 @@ interface ISource<T> {
     status: number | null
     dataSource: Array<T>
 }
-interface FSource<T, R> {
+interface FNource<T, R> {
+    immediate?: Boolean
     init: (e: UnwrapNestedRefs<ISource<T> & R>) => Promise<IResponse<T>>
 }
 interface IResponse<T = Object> {
@@ -20,7 +22,7 @@ interface IResponse<T = Object> {
     method?: string
 }
 
-export function useSource<T, R extends Object>({ init }: FSource<T, R>, props?: Partial<ISource<T> & R>) {
+export function useSource<T, R extends Object>(fn: FNource<T, R>, props?: Partial<ISource<T> & R>) {
     const state = reactive<ISource<T> & R>(
         Object.assign({
             ...props,
@@ -50,7 +52,7 @@ export function useSource<T, R extends Object>({ init }: FSource<T, R>, props?: 
         return new Promise(async (resolve, reject) => {
             try {
                 await setState({ loading: true } as never)
-                const { data } = await init(state)
+                const { data } = await fn.init(state)
                 setState({
                     total: data.total,
                     dataSource: data.list || [],
@@ -77,6 +79,12 @@ export function useSource<T, R extends Object>({ init }: FSource<T, R>, props?: 
             }
         })
     }
+
+    initMounte(() => {
+        if (fn.immediate) {
+            fetchSource()
+        }
+    })
 
     return {
         state,
