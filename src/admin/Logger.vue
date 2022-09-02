@@ -5,7 +5,6 @@ import { AppContainer } from '@/components/global'
 import { httpColumnLogger } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
-import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Logger',
@@ -22,11 +21,10 @@ export default defineComponent({
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchSource, fetchUpdate } = useSource<ILogger, Object>({
+        const { state, fetchUpdate } = useSource<ILogger, Object>({
+            immediate: true,
             init: ({ page, size }) => httpColumnLogger({ page, size })
         })
-
-        initMounte(() => fetchSource())
 
         const render = (value: unknown, row: ILogger, column: DataTableBaseColumn) => {
             const BaseNative = {
@@ -70,7 +68,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button tertiary onClick={() => fetchUpdate()}>
+                            <n-button tertiary onClick={fetchUpdate}>
                                 刷 新
                             </n-button>
                         </n-form-item>

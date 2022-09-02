@@ -7,7 +7,6 @@ import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'
 import { fetchChunk } from '@/components/core'
-import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Chunk',
@@ -22,16 +21,15 @@ export default defineComponent({
             { title: '状态', key: 'status', width: calcColumn(160, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) }
         ])
-        const { state, fetchSource, fetchUpdate } = useSource<IChunk, Object>({
+        const { state, fetchUpdate } = useSource<IChunk, Object>({
+            immediate: true,
             init: ({ page, size }) => httpColumnChunk({ page, size })
         })
-
-        initMounte(() => fetchSource())
 
         const fetchCreate = () => {
             fetchChunk().then(({ observer }) => {
                 const done = observer.on('submit', data => {
-                    fetchSource(() => {
+                    fetchUpdate({}, () => {
                         notice.success({ content: (data as IChunk).message, duration: 2000, onAfterEnter: done })
                     })
                 })
@@ -83,7 +81,7 @@ export default defineComponent({
                                     ]}
                                     placeholder="资源状态"
                                     style={{ width: '150px' }}
-                                    onUpdateValue={() => fetchUpdate()}
+                                    onUpdateValue={fetchUpdate}
                                 />
                             </n-form-item>
                         </div>
@@ -107,7 +105,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button tertiary onClick={() => fetchUpdate()}>
+                            <n-button tertiary onClick={fetchUpdate}>
                                 刷 新
                             </n-button>
                         </n-form-item>

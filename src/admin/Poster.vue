@@ -1,14 +1,11 @@
 <script lang="tsx">
 import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
-import { defineComponent, ref, nextTick } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'
-import { initMounte } from '@/utils/utils-tool'
-
-type IParams = { status: number | null; type: number | null }
 
 export default defineComponent({
     name: 'Poster',
@@ -16,7 +13,6 @@ export default defineComponent({
         const dialog = useDialog()
         const notice = useNotification()
         const { onCater } = useClipboard()
-        const { state, setState } = useSource<IPoster, IParams>({ status: null, type: null })
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
         const typeOptions = ref([
             { label: 'avatar', value: 1, type: 'error' },
@@ -33,30 +29,20 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080) }
         ])
-
-        /**图床列表**/
-        const fetchColumnPoster = (handler?: Function) => {
-            setState({ loading: true }).then(async () => {
-                try {
-                    const { page, size, status, type } = state
-                    const { data } = await httpColumnPoster({ page, size, status, type })
-                    setState({
-                        total: data.total,
-                        dataSource: data.list || [],
-                        loading: false
-                    }).then(() => handler?.())
-                } catch (e) {
-                    setState({ loading: false })
-                }
-            })
-        }
+        const { state, setState, fetchUpdate } = useSource<IPoster, { type: number | null }>(
+            {
+                immediate: true,
+                init: ({ page, size, status, type }) => httpColumnPoster({ page, size, status, type })
+            },
+            { type: null }
+        )
 
         /**修改图床状态**/
         const fetchCutoverPoster = (id: number) => {
             setState({ loading: true }).then(() => {
                 try {
                     httpCutoverPoster({ id }).then(({ data }) => {
-                        fetchColumnPoster(() => {
+                        fetchUpdate({}, () => {
                             notice.success({ content: data.message, duration: 2000 })
                         })
                     })
@@ -90,7 +76,7 @@ export default defineComponent({
                             httpDeletePoster({ id }).then(({ data }) => {
                                 setState({ loading: true }).then(() => {
                                     resolve(true)
-                                    fetchColumnPoster(() => {
+                                    fetchUpdate({}, () => {
                                         notice.success({ content: data.message, duration: 2000 })
                                     })
                                 })
@@ -100,18 +86,6 @@ export default defineComponent({
                         }
                     })
                 }
-            })
-        }
-
-        const fetchReset = () => {
-            setState({ page: 1, size: 10, status: null, type: null }).then(() => {
-                nextTick(() => fetchColumnPoster())
-            })
-        }
-
-        const fetchUpdate = (parameter: { page?: number; size?: number }) => {
-            setState(parameter).then(() => {
-                fetchColumnPoster()
             })
         }
 
@@ -163,10 +137,6 @@ export default defineComponent({
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
         }
 
-        initMounte(() => {
-            fetchColumnPoster()
-        })
-
         return () => {
             return (
                 <AppContainer class="app-pipe" space="12px">
@@ -197,13 +167,22 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="warning" secondary onClick={fetchReset}>
+                            <n-button
+                                type="warning"
+                                secondary
+                                onClick={() => fetchUpdate({ page: 1, size: 10, status: null, type: null })}
+                            >
                                 重 置
                             </n-button>
                         </n-form-item>
                         <n-form-item>
                             <n-button type="success" secondary>
                                 新 增
+                            </n-button>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-button tertiary onClick={fetchUpdate}>
+                                刷 新
                             </n-button>
                         </n-form-item>
                     </n-form>

@@ -5,7 +5,6 @@ import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { httpColumnGuard } from '@/api'
-import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Guard',
@@ -19,12 +18,13 @@ export default defineComponent({
             { title: '守卫状态', key: 'status', width: calcColumn(160, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchSource, fetchUpdate } = useSource<IGuard, { name: string }>(
-            { init: ({ page, size, name, status }) => httpColumnGuard({ page, size, name, status }) },
+        const { state, fetchUpdate } = useSource<IGuard, { name: string }>(
+            {
+                immediate: true,
+                init: ({ page, size, name, status }) => httpColumnGuard({ page, size, name, status })
+            },
             { name: '' }
         )
-
-        initMounte(() => fetchSource())
 
         const render = (value: unknown, row: IGuard, column: DataTableBaseColumn) => {
             const BaseNative = {
@@ -47,7 +47,7 @@ export default defineComponent({
                                     options={['已禁用', '已启用'].map((x, v) => ({ label: x, value: v }))}
                                     placeholder="守卫状态"
                                     style={{ width: '150px' }}
-                                    onUpdateValue={() => fetchUpdate()}
+                                    onUpdateValue={fetchUpdate}
                                 />
                             </n-form-item>
                         </div>
@@ -81,7 +81,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button tertiary onClick={() => fetchUpdate()}>
+                            <n-button tertiary onClick={fetchUpdate}>
                                 刷 新
                             </n-button>
                         </n-form-item>

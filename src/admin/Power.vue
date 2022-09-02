@@ -1,16 +1,15 @@
 <script lang="tsx">
-import { useNotification, type DataTableBaseColumn } from 'naive-ui'
+import { type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { httpColumnAction } from '@/api'
-import { initMounte } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Power',
     setup() {
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IAction>()
+        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IAction>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '权限名称', key: 'name', ellipsis: { tooltip: true } },
             { title: '权限唯一标识', key: 'primary', width: calcColumn(240, 1080) },
@@ -19,12 +18,13 @@ export default defineComponent({
             { title: '状态', key: 'status', width: calcColumn(160, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchSource, fetchUpdate } = useSource<IAction, { name: string }>(
-            { init: ({ page, size }) => httpColumnAction({ page, size }) },
+        const { state, fetchUpdate } = useSource<IAction, { name: string }>(
+            {
+                immediate: true,
+                init: ({ page, size }) => httpColumnAction({ page, size })
+            },
             { name: '' }
         )
-
-        initMounte(() => fetchSource())
 
         const render = (value: unknown, row: IAction, column: DataTableBaseColumn) => {
             const BaseNative = {
@@ -47,7 +47,7 @@ export default defineComponent({
                                     options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
                                     placeholder="权限键状态"
                                     style={{ width: '150px' }}
-                                    onUpdateValue={() => fetchUpdate()}
+                                    onUpdateValue={fetchUpdate}
                                 />
                             </n-form-item>
                         </div>
@@ -71,7 +71,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button tertiary onClick={() => fetchUpdate()}>
+                            <n-button tertiary onClick={fetchUpdate}>
                                 刷 新
                             </n-button>
                         </n-form-item>

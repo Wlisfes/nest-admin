@@ -25,8 +25,9 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, setState, fetchSource, fetchUpdate } = useSource<IUser, IUserQuery>(
+        const { state, setState, fetchUpdate } = useSource<IUser, IUserQuery>(
             {
+                immediate: true,
                 init: ({ page, size, status, primary, keyword }) => {
                     return httpColumnUser({ page, size, status, primary, keyword })
                 }
@@ -42,17 +43,14 @@ export default defineComponent({
             } catch (e) {}
         }
 
-        initMounte(() => {
-            fetchSource()
-            fetchColumnRole()
-        })
+        initMounte(() => fetchColumnRole())
 
         /**修改用户状态**/
         const fetchCutoverPoster = ({ uid }: IUser) => {
             setState({ loading: true }).then(() => {
                 try {
                     httpCutoverUser({ uid }).then(({ data }) => {
-                        fetchSource(() => {
+                        fetchUpdate({}, () => {
                             notice.success({ content: data.message, duration: 2000 })
                         })
                     })
@@ -65,16 +63,10 @@ export default defineComponent({
         const fetchCreate = () => {
             fetchUser({ key: 'create', roles: state.roles }).then(({ observer }) => {
                 const done = observer.on('submit', data => {
-                    fetchSource(() => {
+                    fetchUpdate({}, () => {
                         notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
                     })
                 })
-            })
-        }
-
-        const fetchReset1 = () => {
-            setState({ page: 1, size: 10, status: null, primary: null, keyword: null }).then(() => {
-                fetchSource()
             })
         }
 
@@ -83,7 +75,7 @@ export default defineComponent({
                 edit: () => {
                     fetchUser({ key: 'edit', roles: state.roles, uid: row.uid }).then(({ observer }) => {
                         const done = observer.on('submit', data => {
-                            fetchSource(() => {
+                            fetchUpdate({}, () => {
                                 notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
                             })
                         })
@@ -137,6 +129,7 @@ export default defineComponent({
                                     options={state.roles.map(x => ({ id: x.id, label: x.name, value: x.primary }))}
                                     placeholder="用户角色"
                                     style={{ width: '150px' }}
+                                    onUpdateValue={fetchUpdate}
                                 />
                             </n-form-item>
                             <n-form-item>
@@ -146,6 +139,7 @@ export default defineComponent({
                                     options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
                                     placeholder="用户状态"
                                     style={{ width: '150px' }}
+                                    onUpdateValue={fetchUpdate}
                                 />
                             </n-form-item>
                         </div>
@@ -181,7 +175,7 @@ export default defineComponent({
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button tertiary onClick={() => fetchUpdate()}>
+                            <n-button tertiary onClick={fetchUpdate}>
                                 刷 新
                             </n-button>
                         </n-form-item>
