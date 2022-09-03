@@ -153,6 +153,15 @@ interface ICloud extends IProvider {
     children: Array<ICloud>
     list: Array<ICloud>
 }
+interface ICloudSource extends IProvider {
+    id: number
+    name: string
+    color: string
+    status: number
+    order: number
+    comment: string | null
+    list: Array<ICloudSource>
+}
 
 /*---------------------------------------------------------------------------*/
 interface IMinute extends IProvider {

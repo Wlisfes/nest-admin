@@ -89,7 +89,7 @@ export const authRoutes: RouteColumn[] = [
                 path: '/admin/cloud/source',
                 name: 'CloudSource',
                 meta: { title: '点播分类', icon: 'InstagramOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/cloud/Source.vue')
             }
         ]
     },

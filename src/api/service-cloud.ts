@@ -19,3 +19,12 @@ export function httpCloudDinner(params: { page: number; size: number; status?: n
 export function httpCloudMedia(params: { page: number; size: number; status?: number | null; title?: string }) {
     return request<ICloud>({ url: `/api/cloud/media`, method: 'GET', params })
 }
+
+/**视频标签列表**/
+export function nodeColumnCloudSource(params: { page: number; size: number; status?: number | null; name?: string }) {
+    return request<ICloudSource>({
+        url: `/api/cloud-source/list-node`,
+        method: 'GET',
+        params
+    })
+}
