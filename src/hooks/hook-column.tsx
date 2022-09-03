@@ -69,12 +69,12 @@ export function useColumn<R = any>(props?: IColumn<R>) {
 
     /**空占位列**/
     const divineColumn = (value: unknown, style?: CSSProperties) => {
-        return (
-            value || (
-                <div style={{ display: 'flex', ...style }}>
-                    {h(Icon, { size: 20, depth: 3, component: compute('DashOutlined') })}
-                </div>
-            )
+        return ![undefined, null, ''].includes(value as never) ? (
+            value
+        ) : (
+            <div style={{ display: 'flex', ...style }}>
+                {h(Icon, { size: 20, depth: 3, component: compute('DashOutlined') })}
+            </div>
         )
     }
 

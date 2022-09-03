@@ -62,6 +62,7 @@ export function useSource<T, R extends Object>(fn: FNource<T, R>, props?: Partia
                     resolve(data)
                 })
             } catch (e) {
+                setState({ loading: false } as never)
                 reject(e)
             }
         })
