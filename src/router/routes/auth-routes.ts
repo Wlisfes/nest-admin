@@ -95,7 +95,7 @@ export const authRoutes: RouteColumn[] = [
     },
     {
         path: '/admin/resource',
-        meta: { title: '资源管理', icon: 'PicCenterOutlined', login: true },
+        meta: { title: '资源库', icon: 'PicCenterOutlined', login: true },
         component: Layout,
         redirect: '/admin/resource/poster',
         children: [
@@ -104,6 +104,12 @@ export const authRoutes: RouteColumn[] = [
                 name: 'Poster',
                 meta: { title: '图床管理', icon: 'FileImageOutlined', route: true, login: true },
                 component: () => import('@/admin/resource/Poster.vue')
+            },
+            {
+                path: '/admin/resource/chunk',
+                name: 'Chunk',
+                meta: { title: '版本资源管理', icon: 'CloudUploadOutlined', route: true, login: true },
+                component: () => import('@/admin/resource/Chunk.vue')
             }
         ]
     },
@@ -136,12 +142,6 @@ export const authRoutes: RouteColumn[] = [
                 name: 'User',
                 meta: { title: '用户管理', icon: 'UserOutlined', route: true, login: true },
                 component: () => import('@/admin/system/User.vue')
-            },
-            {
-                path: '/admin/system/chunk',
-                name: 'Chunk',
-                meta: { title: '版本资源', icon: 'CloudUploadOutlined', route: true, login: true },
-                component: () => import('@/admin/system/Chunk.vue')
             },
             {
                 path: '/admin/system/logger',
