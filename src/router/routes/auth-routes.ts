@@ -77,7 +77,7 @@ export const authRoutes: RouteColumn[] = [
                 path: '/admin/cloud/dinner',
                 name: 'Dinner',
                 meta: { title: '番剧管理', icon: 'PlaySquareOutlined', route: true, login: true },
-                component: () => import('@/admin/cloud/Media.vue')
+                component: () => import('@/admin/cloud/Dinner.vue')
             },
             {
                 path: '/admin/cloud/media',

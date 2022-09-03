@@ -4,10 +4,10 @@ import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpCloudMedia } from '@/api'
+import { httpCloudDinner } from '@/api'
 
 export default defineComponent({
-    name: 'Media',
+    name: 'Dinner',
     setup() {
         const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ICloud>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
@@ -22,7 +22,7 @@ export default defineComponent({
         const { state, fetchUpdate } = useSource<ICloud, { title?: string }>(
             {
                 immediate: true,
-                init: ({ page, size, status, title }) => httpCloudMedia({ page, size, status, title })
+                init: ({ page, size, status, title }) => httpCloudDinner({ page, size, status, title })
             },
             { title: undefined }
         )
