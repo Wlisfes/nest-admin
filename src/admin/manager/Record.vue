@@ -1,163 +1,98 @@
 <script lang="tsx">
-import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
+import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnPoster, httpCutoverPoster, httpDeletePoster } from '@/api'
+import { httpColumnMinute } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
-import { useClipboard } from '@/hooks/hook-super'
 
 export default defineComponent({
     name: 'Record',
     setup() {
-        const dialog = useDialog()
         const notice = useNotification()
-        const { onCater } = useClipboard()
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IPoster>()
-        const typeOptions = ref([
-            { label: 'avatar', value: 1, type: 'error' },
-            { label: 'upload', value: 2, type: 'success' },
-            { label: 'cover', value: 3, type: 'info' },
-            { label: 'photo', value: 4, type: 'warning' }
-        ])
+        const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IRecord>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '图片预览', key: 'check', width: calcColumn(140, 1080) },
-            { title: '图片类型', key: 'type', width: calcColumn(120, 1080) },
-            { title: '图片地址', key: 'url', width: calcColumn(160, 1080), ellipsis: { tooltip: true } },
-            { title: '图片备注', key: 'mobile', ellipsis: { tooltip: true } },
-            { title: '上传时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
+            { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
+            { title: '名称', key: 'name', ellipsis: { tooltip: true } },
+            { title: '描述', key: 'description', ellipsis: { tooltip: true } },
+            { title: '标签', key: 'source', width: calcColumn(100, 1080) },
+            { title: '排序号', key: 'order', width: calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
+            { title: '状态', key: 'status', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, setState, fetchUpdate } = useSource<IPoster, { type: number | null }>(
+        const { state, fetchUpdate } = useSource<IRecord, { name: string | null; source: number | null }>(
             {
                 immediate: true,
-                init: ({ page, size, status, type }) => httpColumnPoster({ page, size, status, type })
+                init: ({ page, size, status, name, source }) => httpColumnMinute({ page, size, status, source })
             },
-            { type: null }
+            { name: null, source: null }
         )
 
-        /**修改图床状态**/
-        const fetchCutoverPoster = (id: number) => {
-            setState({ loading: true }).then(() => {
-                try {
-                    httpCutoverPoster({ id }).then(({ data }) => {
-                        fetchUpdate({}, () => {
-                            notice.success({ content: data.message, duration: 2000 })
-                        })
-                    })
-                } catch (e) {
-                    setState({ loading: false })
-                }
-            })
-        }
+        const fetchCreate = () => {}
 
-        /**删除图床**/
-        const fetchDeletePoster = (id: number) => {
-            const e = dialog.warning({
-                title: '确定要删除吗？',
-                positiveText: '确定',
-                negativeText: '取消',
-                negativeButtonProps: { type: 'success', size: 'medium', ghost: false, class: 'naive-customize' } as BU,
-                positiveButtonProps: { type: 'error', size: 'medium', class: 'naive-customize' } as BU,
-                style: {
-                    minHeight: '160px',
-                    padding: '24px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    margin: '100px auto auto'
-                },
-                closable: false,
-                onPositiveClick: () => {
-                    return new Promise(resolve => {
-                        try {
-                            e.loading = true
-                            httpDeletePoster({ id }).then(({ data }) => {
-                                setState({ loading: true }).then(() => {
-                                    resolve(true)
-                                    fetchUpdate({}, () => {
-                                        notice.success({ content: data.message, duration: 2000 })
-                                    })
-                                })
-                            })
-                        } catch (e) {
-                            resolve(true)
-                        }
-                    })
-                }
-            })
-        }
-
-        const onSelecter = (key: string, row: IPoster) => {
-            if (key === 'delete') {
-                fetchDeletePoster(row.id)
-            } else {
-                fetchCutoverPoster(row.id)
-            }
-        }
-
-        const columnNative = (value: unknown, row: IPoster, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                check: () => (
-                    <u-scale max-width={row.type === 3 ? 96 : 54} scale={row.type === 3 ? 16 / 9 : 1}>
+        const render = (value: unknown, row: IRecord, column: DataTableBaseColumn) => {
+            const __BASE_COLUME__ = {
+                cover: () => (
+                    <u-scale max-width={96} scale={16 / 9}>
                         <n-image
                             object-fit="cover"
-                            preview-src={row.url}
+                            preview-src={row.cover}
                             show-toolbar-tooltip
-                            src={`${row.url}?x-oss-process=style/resize`}
+                            src={`${row.cover}?x-oss-process=style/resize`}
                             v-slots={{ placeholder: () => <n-skeleton width="100%" height="100%" /> }}
                         />
                     </u-scale>
                 ),
-                url: () => (
-                    <n-tag
-                        bordered={false}
-                        type="info"
-                        size="small"
-                        class="naive-customize"
-                        style={online.value}
-                        onClick={() => onCater(row.url)}
-                    >
-                        {{ default: () => '复制图片地址' }}
-                    </n-tag>
-                ),
-                type: () => {
-                    const u = typeOptions.value.find(x => x.value === row.type)
+                source: () => {
                     return (
-                        <n-tag bordered={false} type={u?.type} size="small" style={online.value}>
-                            {{ default: () => u?.label?.replace(/^\S/, s => s.toUpperCase()) }}
-                        </n-tag>
+                        <n-tooltip trigger="hover">
+                            {{
+                                trigger: () => {
+                                    const { name, color } = row.source[0]
+                                    return divineSpine(name, { bordered: false, color: { color } })
+                                },
+                                default: () => (
+                                    <n-space size={10}>
+                                        {row.source.map(({ name, color }) => {
+                                            return divineSpine(name, { bordered: false, color: { color } })
+                                        })}
+                                    </n-space>
+                                )
+                            }}
+                        </n-tooltip>
                     )
                 },
                 status: () => onlineColumn(row.status),
-                command: () => chunkColumn<IPoster>({ row, native: ['delete'], onSelecter })
+                command: () => chunkColumn<IRecord>({ row, native: ['delete'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __BASE_COLUME__[column.key as keyof typeof __BASE_COLUME__]?.() || divineColumn(value)
         }
 
         return () => {
             return (
                 <AppContainer class="app-pipe" space="12px">
                     <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
-                        <div class="app-inline space-660">
-                            <n-form-item>
-                                <n-select
-                                    v-model:value={state.type}
-                                    clearable
-                                    options={typeOptions.value}
-                                    placeholder="图片类型"
-                                    style={{ width: '150px' }}
-                                />
-                            </n-form-item>
+                        <div class="app-inline space-580">
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.status}
                                     clearable
                                     options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
-                                    placeholder="图片状态"
+                                    placeholder="请选择状态"
                                     style={{ width: '150px' }}
+                                    onUpdateValue={fetchUpdate}
+                                />
+                            </n-form-item>
+                        </div>
+                        <div class="app-inline space-580">
+                            <n-form-item>
+                                <n-input
+                                    v-model:value={state.name}
+                                    clearable
+                                    placeholder="请输入名称、描述"
+                                    style={{ width: '260px' }}
                                 />
                             </n-form-item>
                         </div>
@@ -170,13 +105,13 @@ export default defineComponent({
                             <n-button
                                 type="warning"
                                 secondary
-                                onClick={() => fetchUpdate({ page: 1, size: 10, status: null, type: null })}
+                                onClik={() => fetchUpdate({ page: 1, size: 10, status: null })}
                             >
                                 重 置
                             </n-button>
                         </n-form-item>
                         <n-form-item>
-                            <n-button type="success" secondary>
+                            <n-button type="success" secondary onClick={fetchCreate}>
                                 新 增
                             </n-button>
                         </n-form-item>
@@ -195,10 +130,10 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IPoster) => row.id}
+                        row-key={(row: IRecord) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
-                        render-cell={columnNative}
+                        render-cell={render}
                         pagination={{
                             page: state.page,
                             pageSize: state.size,

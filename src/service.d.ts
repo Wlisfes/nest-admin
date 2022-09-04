@@ -121,6 +121,22 @@ interface IArticle extends IProvider {
 }
 
 /*---------------------------------------------------------------------------*/
+interface IRecord extends IProvider {
+    id: number
+    name: string
+    cover: string
+    description: string | null
+    url: string
+    npm: string
+    github: string
+    status: number
+    order: number
+    source: Array<ISource>
+    list: Array<IRecord>
+    user: IUser
+}
+
+/*---------------------------------------------------------------------------*/
 interface IChunk extends IProvider {
     id: number
     url: string
