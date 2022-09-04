@@ -12,7 +12,7 @@ export default defineComponent({
         const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ICloudSource>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'name', width: calcColumn(200, 1080) },
-            { title: '备注', key: 'comment', ellipsis: { tooltip: true } },
+            { title: '备注', key: 'comment', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '排序', key: 'order', width: calcColumn(100, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },

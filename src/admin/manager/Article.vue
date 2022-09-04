@@ -16,7 +16,7 @@ export default defineComponent({
         const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IArticle>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
-            { title: '标题', key: 'title', ellipsis: { tooltip: true } },
+            { title: '标题', key: 'title', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '标签', key: 'source', width: calcColumn(100, 1080) },
             { title: '浏览量', key: 'browse', width: calcColumn(100, 1080) },
             { title: '排序号', key: 'order', width: calcColumn(100, 1080) },
@@ -110,10 +110,8 @@ export default defineComponent({
                     <n-tooltip trigger="hover">
                         {{
                             trigger: () => {
-                                return divineSpine(row.source[0].name, {
-                                    bordered: false,
-                                    color: { color: row.source[0].color }
-                                })
+                                const { name, color } = row.source[0]
+                                return divineSpine(name, { bordered: false, color: { color } })
                             },
                             default: () => (
                                 <n-space size={10}>
@@ -125,26 +123,6 @@ export default defineComponent({
                         }}
                     </n-tooltip>
                 ),
-                // url: () => (
-                //     <n-tag
-                //         bordered={false}
-                //         type="info"
-                //         size="small"
-                //         class="naive-customize"
-                //         style={online.value}
-                //         onClick={() => onCater(row.url)}
-                //     >
-                //         {{ default: () => '复制图片地址' }}
-                //     </n-tag>
-                // ),
-                // type: () => {
-                //     const u = typeOptions.value.find(x => x.value === row.type)
-                //     return (
-                //         <n-tag bordered={false} type={u?.type} size="small" style={online.value}>
-                //             {{ default: () => u?.label?.replace(/^\S/, s => s.toUpperCase()) }}
-                //         </n-tag>
-                //     )
-                // },
                 status: () => onlineColumn(row.status),
                 command: () => chunkColumn<IArticle>({ row, native: ['delete'], onSelecter })
             }
@@ -157,15 +135,6 @@ export default defineComponent({
                 <AppContainer class="app-pipe" space="12px">
                     <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
                         <div class="app-inline space-660">
-                            <n-form-item>
-                                {/**<n-select
-                                    v-model:value={state.source}
-                                    clearable
-                                    options={typeOptions.value}
-                                    placeholder="图片类型"
-                                    style={{ width: '150px' }}
-                                />**/}
-                            </n-form-item>
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.status}

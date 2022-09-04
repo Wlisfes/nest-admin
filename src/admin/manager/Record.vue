@@ -13,8 +13,8 @@ export default defineComponent({
         const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IRecord>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
-            { title: '名称', key: 'name', ellipsis: { tooltip: true } },
-            { title: '描述', key: 'description', ellipsis: { tooltip: true } },
+            { title: '名称', key: 'name', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
+            { title: '描述', key: 'description', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '标签', key: 'source', width: calcColumn(100, 1080) },
             { title: '排序号', key: 'order', width: calcColumn(100, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
@@ -24,7 +24,7 @@ export default defineComponent({
         const { state, fetchUpdate } = useSource<IRecord, { name: string | null; source: number | null }>(
             {
                 immediate: true,
-                init: ({ page, size, status, name, source }) => httpColumnMinute({ page, size, status, source })
+                init: ({ page, size, status, name, source }) => httpColumnMinute({ page, size, status, name, source })
             },
             { name: null, source: null }
         )
