@@ -1,4 +1,5 @@
-import { type DropdownOption, NTag, NText, NButtonGroup, NButton, NDivider, NDropdown } from 'naive-ui'
+import type { DropdownOption, TagProps } from 'naive-ui'
+import { NTag, NText, NButtonGroup, NButton, NDivider, NDropdown } from 'naive-ui'
 import { h, ref, computed, CSSProperties } from 'vue'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
@@ -21,11 +22,6 @@ type IColumn<T> = {
 export function useColumn<R = any>(props?: IColumn<R>) {
     const { vars } = useProvider()
     const { Icon, compute } = useRxicon()
-    const options = ref<Array<IOption | DropdownOption>>([
-        { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
-        { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
-        { label: '重置密码', key: 'reset', icon: 'ReloadOutlined', color: '#f5222d' }
-    ])
     const online = computed<CSSProperties>(() => ({ cursor: 'pointer', height: '24px', userSelect: 'none' }))
 
     /**计算列百分比**/
@@ -35,9 +31,13 @@ export function useColumn<R = any>(props?: IColumn<R>) {
 
     /**操作列**/
     const chunkColumn = <T,>({ row, native, onSelecter }: ICommand<T>) => {
-        const nativeOption = computed(() => {
-            return native.map(key => options.value.find(x => key === x.key))
-        })
+        const options: Array<IOption | DropdownOption> = [
+            { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
+            { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
+            { label: '重置密码', key: 'reset', icon: 'ReloadOutlined', color: '#f5222d' }
+        ]
+        const nativeOption = computed(() => native.map(key => options.find(x => key === x.key)))
+
         return (
             <NButtonGroup>
                 <NDropdown
@@ -78,38 +78,49 @@ export function useColumn<R = any>(props?: IColumn<R>) {
         )
     }
 
-    /**状态列**/
-    const onlineColumn = (status: number, t?: unknown, style?: CSSProperties) => {
-        const BaseColumn = {
-            0: (text?: unknown) => {
-                const { disableBackColor: color, disableTextColor, disableBorderColor } = vars.value
-                return (
-                    <NTag
-                        size="small"
-                        color={{ color, textColor: disableTextColor, borderColor: disableBorderColor }}
-                        style={{ ...online.value, ...style }}
-                        v-slots={{ default: () => text ?? '禁用' }}
-                    ></NTag>
-                )
+    /**自定义类别标签**/
+    const divineSpine = (value: string, tagProps: TagProps, style?: CSSProperties) => {
+        return h(
+            NTag,
+            {
+                ...tagProps,
+                style: { ...online.value, ...style },
+                color: { textColor: '#ffffff', ...tagProps.color }
             },
-            1: (text?: unknown) => {
-                const { enableBackColor, enableTextColor, enableBorderColor } = vars.value
-                return (
-                    <NTag
-                        size="small"
-                        color={{ color: enableBackColor, textColor: enableTextColor, borderColor: enableBorderColor }}
-                        style={{ ...online.value, ...style }}
-                        v-slots={{ default: () => text ?? '启用' }}
-                    ></NTag>
-                )
+            { default: () => value }
+        )
+    }
+
+    /**状态列**/
+    const onlineColumn = (status: number, value?: any, style?: CSSProperties) => {
+        const { disableBackColor, disableTextColor, disableBorderColor } = vars.value
+        const { enableBackColor, enableTextColor, enableBorderColor } = vars.value
+        const __BASE__ = {
+            0: {
+                value: '禁用',
+                color: { color: disableBackColor, textColor: disableTextColor, borderColor: disableBorderColor }
+            },
+            1: {
+                value: '启用',
+                color: { color: enableBackColor, textColor: enableTextColor, borderColor: enableBorderColor }
+            },
+            2: {
+                value: '删除',
+                color: { color: disableBackColor, textColor: disableTextColor, borderColor: disableBorderColor }
             }
         }
+        const node = __BASE__[status as keyof typeof __BASE__]
 
-        return BaseColumn[status as keyof typeof BaseColumn]?.(t) ?? divineColumn(status)
+        if (!node ?? value ?? true) {
+            return divineColumn(value)
+        } else {
+            return divineSpine(node.value ?? value, { size: 'small', color: node.color }, style)
+        }
     }
 
     return {
         online,
+        divineSpine,
         divineColumn,
         onlineColumn,
         chunkColumn,
