@@ -30,40 +30,28 @@ export const authRoutes: RouteColumn[] = [
         ]
     },
     {
-        path: '/admin/compute',
+        path: '/admin/manager',
         meta: { title: '归档中心', icon: 'RadarChartOutlined', login: true },
         component: Layout,
-        redirect: '/admin/compute/record',
+        redirect: '/admin/manager/record',
         children: [
             {
-                path: '/admin/compute/record',
-                name: 'Record',
-                meta: { title: '收录管理', icon: 'TrophyOutlined', route: true, login: true },
-                component: () => import('@/admin/compute/Home.vue')
-            },
-            {
-                path: '/admin/compute/article',
+                path: '/admin/manager/article',
                 name: 'Article',
                 meta: { title: '文章管理', icon: 'WalletOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/manager/Article.vue')
             },
             {
-                path: '/admin/compute/article-create',
-                name: 'ArticleCreate',
-                meta: { title: '新增文章', hidden: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                path: '/admin/manager/record',
+                name: 'Record',
+                meta: { title: '收录管理', icon: 'TrophyOutlined', route: true, login: true },
+                component: () => import('@/admin/manager/Record.vue')
             },
             {
-                path: '/admin/compute/article-update',
-                name: 'ArticleUpdate',
-                meta: { title: '修改文章', hidden: true, login: true },
-                component: () => import('@/admin/Home.vue')
-            },
-            {
-                path: '/admin/compute/source',
+                path: '/admin/manager/source',
                 name: 'ChiveSource',
                 meta: { title: '标签管理', icon: 'TagOutlined', route: true, login: true },
-                component: () => import('@/admin/Home.vue')
+                component: () => import('@/admin/manager/Source.vue')
             }
         ]
     },
