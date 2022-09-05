@@ -7,7 +7,7 @@ interface ISource<T> {
     size: number
     total: number
     loading: boolean
-    status: number | null
+    status: number | null | undefined
     dataSource: Array<T>
 }
 interface IResponse<T = Object> extends AResponse {

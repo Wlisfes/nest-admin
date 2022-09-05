@@ -1,8 +1,9 @@
 <script lang="tsx">
-import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
+import type { DataTableBaseColumn } from 'naive-ui'
+import type { ISource, IArticle } from '@/interface/api/http-manager'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpCutoverPoster, httpDeletePoster, httpColumnArticle, httpColumnCloudSource } from '@/api'
+import { httpRowSource, httpRowArticle, Parameter } from '@/api/service-manager'
 import { useSource } from '@/hooks/hook-source'
 import { useRequest } from '@/hooks/hook-request'
 import { useColumn } from '@/hooks/hook-column'
@@ -10,8 +11,6 @@ import { useColumn } from '@/hooks/hook-column'
 export default defineComponent({
     name: 'Article',
     setup() {
-        const dialog = useDialog()
-        const notice = useNotification()
         const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IArticle>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
@@ -21,77 +20,17 @@ export default defineComponent({
             { title: '排序号', key: 'order', width: calcColumn(100, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
+            { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
         ])
-        const { state, setState, fetchUpdate } = useSource<IArticle, { title: string | null; source: number | null }>({
+        const { state, fetchUpdate } = useSource<IArticle, Parameter>({
             immediate: true,
             props: { title: null, source: null },
-            init: ({ page, size, status, title, source }) => httpColumnArticle({ page, size, status, title, source })
+            init: ({ page, size, status, title, source }) => httpRowArticle({ page, size, status, title, source })
         })
-        const { node } = useRequest<ICloudSource>({
+        const { node: source } = useRequest<ISource>({
             immediate: true,
-            init: () => httpColumnCloudSource({ page: 1, size: 100 })
+            init: () => httpRowSource({ page: 1, size: 100 })
         })
-
-        /**修改图床状态**/
-        const fetchCutoverPoster = (id: number) => {
-            setState({ loading: true }).then(() => {
-                try {
-                    httpCutoverPoster({ id }).then(({ data }) => {
-                        fetchUpdate({}, () => {
-                            notice.success({ content: data.message, duration: 2000 })
-                        })
-                    })
-                } catch (e) {
-                    setState({ loading: false })
-                }
-            })
-        }
-
-        /**删除图床**/
-        const fetchDeletePoster = (id: number) => {
-            const e = dialog.warning({
-                title: '确定要删除吗？',
-                positiveText: '确定',
-                negativeText: '取消',
-                negativeButtonProps: { type: 'success', size: 'medium', ghost: false, class: 'naive-customize' } as BU,
-                positiveButtonProps: { type: 'error', size: 'medium', class: 'naive-customize' } as BU,
-                style: {
-                    minHeight: '160px',
-                    padding: '24px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    margin: '100px auto auto'
-                },
-                closable: false,
-                onPositiveClick: () => {
-                    return new Promise(resolve => {
-                        try {
-                            e.loading = true
-                            httpDeletePoster({ id }).then(({ data }) => {
-                                setState({ loading: true }).then(() => {
-                                    resolve(true)
-                                    fetchUpdate({}, () => {
-                                        notice.success({ content: data.message, duration: 2000 })
-                                    })
-                                })
-                            })
-                        } catch (e) {
-                            resolve(true)
-                        }
-                    })
-                }
-            })
-        }
-
-        const onSelecter = (key: string, row: IArticle) => {
-            if (key === 'delete') {
-                fetchDeletePoster(row.id)
-            } else {
-                fetchCutoverPoster(row.id)
-            }
-        }
 
         const columnNative = (value: unknown, row: IArticle, column: DataTableBaseColumn) => {
             const BaseNative = {
@@ -124,7 +63,7 @@ export default defineComponent({
                     </n-tooltip>
                 ),
                 status: () => onlineColumn(row.status),
-                command: () => chunkColumn<IArticle>({ row, native: ['delete'], onSelecter })
+                command: () => chunkColumn<IArticle>({ row, native: ['delete'] })
             }
 
             return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
@@ -138,8 +77,9 @@ export default defineComponent({
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.source}
+                                    options={source.value?.list.map(x => ({ label: x.name, value: x.id }))}
                                     clearable
-                                    options={node.value?.list.map(x => ({ label: x.name, value: x.id }))}
+                                    filterable
                                     placeholder="请选择状态"
                                     style={{ width: '150px' }}
                                     onUpdateValue={fetchUpdate}
@@ -202,7 +142,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IPoster) => row.id}
+                        row-key={(row: IArticle) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={columnNative}
