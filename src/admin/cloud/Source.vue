@@ -18,13 +18,11 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<ICloudSource, { name?: string }>(
-            {
-                immediate: true,
-                init: ({ page, size, status, name }) => nodeColumnCloudSource({ page, size, status, name })
-            },
-            { name: undefined }
-        )
+        const { state, fetchUpdate } = useSource<ICloudSource, { name?: string }>({
+            immediate: true,
+            props: { name: undefined },
+            init: ({ page, size, status, name }) => nodeColumnCloudSource({ page, size, status, name })
+        })
 
         const render = (value: unknown, row: ICloudSource, column: DataTableBaseColumn) => {
             const BaseNative = {

@@ -1,18 +1,17 @@
 <script lang="tsx">
 import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
-import { defineComponent, ref, Fragment } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnPoster, httpCutoverPoster, httpDeletePoster, httpColumnArticle } from '@/api'
+import { httpCutoverPoster, httpDeletePoster, httpColumnArticle } from '@/api'
 import { useSource } from '@/hooks/hook-source'
+import { useRequest } from '@/hooks/hook-request'
 import { useColumn } from '@/hooks/hook-column'
-import { useClipboard } from '@/hooks/hook-super'
 
 export default defineComponent({
     name: 'Article',
     setup() {
         const dialog = useDialog()
         const notice = useNotification()
-        const { onCater } = useClipboard()
         const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IArticle>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
@@ -24,14 +23,11 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, setState, fetchUpdate } = useSource<IArticle, { title: string | null; source: number | null }>(
-            {
-                immediate: true,
-                init: ({ page, size, status, title, source }) =>
-                    httpColumnArticle({ page, size, status, title, source })
-            },
-            { title: null, source: null }
-        )
+        const { state, setState, fetchUpdate } = useSource<IArticle, { title: string | null; source: number | null }>({
+            immediate: true,
+            props: { title: null, source: null },
+            init: ({ page, size, status, title, source }) => httpColumnArticle({ page, size, status, title, source })
+        })
 
         /**修改图床状态**/
         const fetchCutoverPoster = (id: number) => {
@@ -134,14 +130,25 @@ export default defineComponent({
             return (
                 <AppContainer class="app-pipe" space="12px">
                     <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
-                        <div class="app-inline space-660">
+                        <div class="app-inline space-580">
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.status}
                                     clearable
                                     options={['已禁用', '已启用', '已删除'].map((x, v) => ({ label: x, value: v }))}
-                                    placeholder="图片状态"
+                                    placeholder="请选择状态"
                                     style={{ width: '150px' }}
+                                    onUpdateValue={fetchUpdate}
+                                />
+                            </n-form-item>
+                        </div>
+                        <div class="app-inline space-580">
+                            <n-form-item>
+                                <n-input
+                                    v-model:value={state.title}
+                                    clearable
+                                    placeholder="请输入名称、描述"
+                                    style={{ width: '260px' }}
                                 />
                             </n-form-item>
                         </div>

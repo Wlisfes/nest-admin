@@ -19,13 +19,11 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<ICloud, { title?: string }>(
-            {
-                immediate: true,
-                init: ({ page, size, status, title }) => httpCloudMedia({ page, size, status, title })
-            },
-            { title: undefined }
-        )
+        const { state, fetchUpdate } = useSource<ICloud, { title?: string }>({
+            immediate: true,
+            props: { title: undefined },
+            init: ({ page, size, status, title }) => httpCloudMedia({ page, size, status, title })
+        })
 
         const render = (value: unknown, row: ICloud, column: DataTableBaseColumn) => {
             const BaseNative = {

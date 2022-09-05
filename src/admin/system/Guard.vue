@@ -18,13 +18,11 @@ export default defineComponent({
             { title: '守卫状态', key: 'status', width: calcColumn(160, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IGuard, { name: string }>(
-            {
-                immediate: true,
-                init: ({ page, size, name, status }) => httpColumnGuard({ page, size, name, status })
-            },
-            { name: '' }
-        )
+        const { state, fetchUpdate } = useSource<IGuard, { name: string }>({
+            immediate: true,
+            props: { name: '' },
+            init: ({ page, size, name, status }) => httpColumnGuard({ page, size, name, status })
+        })
 
         const render = (value: unknown, row: IGuard, column: DataTableBaseColumn) => {
             const BaseNative = {

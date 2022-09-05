@@ -18,13 +18,11 @@ export default defineComponent({
             { title: '状态', key: 'status', width: calcColumn(160, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IAction, { name: string }>(
-            {
-                immediate: true,
-                init: ({ page, size }) => httpColumnAction({ page, size })
-            },
-            { name: '' }
-        )
+        const { state, fetchUpdate } = useSource<IAction, { name: string }>({
+            immediate: true,
+            props: { name: '' },
+            init: ({ page, size }) => httpColumnAction({ page, size })
+        })
 
         const render = (value: unknown, row: IAction, column: DataTableBaseColumn) => {
             const BaseNative = {

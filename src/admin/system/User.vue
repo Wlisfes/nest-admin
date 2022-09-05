@@ -25,15 +25,13 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, setState, fetchUpdate } = useSource<IUser, IUserQuery>(
-            {
-                immediate: true,
-                init: ({ page, size, status, primary, keyword }) => {
-                    return httpColumnUser({ page, size, status, primary, keyword })
-                }
-            },
-            { primary: null, keyword: null, roles: [] }
-        )
+        const { state, setState, fetchUpdate } = useSource<IUser, IUserQuery>({
+            immediate: true,
+            props: { primary: null, keyword: null, roles: [] },
+            init: ({ page, size, status, primary, keyword }) => {
+                return httpColumnUser({ page, size, status, primary, keyword })
+            }
+        })
 
         /**角色列表**/
         const fetchColumnRole = async () => {

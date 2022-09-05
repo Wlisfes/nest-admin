@@ -21,13 +21,11 @@ export default defineComponent({
             { title: '状态', key: 'status', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IRecord, { name: string | null; source: number | null }>(
-            {
-                immediate: true,
-                init: ({ page, size, status, name, source }) => httpColumnMinute({ page, size, status, name, source })
-            },
-            { name: null, source: null }
-        )
+        const { state, fetchUpdate } = useSource<IRecord, { name: string | null; source: number | null }>({
+            immediate: true,
+            props: { name: null, source: null },
+            init: ({ page, size, status, name, source }) => httpColumnMinute({ page, size, status, name, source })
+        })
 
         const fetchCreate = () => {}
 

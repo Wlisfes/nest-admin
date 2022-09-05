@@ -29,13 +29,11 @@ export default defineComponent({
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080) }
         ])
-        const { state, setState, fetchUpdate } = useSource<IPoster, { type: number | null }>(
-            {
-                immediate: true,
-                init: ({ page, size, status, type }) => httpColumnPoster({ page, size, status, type })
-            },
-            { type: null }
-        )
+        const { state, setState, fetchUpdate } = useSource<IPoster, { type: number | null }>({
+            immediate: true,
+            props: { type: null },
+            init: ({ page, size, status, type }) => httpColumnPoster({ page, size, status, type })
+        })
 
         /**修改图床状态**/
         const fetchCutoverPoster = (id: number) => {

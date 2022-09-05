@@ -1,3 +1,4 @@
+import type { AResponse } from '@/axios'
 import { reactive, toRefs, nextTick, type UnwrapNestedRefs } from 'vue'
 import { initMounte } from '@/utils/utils-tool'
 
@@ -9,20 +10,17 @@ interface ISource<T> {
     status: number | null
     dataSource: Array<T>
 }
-interface FNource<T, R> {
+interface IResponse<T = Object> extends AResponse {
+    data: { list: Array<T>; total: number; page: number; size: number }
+}
+interface IOption<T, R> {
+    props?: Partial<ISource<T> & R>
     immediate?: Boolean
     init: (e: UnwrapNestedRefs<ISource<T> & R>) => Promise<IResponse<T>>
 }
-interface IResponse<T = Object> {
-    data: { list: Array<T>; total: number }
-    timestamp: string
-    message: string
-    code: number
-    url?: string
-    method?: string
-}
 
-export function useSource<T, R extends Object>(fn: FNource<T, R>, props?: Partial<ISource<T> & R>) {
+export function useSource<T, R extends Object>(option: IOption<T, R>) {
+    const { props, immediate, init } = option
     const state = reactive<ISource<T> & R>(
         Object.assign({
             ...props,
@@ -52,7 +50,7 @@ export function useSource<T, R extends Object>(fn: FNource<T, R>, props?: Partia
         return new Promise(async (resolve, reject) => {
             try {
                 await setState({ loading: true } as never)
-                const { data } = await fn.init(state)
+                const { data } = await init(state)
                 setState({
                     total: data.total,
                     dataSource: data.list || [],
@@ -82,7 +80,7 @@ export function useSource<T, R extends Object>(fn: FNource<T, R>, props?: Partia
     }
 
     initMounte(() => {
-        if (fn.immediate) {
+        if (immediate) {
             fetchSource()
         }
     })
