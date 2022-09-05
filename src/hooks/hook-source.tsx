@@ -80,14 +80,12 @@ export function useSource<T, R extends Object>(option: IOption<T, R>) {
     }
 
     initMounte(() => {
-        if (immediate) {
-            fetchSource()
-        }
+        immediate && fetchSource()
     })
 
     return {
-        state,
         ...toRefs(state),
+        state,
         setState,
         fetchSource,
         fetchUpdate

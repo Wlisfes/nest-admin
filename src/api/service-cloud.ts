@@ -21,7 +21,7 @@ export function httpCloudMedia(params: { page: number; size: number; status?: nu
 }
 
 /**视频标签列表**/
-export function nodeColumnCloudSource(params: { page: number; size: number; status?: number | null; name?: string }) {
+export function httpColumnCloudSource(params: { page: number; size: number; status?: number | null; name?: string }) {
     return request<ICloudSource>({
         url: `/api/cloud-source/list-node`,
         method: 'GET',

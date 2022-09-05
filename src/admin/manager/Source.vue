@@ -4,7 +4,7 @@ import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { nodeColumnCloudSource } from '@/api'
+import { httpColumnCloudSource } from '@/api'
 
 export default defineComponent({
     name: 'Source',
@@ -21,7 +21,7 @@ export default defineComponent({
         const { state, fetchUpdate } = useSource<ICloudSource, { name?: string }>({
             immediate: true,
             props: { name: undefined },
-            init: ({ page, size, status, name }) => nodeColumnCloudSource({ page, size, status, name })
+            init: ({ page, size, status, name }) => httpColumnCloudSource({ page, size, status, name })
         })
 
         const render = (value: unknown, row: ICloudSource, column: DataTableBaseColumn) => {

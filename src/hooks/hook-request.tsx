@@ -1,9 +1,9 @@
-import type { AResponse } from '@/axios'
 import { reactive, toRefs, nextTick, type UnwrapNestedRefs } from 'vue'
+import { type AResponse } from '@/axios'
 import { initMounte } from '@/utils/utils-tool'
 
 interface IUResponse<T> extends AResponse {
-    data: { list: Array<T>; total: number; page: number; size: number }
+    data: T
 }
 interface ISource<T> {
     loading: boolean
@@ -16,7 +16,13 @@ interface IRequest<T> {
 }
 
 export function useRequest<T extends Object>(option: IRequest<T>) {
-    const state = reactive<ISource<T>>(Object.create({ ...option.props }))
+    const state = reactive<ISource<T>>(
+        Object.assign({
+            ...option.props,
+            node: option.props?.node,
+            loading: option.props?.loading
+        })
+    )
 
     const setState = (parameter: Partial<ISource<T>>, handler?: (e: typeof state) => void) => {
         return new Promise(resolve => {
@@ -36,11 +42,7 @@ export function useRequest<T extends Object>(option: IRequest<T>) {
             try {
                 await setState({ loading: true } as never)
                 const { data } = await option.init(state)
-                setState({
-                    total: data.total,
-                    dataSource: data.list || [],
-                    loading: false
-                } as never).then(() => {
+                setState({ node: data, loading: false }).then(() => {
                     handler?.(data)
                     resolve(data)
                 })

@@ -2,7 +2,7 @@
 import { useDialog, useNotification, type DataTableBaseColumn, type ButtonProps as BU } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpCutoverPoster, httpDeletePoster, httpColumnArticle } from '@/api'
+import { httpCutoverPoster, httpDeletePoster, httpColumnArticle, httpColumnCloudSource } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useRequest } from '@/hooks/hook-request'
 import { useColumn } from '@/hooks/hook-column'
@@ -27,6 +27,10 @@ export default defineComponent({
             immediate: true,
             props: { title: null, source: null },
             init: ({ page, size, status, title, source }) => httpColumnArticle({ page, size, status, title, source })
+        })
+        const { node } = useRequest<ICloudSource>({
+            immediate: true,
+            init: () => httpColumnCloudSource({ page: 1, size: 100 })
         })
 
         /**修改图床状态**/
@@ -130,7 +134,17 @@ export default defineComponent({
             return (
                 <AppContainer class="app-pipe" space="12px">
                     <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
-                        <div class="app-inline space-580">
+                        <div class="app-inline space-660">
+                            <n-form-item>
+                                <n-select
+                                    v-model:value={state.source}
+                                    clearable
+                                    options={node.value?.list.map(x => ({ label: x.name, value: x.id }))}
+                                    placeholder="请选择状态"
+                                    style={{ width: '150px' }}
+                                    onUpdateValue={fetchUpdate}
+                                />
+                            </n-form-item>
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.status}
@@ -148,13 +162,18 @@ export default defineComponent({
                                     v-model:value={state.title}
                                     clearable
                                     placeholder="请输入名称、描述"
-                                    style={{ width: '260px' }}
+                                    style={{ width: '250px' }}
                                 />
                             </n-form-item>
                         </div>
                         <n-form-item>
                             <n-button type="info" secondary onClick={() => fetchUpdate({ page: 1, size: 10 })}>
                                 查 找
+                            </n-button>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-button type="success" secondary>
+                                新 增
                             </n-button>
                         </n-form-item>
                         <n-form-item>
@@ -166,11 +185,6 @@ export default defineComponent({
                                 }}
                             >
                                 重 置
-                            </n-button>
-                        </n-form-item>
-                        <n-form-item>
-                            <n-button type="success" secondary>
-                                新 增
                             </n-button>
                         </n-form-item>
                         <n-form-item>
