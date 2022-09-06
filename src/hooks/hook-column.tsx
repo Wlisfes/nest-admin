@@ -1,7 +1,7 @@
-import type { DropdownOption, TagProps, ImageProps } from 'naive-ui'
+import type { DropdownOption, TagProps, ImageProps, PopoverProps } from 'naive-ui'
 import type { IProvider } from '@/interface/api/http-provider'
-import { NTag, NText, NButtonGroup, NButton, NDivider, NDropdown, NImage, NSkeleton } from 'naive-ui'
-import { h, ref, computed, CSSProperties } from 'vue'
+import { NTag, NText, NButtonGroup, NButton, NDivider, NDropdown, NImage, NSkeleton, NTooltip, NSpace } from 'naive-ui'
+import { h, ref, computed, CSSProperties, VNode } from 'vue'
 import { UScale } from '@/components/global'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
@@ -21,7 +21,7 @@ type IColumn<T> = {
     dataSource?: Array<T>
 }
 
-export function useColumn<R = any>(props?: IColumn<R>) {
+export function useColumn<R = any>(option?: IColumn<R>) {
     const { vars } = useProvider()
     const { Icon, compute } = useRxicon()
     const online = computed<CSSProperties>(() => ({ cursor: 'pointer', height: '24px', userSelect: 'none' }))
@@ -32,7 +32,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**操作列**/
-    const chunkColumn = <T,>({ row, native, onSelecter }: ICommand<T>) => {
+    const chunkColumn = <T,>({ row, native, onSelecter }: ICommand<T>): VNode => {
         const options: Array<IOption | DropdownOption> = [
             { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
             { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
@@ -40,7 +40,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
         ]
         const nativeOption = computed(() => native.map(key => options.find(x => key === x.key)))
 
-        return (
+        return h(
             <NButtonGroup>
                 <NDropdown
                     options={nativeOption.value as Array<DropdownOption>}
@@ -70,10 +70,11 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**空占位列**/
-    const divineColumn = (value: unknown, style?: CSSProperties) => {
-        return ![undefined, null, ''].includes(value as never) ? (
-            value
-        ) : (
+    const divineColumn = (value: unknown, style?: CSSProperties): VNode => {
+        if (![undefined, null, ''].includes(value as never)) {
+            return h(<NText>{value}</NText>)
+        }
+        return h(
             <div style={{ display: 'flex', ...style }}>
                 {h(Icon, { size: 20, depth: 3, component: compute('DashOutlined') })}
             </div>
@@ -81,7 +82,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**自定义类别标签**/
-    const divineSpine = (value: string, tagProps: TagProps, style?: CSSProperties) => {
+    const divineSpine = (value: string, tagProps: TagProps, style?: CSSProperties): VNode => {
         return h(
             NTag,
             {
@@ -95,8 +96,8 @@ export function useColumn<R = any>(props?: IColumn<R>) {
     }
 
     /**再封装图片组件**/
-    const divineImage = (imageProps: ImageProps & { scale: number }, style?: CSSProperties) => {
-        return (
+    const divineImage = (imageProps: ImageProps & { scale: number }, style?: CSSProperties): VNode => {
+        return h(
             <UScale maxWidth={imageProps.width} scale={imageProps.scale}>
                 {h(
                     NImage,
@@ -114,8 +115,36 @@ export function useColumn<R = any>(props?: IColumn<R>) {
         )
     }
 
+    /**标签展示、预览组件**/
+    const divineTooltip = <T extends { name: string; color: string }>(props: {
+        tags: Array<T>
+        tooltip?: PopoverProps
+        style?: CSSProperties
+    }): VNode => {
+        const { tooltip, tags, style } = props
+        if (tags?.length > 0) {
+            return h(
+                NTooltip,
+                { trigger: 'hover', ...tooltip },
+                {
+                    trigger: () => {
+                        return divineSpine(tags[0].name, { bordered: false, color: { color: tags[0].color } }, style)
+                    },
+                    default: () => (
+                        <NSpace size={10}>
+                            {tags.map(x => {
+                                return divineSpine(x.name, { bordered: false, color: { color: x.color } }, style)
+                            })}
+                        </NSpace>
+                    )
+                }
+            )
+        }
+        return divineColumn(null)
+    }
+
     /**状态列**/
-    const onlineColumn = (status: number, value?: any, style?: CSSProperties) => {
+    const onlineColumn = (status: number, value?: any, style?: CSSProperties): VNode => {
         const { disableBackColor, disableTextColor, disableBorderColor } = vars.value
         const { enableBackColor, enableTextColor, enableBorderColor } = vars.value
         const __BASE__ = {
@@ -146,6 +175,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
         divineSpine,
         divineColumn,
         divineImage,
+        divineTooltip,
         onlineColumn,
         chunkColumn,
         calcColumn

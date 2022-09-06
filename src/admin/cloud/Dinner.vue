@@ -1,48 +1,40 @@
 <script lang="tsx">
-import { type DataTableBaseColumn } from 'naive-ui'
+import type { DataTableBaseColumn } from 'naive-ui'
+import type { ISource, ICloud } from '@/interface/api/http-cloud'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpCloudDinner } from '@/api'
+import { httpRowDinner, Parameter } from '@/api/service-cloud'
 
 export default defineComponent({
     name: 'Dinner',
     setup() {
-        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ICloud>()
+        const scope = useColumn<ICloud>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
-            { title: '标题', key: 'title', ellipsis: { tooltip: true } },
-            { title: '描述', key: 'description', ellipsis: { tooltip: true } },
-            { title: '排序', key: 'order', width: calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
+            { title: '封面', key: 'cover', width: scope.calcColumn(125, 1080) },
+            { title: '标题', key: 'title', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
+            { title: '描述', key: 'description', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
+            { title: '标签', key: 'source', width: scope.calcColumn(100, 1080) },
+            { title: '排序', key: 'order', width: scope.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: scope.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: scope.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: scope.calcColumn(120, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<ICloud, { title?: string }>({
+        const { state, fetchUpdate } = useSource<ICloud, Parameter>({
             immediate: true,
             props: { title: undefined },
-            init: ({ page, size, status, title }) => httpCloudDinner({ page, size, status, title })
+            init: ({ page, size, status, title }) => httpRowDinner({ page, size, status, title })
         })
 
         const render = (value: unknown, row: ICloud, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                cover: () => (
-                    <u-scale max-width={96}>
-                        <n-image
-                            object-fit="cover"
-                            preview-src={row.cover}
-                            show-toolbar-tooltip
-                            src={`${row.cover}?x-oss-process=style/resize`}
-                            v-slots={{ placeholder: () => <n-skeleton width="100%" height="100%" /> }}
-                        />
-                    </u-scale>
-                ),
-                status: () => onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => chunkColumn<ICloud>({ row, native: ['edit', 'delete'] })
+            const __COLUME__ = {
+                cover: () => scope.divineImage({ src: row.cover, scale: 16 / 9, width: 96 }),
+                source: () => scope.divineTooltip<ISource>({ tags: row.source }),
+                status: () => scope.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => scope.chunkColumn<ICloud>({ row, native: ['edit', 'delete'] })
             }
-
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || scope.divineColumn(value)
         }
 
         return () => {
@@ -105,7 +97,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IAction) => row.id}
+                        row-key={(row: ICloud) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}
