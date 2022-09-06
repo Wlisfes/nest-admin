@@ -11,7 +11,7 @@ export interface ISource extends IProvider {
     list: Array<ISource>
 }
 
-export interface IRecord extends IProvider {
+export interface IMinute extends IProvider {
     id: number
     name: string
     cover: string
@@ -22,7 +22,7 @@ export interface IRecord extends IProvider {
     description: string
     source: Array<ISource>
     user: IUser
-    list: Array<IRecord>
+    list: Array<IMinute>
 }
 
 export interface IArticle extends IProvider {

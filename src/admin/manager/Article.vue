@@ -70,7 +70,7 @@ export default defineComponent({
                                     options={source.value?.list.map(x => ({ label: x.name, value: x.id }))}
                                     clearable
                                     filterable
-                                    placeholder="请选择状态"
+                                    placeholder="请选择标签"
                                     style={{ width: '150px' }}
                                     onUpdateValue={fetchUpdate}
                                 />

@@ -1,16 +1,19 @@
 <script lang="tsx">
-import { useNotification, type DataTableBaseColumn } from 'naive-ui'
+import type { DataTableBaseColumn } from 'naive-ui'
+import type { IMinute, ISource } from '@/interface/api/http-manager'
+import { useNotification } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnMinute } from '@/api'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
+import { useRequest } from '@/hooks/hook-request'
+import { httpRowSource, httpRowMinute, Parameter } from '@/api/service-manager'
 
 export default defineComponent({
     name: 'Record',
     setup() {
         const notice = useNotification()
-        const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IRecord>()
+        const { divineColumn, divineSpine, divineImage, onlineColumn, chunkColumn, calcColumn } = useColumn<IMinute>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
             { title: '名称', key: 'name', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
@@ -21,27 +24,21 @@ export default defineComponent({
             { title: '状态', key: 'status', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IRecord, { name: string | null; source: number | null }>({
+        const { state, fetchUpdate } = useSource<IMinute, Parameter>({
             immediate: true,
             props: { name: null, source: null },
-            init: ({ page, size, status, name, source }) => httpColumnMinute({ page, size, status, name, source })
+            init: ({ page, size, status, name, source }) => httpRowMinute({ page, size, status, name, source })
+        })
+        const { node: source } = useRequest<ISource>({
+            immediate: true,
+            init: () => httpRowSource({ page: 1, size: 200 })
         })
 
         const fetchCreate = () => {}
 
-        const render = (value: unknown, row: IRecord, column: DataTableBaseColumn) => {
-            const __BASE_COLUME__ = {
-                cover: () => (
-                    <u-scale max-width={96} scale={16 / 9}>
-                        <n-image
-                            object-fit="cover"
-                            preview-src={row.cover}
-                            show-toolbar-tooltip
-                            src={`${row.cover}?x-oss-process=style/resize`}
-                            v-slots={{ placeholder: () => <n-skeleton width="100%" height="100%" /> }}
-                        />
-                    </u-scale>
-                ),
+        const render = (value: unknown, row: IMinute, column: DataTableBaseColumn) => {
+            const __COLUME__ = {
+                cover: () => divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
                 source: () => {
                     return (
                         <n-tooltip trigger="hover">
@@ -62,17 +59,28 @@ export default defineComponent({
                     )
                 },
                 status: () => onlineColumn(row.status),
-                command: () => chunkColumn<IRecord>({ row, native: ['delete'] })
+                command: () => chunkColumn<IMinute>({ row, native: ['delete'] })
             }
 
-            return __BASE_COLUME__[column.key as keyof typeof __BASE_COLUME__]?.() || divineColumn(value)
+            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || divineColumn(value)
         }
 
         return () => {
             return (
                 <AppContainer class="app-pipe" space="12px">
                     <n-form class="is-customize" model={state} inline show-label={false} show-feedback={false}>
-                        <div class="app-inline space-580">
+                        <div class="app-inline space-660">
+                            <n-form-item>
+                                <n-select
+                                    v-model:value={state.source}
+                                    options={source.value?.list.map(x => ({ label: x.name, value: x.id }))}
+                                    clearable
+                                    filterable
+                                    placeholder="请选择标签"
+                                    style={{ width: '150px' }}
+                                    onUpdateValue={fetchUpdate}
+                                />
+                            </n-form-item>
                             <n-form-item>
                                 <n-select
                                     v-model:value={state.status}
@@ -103,7 +111,9 @@ export default defineComponent({
                             <n-button
                                 type="warning"
                                 secondary
-                                onClik={() => fetchUpdate({ page: 1, size: 10, status: null })}
+                                onClik={() => {
+                                    fetchUpdate({ page: 1, size: 10, status: null, source: null, name: null })
+                                }}
                             >
                                 重 置
                             </n-button>
@@ -128,7 +138,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IRecord) => row.id}
+                        row-key={(row: IMinute) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}
