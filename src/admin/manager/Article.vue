@@ -11,7 +11,7 @@ import { useColumn } from '@/hooks/hook-column'
 export default defineComponent({
     name: 'Article',
     setup() {
-        const { divineColumn, divineSpine, onlineColumn, chunkColumn, calcColumn } = useColumn<IArticle>()
+        const { divineColumn, divineSpine, divineImage, onlineColumn, chunkColumn, calcColumn } = useColumn<IArticle>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
             { title: '标题', key: 'title', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
@@ -34,17 +34,7 @@ export default defineComponent({
 
         const columnNative = (value: unknown, row: IArticle, column: DataTableBaseColumn) => {
             const BaseNative = {
-                cover: () => (
-                    <u-scale max-width={96} scale={16 / 9}>
-                        <n-image
-                            object-fit="cover"
-                            preview-src={row.cover}
-                            show-toolbar-tooltip
-                            src={`${row.cover}?x-oss-process=style/resize`}
-                            v-slots={{ placeholder: () => <n-skeleton width="100%" height="100%" /> }}
-                        />
-                    </u-scale>
-                ),
+                cover: () => divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
                 source: () => (
                     <n-tooltip trigger="hover">
                         {{

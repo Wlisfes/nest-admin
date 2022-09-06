@@ -3,11 +3,26 @@ import { IUser } from '@/interface/api/http-system'
 
 export interface ISource extends IProvider {
     id: number
+    icon: string
     name: string
     color: string
     order: number
     comment: string
     list: Array<ISource>
+}
+
+export interface IRecord extends IProvider {
+    id: number
+    name: string
+    cover: string
+    order: number
+    npm: string
+    url: string
+    github: string
+    description: string
+    source: Array<ISource>
+    user: IUser
+    list: Array<IRecord>
 }
 
 export interface IArticle extends IProvider {
@@ -18,7 +33,6 @@ export interface IArticle extends IProvider {
     html: string
     description: string | null
     url: string
-    status: number
     order: number
     browse: number
     comment: number

@@ -1,6 +1,8 @@
-import type { DropdownOption, TagProps } from 'naive-ui'
-import { NTag, NText, NButtonGroup, NButton, NDivider, NDropdown } from 'naive-ui'
+import type { DropdownOption, TagProps, ImageProps } from 'naive-ui'
+import type { IProvider } from '@/interface/api/http-provider'
+import { NTag, NText, NButtonGroup, NButton, NDivider, NDropdown, NImage, NSkeleton } from 'naive-ui'
 import { h, ref, computed, CSSProperties } from 'vue'
+import { UScale } from '@/components/global'
 import { Icons, useRxicon } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
 
@@ -84,10 +86,31 @@ export function useColumn<R = any>(props?: IColumn<R>) {
             NTag,
             {
                 ...tagProps,
+                size: tagProps.size ?? 'small',
                 style: { ...online.value, ...style },
                 color: { textColor: '#ffffff', ...tagProps.color }
             },
             { default: () => value }
+        )
+    }
+
+    /**再封装图片组件**/
+    const divineImage = (imageProps: ImageProps & { scale: number }, style?: CSSProperties) => {
+        return (
+            <UScale maxWidth={imageProps.width} scale={imageProps.scale}>
+                {h(
+                    NImage,
+                    {
+                        ...imageProps,
+                        style,
+                        objectFit: 'cover',
+                        showToolbarTooltip: true,
+                        previewSrc: imageProps.previewSrc ?? imageProps.src,
+                        src: imageProps.src + '?x-oss-process=style/resize'
+                    },
+                    { placeholder: () => <NSkeleton width="100%" height="100%" /> }
+                )}
+            </UScale>
         )
     }
 
@@ -122,6 +145,7 @@ export function useColumn<R = any>(props?: IColumn<R>) {
         online,
         divineSpine,
         divineColumn,
+        divineImage,
         onlineColumn,
         chunkColumn,
         calcColumn

@@ -1,45 +1,45 @@
 <script lang="tsx">
-import { type DataTableBaseColumn } from 'naive-ui'
+import type { DataTableBaseColumn } from 'naive-ui'
+import type { ISource } from '@/interface/api/http-manager'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
+import { httpRowSource, Parameter } from '@/api/service-manager'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpColumnCloudSource } from '@/api'
 
 export default defineComponent({
     name: 'Source',
     setup() {
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ICloudSource>()
+        const { divineColumn, divineSpine, divineImage, onlineColumn, chunkColumn, calcColumn } = useColumn<ISource>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'name', width: calcColumn(200, 1080) },
+            { title: '封面', key: 'icon', width: calcColumn(125, 1080) },
+            { title: '名称', key: 'name', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '备注', key: 'comment', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '排序', key: 'order', width: calcColumn(100, 1080) },
             { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
             { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
             { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<ICloudSource, { name?: string }>({
+        const { state, fetchUpdate } = useSource<ISource, Parameter>({
             immediate: true,
-            props: { name: undefined },
-            init: ({ page, size, status, name }) => httpColumnCloudSource({ page, size, status, name })
+            props: { name: null },
+            init: ({ page, size, status, name }) => httpRowSource({ page, size, status, name })
         })
 
-        const render = (value: unknown, row: ICloudSource, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                name: () => (
-                    <n-tag
-                        size="small"
-                        bordered={false}
-                        color={{ color: row.color, textColor: '#ffffff' }}
-                        style={online.value}
-                        v-slots={{ default: () => row.name }}
-                    ></n-tag>
-                ),
+        const render = (value: unknown, row: ISource, column: DataTableBaseColumn) => {
+            const __COLUME__ = {
+                icon: () => divineImage({ src: row.icon, width: 48, scale: 1 }),
+                name: () => {
+                    return divineSpine(row.name, {
+                        bordered: false,
+                        color: { color: row.color, textColor: '#ffffff' }
+                    })
+                },
                 status: () => onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => chunkColumn<ICloudSource>({ row, native: ['edit', 'delete'] })
+                command: () => chunkColumn<ISource>({ row, native: ['edit', 'delete'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || divineColumn(value)
         }
 
         return () => {
@@ -102,7 +102,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IAction) => row.id}
+                        row-key={(row: ISource) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}
