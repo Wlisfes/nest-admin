@@ -29,7 +29,12 @@ export default defineComponent({
         const render = (value: unknown, row: ISource, base: DataTableBaseColumn) => {
             const __COLUME__ = {
                 icon: () => column.divineImage({ src: row.icon, width: 48, scale: 1 }),
-                name: () => column.divineSpine(row.name, { bordered: false, color: { color: row.color } }),
+                name: () => {
+                    return column.divineSpine(row.name, {
+                        bordered: false,
+                        color: { color: row.color }
+                    })
+                },
                 status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
                 command: () => column.chunkColumn<ISource>({ row, native: ['edit', 'delete'] })
             }

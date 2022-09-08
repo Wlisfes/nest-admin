@@ -1,45 +1,43 @@
 <script lang="tsx">
-import { type DataTableBaseColumn } from 'naive-ui'
+import type { DataTableBaseColumn } from 'naive-ui'
+import type { ISource } from '@/interface/api/http-cloud'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { nodeColumnCloudSource } from '@/api'
+import { httpRowSource, Parameter } from '@/api/service-cloud'
 
 export default defineComponent({
     name: 'Source',
     setup() {
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ICloudSource>()
+        const column = useColumn<ISource>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'name', width: calcColumn(200, 1080) },
+            { title: '封面', key: 'name', width: column.calcColumn(200, 1080) },
             { title: '备注', key: 'comment', ellipsis: { tooltip: true } },
-            { title: '排序', key: 'order', width: calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
+            { title: '排序', key: 'order', width: column.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: column.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(120, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<ICloudSource, { name?: string }>({
+        const { state, fetchUpdate } = useSource<ISource, Parameter>({
             immediate: true,
             props: { name: undefined },
-            init: ({ page, size, status, name }) => nodeColumnCloudSource({ page, size, status, name })
+            init: ({ page, size, status, name }) => httpRowSource({ page, size, status, name })
         })
 
-        const render = (value: unknown, row: ICloudSource, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: ISource, base: DataTableBaseColumn) => {
             const BaseNative = {
-                name: () => (
-                    <n-tag
-                        size="small"
-                        bordered={false}
-                        color={{ color: row.color, textColor: '#ffffff' }}
-                        style={online.value}
-                        v-slots={{ default: () => row.name }}
-                    ></n-tag>
-                ),
-                status: () => onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => chunkColumn<ICloudSource>({ row, native: ['edit', 'delete'] })
+                name: () => {
+                    return column.divineSpine(row.name, {
+                        bordered: false,
+                        color: { color: row.color }
+                    })
+                },
+                status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => column.chunkColumn<ISource>({ row, native: ['edit', 'delete'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return BaseNative[base.key as keyof typeof BaseNative]?.() || column.divineColumn(value)
         }
 
         return () => {
@@ -102,7 +100,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IAction) => row.id}
+                        row-key={(row: ISource) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}

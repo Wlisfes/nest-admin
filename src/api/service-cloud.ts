@@ -5,6 +5,7 @@ export interface Parameter {
     id: number
     page: number
     size: number
+    name?: string | null
     status?: number | null
     type?: number | null
     title?: string | null
@@ -32,7 +33,7 @@ export function httpRowMedia(params: Pick<Parameter, 'page' | 'size' | 'status' 
 }
 
 /**视频标签列表**/
-export function httpColumnCloudSource(params: { page: number; size: number; status?: number | null; name?: string }) {
+export function httpRowSource(params: Pick<Parameter, 'page' | 'size' | 'status' | 'name'>) {
     return request<ISource>({
         url: `/api/cloud-source/list-node`,
         method: 'GET',
