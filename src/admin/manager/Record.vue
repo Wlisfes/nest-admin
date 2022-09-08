@@ -13,16 +13,16 @@ export default defineComponent({
     name: 'Record',
     setup() {
         const notice = useNotification()
-        const scope = useColumn<IMinute>()
+        const column = useColumn<IMinute>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'cover', width: scope.calcColumn(125, 1080) },
+            { title: '封面', key: 'cover', width: column.calcColumn(125, 1080) },
             { title: '名称', key: 'name', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '描述', key: 'description', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
-            { title: '标签', key: 'source', width: scope.calcColumn(100, 1080) },
-            { title: '排序号', key: 'order', width: scope.calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: scope.calcColumn(160, 1080) },
-            { title: '状态', key: 'status', width: scope.calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: scope.calcColumn(100, 1080), fixed: 'right' }
+            { title: '标签', key: 'source', width: column.calcColumn(100, 1080) },
+            { title: '排序号', key: 'order', width: column.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', width: column.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(100, 1080), fixed: 'right' }
         ])
         const { state, fetchUpdate } = useSource<IMinute, Parameter>({
             immediate: true,
@@ -36,15 +36,15 @@ export default defineComponent({
 
         const fetchCreate = () => {}
 
-        const render = (value: unknown, row: IMinute, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: IMinute, base: DataTableBaseColumn) => {
             const __COLUME__ = {
-                cover: () => scope.divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
-                source: () => scope.divineTooltip<ISource>({ tags: row.source }),
-                status: () => scope.onlineColumn(row.status),
-                command: () => scope.chunkColumn<IMinute>({ row, native: ['delete'] })
+                cover: () => column.divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
+                source: () => column.divineTooltip<ISource>({ tags: row.source }),
+                status: () => column.onlineColumn(row.status),
+                command: () => column.chunkColumn<IMinute>({ row, native: ['delete'] })
             }
 
-            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || scope.divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {

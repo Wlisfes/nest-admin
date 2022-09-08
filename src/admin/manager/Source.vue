@@ -10,15 +10,15 @@ import { useSource } from '@/hooks/hook-source'
 export default defineComponent({
     name: 'Source',
     setup() {
-        const scope = useColumn<ISource>()
+        const column = useColumn<ISource>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'icon', width: scope.calcColumn(125, 1080) },
+            { title: '封面', key: 'icon', width: column.calcColumn(125, 1080) },
             { title: '名称', key: 'name', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '备注', key: 'comment', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
-            { title: '排序', key: 'order', width: scope.calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: scope.calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: scope.calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: scope.calcColumn(120, 1080), fixed: 'right' }
+            { title: '排序', key: 'order', width: column.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: column.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(120, 1080), fixed: 'right' }
         ])
         const { state, fetchUpdate } = useSource<ISource, Parameter>({
             immediate: true,
@@ -26,15 +26,15 @@ export default defineComponent({
             init: ({ page, size, status, name }) => httpRowSource({ page, size, status, name })
         })
 
-        const render = (value: unknown, row: ISource, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: ISource, base: DataTableBaseColumn) => {
             const __COLUME__ = {
-                icon: () => scope.divineImage({ src: row.icon, width: 48, scale: 1 }),
-                name: () => scope.divineSpine(row.name, { bordered: false, color: { color: row.color } }),
-                status: () => scope.onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => scope.chunkColumn<ISource>({ row, native: ['edit', 'delete'] })
+                icon: () => column.divineImage({ src: row.icon, width: 48, scale: 1 }),
+                name: () => column.divineSpine(row.name, { bordered: false, color: { color: row.color } }),
+                status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => column.chunkColumn<ISource>({ row, native: ['edit', 'delete'] })
             }
 
-            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || scope.divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {

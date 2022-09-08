@@ -11,16 +11,16 @@ import { useColumn } from '@/hooks/hook-column'
 export default defineComponent({
     name: 'Article',
     setup() {
-        const scope = useColumn<IArticle>()
+        const column = useColumn<IArticle>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'cover', width: scope.calcColumn(125, 1080) },
+            { title: '封面', key: 'cover', width: column.calcColumn(125, 1080) },
             { title: '标题', key: 'title', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
-            { title: '标签', key: 'source', width: scope.calcColumn(100, 1080) },
-            { title: '浏览量', key: 'browse', width: scope.calcColumn(100, 1080) },
-            { title: '排序号', key: 'order', width: scope.calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: scope.calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: scope.calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: scope.calcColumn(120, 1080), fixed: 'right' }
+            { title: '标签', key: 'source', width: column.calcColumn(100, 1080) },
+            { title: '浏览量', key: 'browse', width: column.calcColumn(100, 1080) },
+            { title: '排序号', key: 'order', width: column.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: column.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(120, 1080), fixed: 'right' }
         ])
         const { state, fetchUpdate } = useSource<IArticle, Parameter>({
             immediate: true,
@@ -32,15 +32,15 @@ export default defineComponent({
             init: () => httpRowSource({ page: 1, size: 100 })
         })
 
-        const columnNative = (value: unknown, row: IArticle, column: DataTableBaseColumn) => {
+        const columnNative = (value: unknown, row: IArticle, base: DataTableBaseColumn) => {
             const __COLUME__ = {
-                cover: () => scope.divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
-                source: () => scope.divineTooltip<ISource>({ tags: row.source }),
-                status: () => scope.onlineColumn(row.status),
-                command: () => scope.chunkColumn<IArticle>({ row, native: ['delete'] })
+                cover: () => column.divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
+                source: () => column.divineTooltip<ISource>({ tags: row.source }),
+                status: () => column.onlineColumn(row.status),
+                command: () => column.chunkColumn<IArticle>({ row, native: ['delete'] })
             }
 
-            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || scope.divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {

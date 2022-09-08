@@ -10,16 +10,16 @@ import { httpRowMedia, Parameter } from '@/api/service-cloud'
 export default defineComponent({
     name: 'Media',
     setup() {
-        const scope = useColumn<ICloud>()
+        const column = useColumn<ICloud>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'cover', width: scope.calcColumn(125, 1080) },
+            { title: '封面', key: 'cover', width: column.calcColumn(125, 1080) },
             { title: '标题', key: 'title', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
             { title: '描述', key: 'description', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
-            { title: '标签', key: 'source', width: scope.calcColumn(100, 1080) },
-            { title: '排序', key: 'order', width: scope.calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: scope.calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: scope.calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: scope.calcColumn(120, 1080), fixed: 'right' }
+            { title: '标签', key: 'source', width: column.calcColumn(100, 1080) },
+            { title: '排序', key: 'order', width: column.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: column.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(120, 1080), fixed: 'right' }
         ])
         const { state, fetchUpdate } = useSource<ICloud, Parameter>({
             immediate: true,
@@ -27,14 +27,14 @@ export default defineComponent({
             init: ({ page, size, status, title }) => httpRowMedia({ page, size, status, title })
         })
 
-        const render = (value: unknown, row: ICloud, column: DataTableBaseColumn) => {
+        const render = (value: unknown, row: ICloud, base: DataTableBaseColumn) => {
             const __COLUME__ = {
-                cover: () => scope.divineImage({ src: row.cover, scale: 16 / 9, width: 96 }),
-                source: () => scope.divineTooltip<ISource>({ tags: row.source }),
-                status: () => scope.onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => scope.chunkColumn<ICloud>({ row, native: ['edit', 'delete'] })
+                cover: () => column.divineImage({ src: row.cover, scale: 16 / 9, width: 96 }),
+                source: () => column.divineTooltip<ISource>({ tags: row.source }),
+                status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => column.chunkColumn<ICloud>({ row, native: ['edit', 'delete'] })
             }
-            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || scope.divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {
