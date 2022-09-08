@@ -33,14 +33,14 @@ export default defineComponent({
         })
 
         const columnNative = (value: unknown, row: IArticle, column: DataTableBaseColumn) => {
-            const BaseNative = {
+            const __COLUME__ = {
                 cover: () => scope.divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
                 source: () => scope.divineTooltip<ISource>({ tags: row.source }),
                 status: () => scope.onlineColumn(row.status),
                 command: () => scope.chunkColumn<IArticle>({ row, native: ['delete'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || scope.divineColumn(value)
+            return __COLUME__[column.key as keyof typeof __COLUME__]?.() || scope.divineColumn(value)
         }
 
         return () => {
