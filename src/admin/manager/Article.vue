@@ -11,16 +11,16 @@ import { useColumn } from '@/hooks/hook-column'
 export default defineComponent({
     name: 'Article',
     setup() {
-        const { divineColumn, divineSpine, divineImage, onlineColumn, chunkColumn, calcColumn } = useColumn<IArticle>()
+        const scope = useColumn<IArticle>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '封面', key: 'cover', width: calcColumn(125, 1080) },
+            { title: '封面', key: 'cover', width: scope.calcColumn(125, 1080) },
             { title: '标题', key: 'title', ellipsis: { tooltip: { contentStyle: { maxWidth: '450px' } } } },
-            { title: '标签', key: 'source', width: calcColumn(100, 1080) },
-            { title: '浏览量', key: 'browse', width: calcColumn(100, 1080) },
-            { title: '排序号', key: 'order', width: calcColumn(100, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(120, 1080), fixed: 'right' }
+            { title: '标签', key: 'source', width: scope.calcColumn(100, 1080) },
+            { title: '浏览量', key: 'browse', width: scope.calcColumn(100, 1080) },
+            { title: '排序号', key: 'order', width: scope.calcColumn(100, 1080) },
+            { title: '创建时间', key: 'createTime', width: scope.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: scope.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: scope.calcColumn(120, 1080), fixed: 'right' }
         ])
         const { state, fetchUpdate } = useSource<IArticle, Parameter>({
             immediate: true,
@@ -34,29 +34,13 @@ export default defineComponent({
 
         const columnNative = (value: unknown, row: IArticle, column: DataTableBaseColumn) => {
             const BaseNative = {
-                cover: () => divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
-                source: () => (
-                    <n-tooltip trigger="hover">
-                        {{
-                            trigger: () => {
-                                const { name, color } = row.source[0]
-                                return divineSpine(name, { bordered: false, color: { color } })
-                            },
-                            default: () => (
-                                <n-space size={10}>
-                                    {row.source.map(x => {
-                                        return divineSpine(x.name, { bordered: false, color: { color: x.color } })
-                                    })}
-                                </n-space>
-                            )
-                        }}
-                    </n-tooltip>
-                ),
-                status: () => onlineColumn(row.status),
-                command: () => chunkColumn<IArticle>({ row, native: ['delete'] })
+                cover: () => scope.divineImage({ src: row.cover, width: 96, scale: 16 / 9 }),
+                source: () => scope.divineTooltip<ISource>({ tags: row.source }),
+                status: () => scope.onlineColumn(row.status),
+                command: () => scope.chunkColumn<IArticle>({ row, native: ['delete'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return BaseNative[column.key as keyof typeof BaseNative]?.() || scope.divineColumn(value)
         }
 
         return () => {
