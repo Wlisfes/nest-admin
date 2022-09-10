@@ -7,4 +7,5 @@ export interface IPoster extends IProvider {
     url: string
     type: number
     user: IUser
+    list: Array<IPoster>
 }

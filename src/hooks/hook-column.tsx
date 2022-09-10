@@ -82,7 +82,7 @@ export function useColumn<R = any>(option?: IColumn<R>) {
     }
 
     /**自定义类别标签**/
-    const divineSpine = (value: string, tagProps: TagProps, style?: CSSProperties): VNode => {
+    const divineSpine = (value: unknown | string, tagProps: TagProps, style?: CSSProperties): VNode => {
         return h(
             NTag,
             {

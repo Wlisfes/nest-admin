@@ -17,7 +17,7 @@ export function httpRowPoster(params: Pick<Parameter, 'page' | 'size' | 'status'
 }
 
 /**修改图床状态**/
-export function httpPoster(params: Pick<Parameter, 'id'>) {
+export function httpPutPoster(params: Pick<Parameter, 'id'>) {
     return request<IPoster>({ url: `/api/poster/cutover`, method: 'PUT', data: params })
 }
 
