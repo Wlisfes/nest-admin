@@ -1,35 +1,36 @@
 <script lang="tsx">
-import { type DataTableBaseColumn } from 'naive-ui'
+import type { IRole } from '@/interface/api/http-system'
+import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpColumnRole } from '@/api'
+import { httpRowRole, Parameter } from '@/api/service-system'
 
 export default defineComponent({
     name: 'Role',
     setup() {
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IRole>()
+        const column = useColumn<IRole>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '角色名称', key: 'name', ellipsis: { tooltip: true } },
-            { title: '角色唯一标识', key: 'primary', width: calcColumn(240, 1080) },
-            { title: '角色备注', key: 'comment', width: calcColumn(240, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '角色状态', key: 'status', width: calcColumn(160, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
+            { title: '角色唯一标识', key: 'primary', width: column.calcColumn(240, 1080) },
+            { title: '角色备注', key: 'comment', width: column.calcColumn(240, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '角色状态', key: 'status', width: column.calcColumn(160, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IRole, Object>({
+        const { state, fetchUpdate } = useSource<IRole, Parameter>({
             immediate: true,
-            init: ({ page, size, status }) => httpColumnRole({ page, size, status })
+            init: ({ page, size, status }) => httpRowRole({ page, size, status })
         })
 
-        const render = (value: unknown, row: IRole, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                status: () => onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => chunkColumn<IRole>({ row, native: ['edit'] })
+        const render = (value: unknown, row: IRole, base: DataTableBaseColumn) => {
+            const __COLUME__ = {
+                status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => column.chunkColumn<IRole>({ row, native: ['edit'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {
@@ -82,7 +83,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IAction) => row.id}
+                        row-key={(row: IRole) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}
