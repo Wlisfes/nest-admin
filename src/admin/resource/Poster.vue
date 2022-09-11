@@ -4,7 +4,7 @@ import type { IPoster } from '@/interface/api/http-resource'
 import { useDialog, useNotification } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpRowPoster, httpPutPoster, httpDeletePoster, Parameter } from '@/api/service-resource'
+import { httpRowPoster, httpPutPoster, httpDeletePoster, Parameter, IOption } from '@/api/service-resource'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'
@@ -16,12 +16,6 @@ export default defineComponent({
         const notice = useNotification()
         const column = useColumn<IPoster>()
         const { onCater } = useClipboard()
-        const typeOptions = ref([
-            { label: 'avatar', value: 1, type: 'error' },
-            { label: 'upload', value: 2, type: 'success' },
-            { label: 'cover', value: 3, type: 'info' },
-            { label: 'photo', value: 4, type: 'warning' }
-        ])
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '图片预览', key: 'check', width: column.calcColumn(140, 1080) },
             { title: '图片类型', key: 'type', width: column.calcColumn(120, 1080) },
@@ -33,9 +27,18 @@ export default defineComponent({
         ])
         const { state, setState, fetchUpdate } = useSource<IPoster, Parameter>({
             immediate: true,
-            props: { type: null },
+            props: {
+                type: null,
+                option: [
+                    { label: 'avatar', value: 1, type: 'error', scale: 1, width: 54 },
+                    { label: 'upload', value: 2, type: 'success', scale: 1, width: 54 },
+                    { label: 'cover', value: 3, type: 'info', scale: 16 / 9, width: 96 },
+                    { label: 'photo', value: 4, type: 'warning', scale: 1, width: 54 }
+                ]
+            },
             init: ({ page, size, status, type }) => httpRowPoster({ page, size, status, type })
         })
+        const ineIter = (v: number) => state.option.find(x => x.value === v)
 
         /**修改图床状态**/
         const fetchPutPoster = (id: number) => {
@@ -103,24 +106,18 @@ export default defineComponent({
         }
 
         const columnNative = (value: unknown, row: IPoster, base: DataTableBaseColumn) => {
+            const ine = ineIter(row.type) as IOption
             const __COLUME__ = {
-                check: () => {
-                    return column.divineImage({
-                        src: row.url,
-                        width: row.type === 3 ? 96 : 54,
-                        scale: row.type === 3 ? 16 / 9 : 1
-                    })
-                },
+                check: () => column.divineImage({ src: row.url, width: ine.width, scale: ine.scale }),
                 url: () => (
                     <div onClick={() => onCater(row.url)}>
                         {column.divineSpine('复制图片地址', { type: 'info', color: { textColor: undefined } })}
                     </div>
                 ),
                 type: () => {
-                    const u = typeOptions.value.find(x => x.value === row.type)
                     return column.divineSpine(
-                        u?.label?.replace(/^\S/, s => s.toUpperCase()),
-                        { type: u?.type as never, color: { textColor: undefined } }
+                        ine.label.replace(/^\S/, s => s.toUpperCase()),
+                        { type: ine.type, color: { textColor: undefined } }
                     )
                 },
                 status: () => column.onlineColumn(row.status),
@@ -139,7 +136,7 @@ export default defineComponent({
                                 <n-select
                                     v-model:value={state.type}
                                     clearable
-                                    options={typeOptions.value}
+                                    options={state.option}
                                     placeholder="图片类型"
                                     style={{ width: '150px' }}
                                 />

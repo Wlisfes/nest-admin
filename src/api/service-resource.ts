@@ -1,12 +1,21 @@
 import type { IPoster } from '@/interface/api/http-resource'
 import { request } from '@/utils/utils-request'
 
+export interface IOption {
+    label: string
+    value: number
+    width: number
+    scale: number
+    type: 'error' | 'success' | 'info' | 'warning'
+}
+
 export interface Parameter {
     id: number
     page: number
     size: number
     url: string
     path: string
+    option: Array<IOption>
     status?: number | null
     type?: number | null
 }
