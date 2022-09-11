@@ -26,3 +26,19 @@ export interface IUser extends IProvider {
     role: Array<IRole>
     list: Array<IUser>
 }
+
+export interface IAction extends IProvider {
+    id: number
+    name: string
+    primary: string
+    comment: string
+    list: Array<IAction>
+}
+
+export interface IModule extends IProvider {
+    id: number
+    name: string
+    primary: string
+    comment: string
+    list: Array<IAction>
+}

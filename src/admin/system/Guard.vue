@@ -1,36 +1,36 @@
 <script lang="tsx">
+import type { IModule } from '@/interface/api/http-system'
 import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpColumnGuard } from '@/api'
+import { httpRowGuard, Parameter } from '@/api/service-system'
 
 export default defineComponent({
     name: 'Guard',
     setup() {
-        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IGuard>()
+        const column = useColumn<IModule>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '守卫名称', key: 'name', ellipsis: { tooltip: true } },
-            { title: '守卫标识', key: 'primary', width: calcColumn(240, 1080) },
-            { title: '守卫备注', key: 'comment', width: calcColumn(240, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '守卫状态', key: 'status', width: calcColumn(160, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
+            { title: '守卫标识', key: 'primary', width: column.calcColumn(240, 1080) },
+            { title: '守卫备注', key: 'comment', width: column.calcColumn(240, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '守卫状态', key: 'status', width: column.calcColumn(160, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IGuard, { name: string }>({
+        const { state, fetchUpdate } = useSource<IModule, Parameter>({
             immediate: true,
-            props: { name: '' },
-            init: ({ page, size, name, status }) => httpColumnGuard({ page, size, name, status })
+            init: ({ page, size, name, status }) => httpRowGuard({ page, size, name, status })
         })
 
-        const render = (value: unknown, row: IGuard, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                status: () => onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => chunkColumn<IGuard>({ row, native: ['edit'] })
+        const render = (value: unknown, row: IModule, base: DataTableBaseColumn) => {
+            const __COLOR__ = {
+                status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => column.chunkColumn<IModule>({ row, native: ['edit'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLOR__[base.key as keyof typeof __COLOR__]?.() || column.divineColumn(value)
         }
 
         return () => {
@@ -93,7 +93,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IAction) => row.id}
+                        row-key={(row: IModule) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}
