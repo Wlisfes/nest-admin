@@ -1,53 +1,47 @@
 <script lang="tsx">
+import type { IRole, IUser } from '@/interface/api/http-system'
 import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { fetchResetUser, fetchUser } from '@/components/core'
-import { httpColumnUser, httpColumnRole, httpCutoverUser } from '@/api'
+import { httpRowUser, httpRowRole, httpPutUser, Parameter } from '@/api/service-system'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
-import { initMounte } from '@/utils/utils-tool'
-type IUserQuery = { primary: string | null; keyword: string | null; roles: Array<IRole> }
+import { useRequest } from '@/hooks/hook-request'
 
 export default defineComponent({
     name: 'User',
     setup() {
         const notice = useNotification()
-        const { online, divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn()
+        const column = useColumn()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '账号', key: 'account', width: calcColumn(100, 1080) },
-            { title: '头像', key: 'avatar', width: calcColumn(80, 1080) },
+            { title: '账号', key: 'account', width: column.calcColumn(100, 1080) },
+            { title: '头像', key: 'avatar', width: column.calcColumn(80, 1080) },
             { title: '昵称', key: 'nickname' },
-            { title: '邮箱', key: 'email', width: calcColumn(140, 1080), ellipsis: { tooltip: true } },
-            { title: '手机号', key: 'mobile', width: calcColumn(120, 1080), ellipsis: { tooltip: true } },
-            { title: '角色', key: 'role', width: calcColumn(160, 1080) },
-            { title: '注册时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', align: 'center', width: calcColumn(100, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
+            { title: '邮箱', key: 'email', width: column.calcColumn(140, 1080), ellipsis: { tooltip: true } },
+            { title: '手机号', key: 'mobile', width: column.calcColumn(120, 1080), ellipsis: { tooltip: true } },
+            { title: '角色', key: 'role', width: column.calcColumn(160, 1080) },
+            { title: '注册时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', align: 'center', width: column.calcColumn(100, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, setState, fetchUpdate } = useSource<IUser, IUserQuery>({
+        const { state, setState, fetchUpdate } = useSource<IUser, Parameter>({
             immediate: true,
-            props: { primary: null, keyword: null, roles: [] },
+            props: { primary: null, keyword: null },
             init: ({ page, size, status, primary, keyword }) => {
-                return httpColumnUser({ page, size, status, primary, keyword })
+                return httpRowUser({ page, size, status, primary, keyword })
             }
         })
-
-        /**角色列表**/
-        const fetchColumnRole = async () => {
-            try {
-                const { data } = await httpColumnRole({ page: 1, size: 100 })
-                setState({ roles: data.list })
-            } catch (e) {}
-        }
-
-        initMounte(() => fetchColumnRole())
+        const { node } = useRequest<IRole>({
+            immediate: true,
+            init: () => httpRowRole({ page: 1, size: 100 })
+        })
 
         /**修改用户状态**/
-        const fetchCutoverPoster = ({ uid }: IUser) => {
+        const fetchPutPoster = ({ uid }: IUser) => {
             setState({ loading: true }).then(() => {
                 try {
-                    httpCutoverUser({ uid }).then(({ data }) => {
+                    httpPutUser({ uid }).then(({ data }) => {
                         fetchUpdate({}, () => {
                             notice.success({ content: data.message, duration: 2000 })
                         })
@@ -59,7 +53,7 @@ export default defineComponent({
         }
 
         const fetchCreate = () => {
-            fetchUser({ key: 'create', roles: state.roles }).then(({ observer }) => {
+            fetchUser({ key: 'create', roles: node.value.list }).then(({ observer }) => {
                 const done = observer.on('submit', data => {
                     fetchUpdate({}, () => {
                         notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
@@ -71,7 +65,7 @@ export default defineComponent({
         const onSelecter = (key: string, row: IUser) => {
             const handler = {
                 edit: () => {
-                    fetchUser({ key: 'edit', roles: state.roles, uid: row.uid }).then(({ observer }) => {
+                    fetchUser({ key: 'edit', roles: node.value.list, uid: row.uid }).then(({ observer }) => {
                         const done = observer.on('submit', data => {
                             fetchUpdate({}, () => {
                                 notice.success({ content: (data as IUser).message, duration: 2000, onAfterEnter: done })
@@ -86,15 +80,15 @@ export default defineComponent({
                         })
                     })
                 },
-                enable: () => fetchCutoverPoster(row),
-                disable: () => fetchCutoverPoster(row)
+                enable: () => fetchPutPoster(row),
+                disable: () => fetchPutPoster(row)
             }
 
             handler[key as keyof typeof handler]?.()
         }
 
-        const render = (value: unknown, row: IUser, column: DataTableBaseColumn) => {
-            const BaseNative = {
+        const render = (value: unknown, row: IUser, base: DataTableBaseColumn) => {
+            const __COLUME__ = {
                 avatar: () => (
                     <u-scale max-width={40} scale={1}>
                         <u-avatar src={row.avatar} username={row.nickname} size={40} round={4} align="start" />
@@ -102,17 +96,15 @@ export default defineComponent({
                 ),
                 role: () => (
                     <n-space size={5}>
-                        {row.role.map(x => (
-                            <n-tag key={x.id} size="small" type="success" style={online.value}>
-                                {{ default: () => x.name }}
-                            </n-tag>
-                        ))}
+                        {row.role.map(x =>
+                            column.divineSpine(x.name, { type: 'success', color: { textColor: undefined } })
+                        )}
                     </n-space>
                 ),
-                status: () => onlineColumn(row.status),
-                command: () => chunkColumn<IUser>({ row, native: ['edit', 'reset'], onSelecter })
+                status: () => column.onlineColumn(row.status),
+                command: () => column.chunkColumn<IUser>({ row, native: ['edit', 'reset'], onSelecter })
             }
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {
@@ -124,7 +116,7 @@ export default defineComponent({
                                 <n-select
                                     v-model:value={state.primary}
                                     clearable
-                                    options={state.roles.map(x => ({ id: x.id, label: x.name, value: x.primary }))}
+                                    options={node.value?.list.map(x => ({ id: x.id, label: x.name, value: x.primary }))}
                                     placeholder="用户角色"
                                     style={{ width: '150px' }}
                                     onUpdateValue={fetchUpdate}
