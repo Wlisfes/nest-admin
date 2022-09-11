@@ -1,8 +1,9 @@
 <script lang="tsx">
-import { useNotification, type DataTableBaseColumn } from 'naive-ui'
+import type { IChunk } from '@/interface/api/http-resource'
+import { type DataTableBaseColumn, useNotification } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnChunk } from '@/api'
+import { httpRowChunk, Parameter } from '@/api/service-resource'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 import { useClipboard } from '@/hooks/hook-super'
@@ -11,19 +12,19 @@ import { fetchChunk } from '@/components/core'
 export default defineComponent({
     name: 'Chunk',
     setup() {
-        const notice = useNotification()
         const { onCater } = useClipboard()
-        const { online, divineColumn, calcColumn } = useColumn<IChunk>()
+        const notice = useNotification()
+        const column = useColumn<IChunk>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '资源名称', key: 'name', ellipsis: { tooltip: true } },
-            { title: '资源地址', key: 'url', width: calcColumn(240, 1080) },
-            { title: '资源版本号', key: 'version', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', width: calcColumn(160, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) }
+            { title: '资源地址', key: 'url', width: column.calcColumn(240, 1080) },
+            { title: '资源版本号', key: 'version', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', width: column.calcColumn(160, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) }
         ])
-        const { state, fetchUpdate } = useSource<IChunk, Object>({
+        const { state, fetchUpdate } = useSource<IChunk, Parameter>({
             immediate: true,
-            init: ({ page, size }) => httpColumnChunk({ page, size })
+            init: ({ page, size }) => httpRowChunk({ page, size })
         })
 
         const fetchCreate = () => {
@@ -36,34 +37,22 @@ export default defineComponent({
             })
         }
 
-        const render = (value: unknown, row: IChunk, column: DataTableBaseColumn) => {
-            const BaseNative = {
+        const render = (value: unknown, row: IChunk, base: DataTableBaseColumn) => {
+            const __COLOR__ = { color: { textColor: undefined } }
+            const __COLUME__ = {
                 status: () => {
-                    return row.status === 1 ? (
-                        <n-tag size="small" type="success" style={online.value}>
-                            {{ default: () => '当前版本' }}
-                        </n-tag>
-                    ) : (
-                        <n-tag size="small" type="warning" style={online.value}>
-                            {{ default: () => '历史版本' }}
-                        </n-tag>
-                    )
+                    if (row.status === 1)
+                        return column.divineSpine('当前版本', { type: 'success', ...__COLOR__ }, { margin: '8px 0' })
+                    return column.divineSpine('历史版本', { type: 'warning', ...__COLOR__ }, { margin: '8px 0' })
                 },
                 url: () => (
-                    <n-tag
-                        bordered={false}
-                        type="info"
-                        size="small"
-                        class="naive-customize"
-                        style={{ margin: '8px 0', ...online.value }}
-                        onClick={() => onCater(row.url)}
-                    >
-                        {{ default: () => '复制地址' }}
-                    </n-tag>
+                    <div onClick={() => onCater(row.url)}>
+                        {column.divineSpine('复制地址', { type: 'info', ...__COLOR__ }, { margin: '8px 0' })}
+                    </div>
                 )
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {

@@ -9,3 +9,13 @@ export interface IPoster extends IProvider {
     user: IUser
     list: Array<IPoster>
 }
+
+export interface IChunk extends IProvider {
+    id: number
+    name: string
+    path: string
+    url: string
+    version: number
+    user: IUser
+    list: Array<IChunk>
+}
