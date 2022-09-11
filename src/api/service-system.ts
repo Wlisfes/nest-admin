@@ -13,3 +13,8 @@ export interface Parameter {
 export function httpRowGuard(params: Pick<Parameter, 'page' | 'size' | 'name' | 'status'>) {
     return request<IModule>({ url: `/api/module/list-node`, method: 'GET', params })
 }
+
+/**权限键列表**********************************************************************************/
+export function httpRowAction(params: Pick<Parameter, 'page' | 'size' | 'name' | 'status'>) {
+    return request<IAction>({ url: `/api/module/action/list-node`, method: 'GET', params })
+}

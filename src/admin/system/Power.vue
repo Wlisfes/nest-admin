@@ -1,36 +1,37 @@
 <script lang="tsx">
-import { type DataTableBaseColumn } from 'naive-ui'
+import type { IAction } from '@/interface/api/http-system'
+import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpColumnAction } from '@/api'
+import { httpRowAction, Parameter } from '@/api/service-system'
 
 export default defineComponent({
     name: 'Power',
     setup() {
-        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<IAction>()
+        const column = useColumn<IAction>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
             { title: '权限名称', key: 'name', ellipsis: { tooltip: true } },
-            { title: '权限唯一标识', key: 'primary', width: calcColumn(240, 1080) },
-            { title: '权限备注', key: 'comment', width: calcColumn(240, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '状态', key: 'status', width: calcColumn(160, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
+            { title: '权限唯一标识', key: 'primary', width: column.calcColumn(240, 1080) },
+            { title: '权限备注', key: 'comment', width: column.calcColumn(240, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '状态', key: 'status', width: column.calcColumn(160, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<IAction, { name: string }>({
+        const { state, fetchUpdate } = useSource<IAction, Parameter>({
             immediate: true,
-            props: { name: '' },
-            init: ({ page, size }) => httpColumnAction({ page, size })
+            props: { name: null },
+            init: ({ page, size, name, status }) => httpRowAction({ page, size, name, status })
         })
 
-        const render = (value: unknown, row: IAction, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                status: () => onlineColumn(row.status, null, { margin: '8px 0' }),
-                command: () => chunkColumn<IAction>({ row, native: ['edit'] })
+        const render = (value: unknown, row: IAction, base: DataTableBaseColumn) => {
+            const __COLOR__ = {
+                status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
+                command: () => column.chunkColumn<IAction>({ row, native: ['edit'] })
             }
 
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLOR__[base.key as keyof typeof __COLOR__]?.() || column.divineColumn(value)
         }
 
         return () => {
