@@ -42,3 +42,18 @@ export interface IModule extends IProvider {
     comment: string
     list: Array<IAction>
 }
+
+export interface ILogger extends IProvider {
+    id: number
+    ip: string
+    path: string
+    type: number
+    method: string
+    message: string
+    code: number
+    body: Record<string, unknown>
+    query: Record<string, unknown>
+    params: Record<string, unknown>
+    user: IUser
+    list: Array<ILogger>
+}

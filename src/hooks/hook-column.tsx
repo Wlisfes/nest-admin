@@ -166,7 +166,7 @@ export function useColumn<R = any>(option?: IColumn<R>) {
         if (!node ?? value ?? true) {
             return divineColumn(value)
         } else {
-            return divineSpine(node.value ?? value, { size: 'small', color: node.color }, style)
+            return divineSpine(value ?? node.value, { size: 'small', color: node.color }, style)
         }
     }
 

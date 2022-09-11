@@ -1,41 +1,38 @@
 <script lang="tsx">
-import { type DataTableBaseColumn } from 'naive-ui'
+import type { ILogger } from '@/interface/api/http-system'
+import { useNotification, type DataTableBaseColumn } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { AppContainer } from '@/components/global'
-import { httpColumnLogger } from '@/api'
+import { httpRowLogger, Parameter } from '@/api/service-system'
 import { useSource } from '@/hooks/hook-source'
 import { useColumn } from '@/hooks/hook-column'
 
 export default defineComponent({
     name: 'Logger',
     setup() {
-        const { divineColumn, onlineColumn, chunkColumn, calcColumn } = useColumn<ILogger>()
+        const column = useColumn<ILogger>()
         const dataColumn = ref<Array<DataTableBaseColumn>>([
-            { title: '序号', key: 'id', width: calcColumn(80, 1080) },
-            { title: '来源ip', key: 'ip', width: calcColumn(130, 1080) },
-            { title: '请求地址', key: 'path', ellipsis: true, width: calcColumn(200, 1080) },
-            { title: '请求类型', key: 'method', width: calcColumn(80, 1080) },
-            { title: '请求状态', key: 'type', align: 'center', width: calcColumn(100, 1080) },
-            { title: '状态码', key: 'code', width: calcColumn(80, 1080) },
-            { title: '状态描述', key: 'message', width: calcColumn(160, 1080) },
-            { title: '创建时间', key: 'createTime', width: calcColumn(160, 1080) },
-            { title: '操作', key: 'command', align: 'center', width: calcColumn(100, 1080), fixed: 'right' }
+            { title: '序号', key: 'id', width: column.calcColumn(80, 1080) },
+            { title: '来源ip', key: 'ip', width: column.calcColumn(130, 1080) },
+            { title: '请求地址', key: 'path', ellipsis: true, width: column.calcColumn(200, 1080) },
+            { title: '请求类型', key: 'method', width: column.calcColumn(80, 1080) },
+            { title: '请求状态', key: 'type', align: 'center', width: column.calcColumn(100, 1080) },
+            { title: '状态码', key: 'code', width: column.calcColumn(80, 1080) },
+            { title: '状态描述', key: 'message', width: column.calcColumn(160, 1080) },
+            { title: '创建时间', key: 'createTime', width: column.calcColumn(160, 1080) },
+            { title: '操作', key: 'command', align: 'center', width: column.calcColumn(100, 1080), fixed: 'right' }
         ])
-        const { state, fetchUpdate } = useSource<ILogger, Object>({
+        const { state, fetchUpdate } = useSource<ILogger, Parameter>({
             immediate: true,
-            init: ({ page, size }) => httpColumnLogger({ page, size })
+            init: ({ page, size, status, type }) => httpRowLogger({ page, size, status, type })
         })
 
-        const render = (value: unknown, row: ILogger, column: DataTableBaseColumn) => {
-            const BaseNative = {
-                type: () => (
-                    <div style={{ margin: '8px 0' }}>
-                        {row.type === 1 ? onlineColumn(1, 'success') : onlineColumn(0, 'error')}
-                    </div>
-                ),
-                command: () => chunkColumn({ row, native: ['edit'] })
+        const render = (value: unknown, row: ILogger, base: DataTableBaseColumn) => {
+            const __COLUME__ = {
+                type: () => column.onlineColumn(row.type, row.type === 1 ? 'success' : 'error', { margin: '8px 0' }),
+                command: () => column.chunkColumn({ row, native: ['edit'] })
             }
-            return BaseNative[column.key as keyof typeof BaseNative]?.() || divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {
@@ -82,7 +79,7 @@ export default defineComponent({
                         remote={true}
                         flex-height={true}
                         loading={state.loading}
-                        row-key={(row: IChunk) => row.id}
+                        row-key={(row: ILogger) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
                         render-cell={render}

@@ -25,12 +25,12 @@ export default defineComponent({
         })
 
         const render = (value: unknown, row: IModule, base: DataTableBaseColumn) => {
-            const __COLOR__ = {
+            const __COLUME__ = {
                 status: () => column.onlineColumn(row.status, null, { margin: '8px 0' }),
                 command: () => column.chunkColumn<IModule>({ row, native: ['edit'] })
             }
 
-            return __COLOR__[base.key as keyof typeof __COLOR__]?.() || column.divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() || column.divineColumn(value)
         }
 
         return () => {
