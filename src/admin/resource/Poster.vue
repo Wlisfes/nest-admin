@@ -38,7 +38,6 @@ export default defineComponent({
             },
             init: ({ page, size, status, type }) => httpRowPoster({ page, size, status, type })
         })
-        const ineIter = (v: number) => state.option.find(x => x.value === v)
 
         /**修改图床状态**/
         const fetchPutPoster = (id: number) => {
@@ -105,8 +104,8 @@ export default defineComponent({
             }
         }
 
-        const columnNative = (value: unknown, row: IPoster, base: DataTableBaseColumn) => {
-            const ine = ineIter(row.type) as IOption
+        const render = (value: unknown, row: IPoster, base: DataTableBaseColumn) => {
+            const ine = state.option.find(x => x.value === row.type) as IOption
             const __COLUME__ = {
                 check: () => column.divineImage({ src: row.url, width: ine.width, scale: ine.scale }),
                 url: () => (
@@ -188,7 +187,7 @@ export default defineComponent({
                         row-key={(row: IPoster) => row.id}
                         columns={dataColumn.value}
                         data={state.dataSource}
-                        render-cell={columnNative}
+                        render-cell={render}
                         pagination={{
                             page: state.page,
                             pageSize: state.size,
